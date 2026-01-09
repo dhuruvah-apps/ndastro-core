@@ -1,7 +1,10 @@
-"""Astronomical calculations for ndastro engine.
+"""Core astronomical calculation functions for the ndastro engine.
 
-This module provides functions to calculate astronomical events for ndastro engine,
-for a given location and date using the Skyfield library.
+This module provides functions for calculating:
+- Planet positions (tropical and sidereal)
+- Ascendant position
+- Lunar node positions (Rahu and Kethu)
+- Sunrise and sunset times
 """
 
 from datetime import datetime, timedelta
@@ -43,7 +46,7 @@ def get_planet_position(planet: Planets, lat: float, lon: float, given_time: dat
     t = ts.utc(given_time)
 
     if planet in (Planets.RAHU, Planets.KETHU):
-        pos = _get_lunar_node_positions(given_time)
+        pos = get_lunar_node_positions(given_time)
         return (
             0.0,
             pos[0] if planet == Planets.RAHU else pos[1],
@@ -51,7 +54,7 @@ def get_planet_position(planet: Planets, lat: float, lon: float, given_time: dat
         )
 
     if planet == Planets.ASCENDANT:
-        asc_lon = _get_ascendent_position(lat, lon, given_time, ayanamsa)
+        asc_lon = get_ascendent_position(lat, lon, given_time, ayanamsa)
         return (0.0, asc_lon, 0.0)
 
     if planet == Planets.EMPTY:
@@ -121,8 +124,8 @@ def get_sunrise_sunset(lat: float, lon: float, given_time: datetime, elevation: 
     return cast("tuple[datetime, datetime]", (sunrise.utc_datetime(), sunset.utc_datetime()))
 
 
-def _get_ascendent_position(lat: float, lon: float, given_time: datetime, ayanamsa: float | None = None) -> float:
-    """Calculate the tropical ascendant.
+def get_ascendent_position(lat: float, lon: float, given_time: datetime, ayanamsa: float | None = None) -> float:
+    """Calculate the tropical/sidereal ascendant.
 
     Args:
         lat (float): The latitude of the observer in decimal degrees.
@@ -131,7 +134,7 @@ def _get_ascendent_position(lat: float, lon: float, given_time: datetime, ayanam
         ayanamsa (float | None): The ayanamsa value to adjust the longitude for sidereal calculations.
 
     Returns:
-        tuple[float, float, float]: The longitude of the tropical ascendant, 0.0, and 0.0.
+        float: The longitude of the tropical/sidereal ascendant.
 
     """
     t = ts.utc(given_time)
@@ -153,7 +156,7 @@ def _get_ascendent_position(lat: float, lon: float, given_time: datetime, ayanam
     return normalize_degree(asc if ayanamsa is None else asc - ayanamsa)
 
 
-def _get_lunar_node_positions(given_time: datetime) -> tuple[float, float]:
+def get_lunar_node_positions(given_time: datetime) -> tuple[float, float]:
     """Calculate the positions of the lunar nodes (Rahu and Kethu) for a given datetime.
 
     Args:

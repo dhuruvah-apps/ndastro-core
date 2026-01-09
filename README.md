@@ -12,10 +12,15 @@ A modern Python library for Vedic and Western astronomical calculations, built o
 - 🌅 **Sunrise & Sunset** - Accurate sunrise and sunset times for any location
 - 🌙 **Lunar Nodes** - Rahu (North Node) and Kethu (South Node) calculations
 - ⬆️ **Ascendant Calculation** - Compute rising sign (Lagna) for any time and location
-- 🔄 **Ayanamsa Support** - Convert between tropical and sidereal (Vedic) zodiac systems
+- 🔄 **16 Ayanamsa Systems** - Comprehensive support for Vedic and Western sidereal systems:
+  - Lahiri, Raman, Krishnamurti (KP New & Old), Fagan-Bradley
+  - Traditional: Kali, Janma, Yukteshwar, Suryasiddhanta, Aryabhatta
+  - Star-based: True Citra, True Revati, True Pusya, Ushashasi
+  - Additional: Madhava, Vishnu, True ayanamsa
 - 🌍 **WGS84 Coordinates** - Support for standard latitude/longitude coordinates
 - 📅 **Date-based Queries** - Calculate astronomical events for any date and time
 - 🎯 **High Precision** - Powered by Skyfield using JPL ephemeris data (DE440t)
+- ✅ **Verified Accuracy** - All ayanamsa values verified against astro-seek.com reference
 - 🔧 **Easy Configuration** - Automatic ephemeris data management
 - 📦 **Modern Python** - Full type hints, clean API, and comprehensive test coverage
 
@@ -63,6 +68,31 @@ print(f"Sunset: {sunset}")
 
 ## Usage Examples
 
+### Ayanamsa Calculation
+
+```python
+from datetime import datetime
+from ndastro_engine.ayanamsa import (
+    get_lahiri_ayanamsa,
+    get_raman_ayanamsa,
+    get_krishnamurti_new_ayanamsa,
+    get_fagan_bradley_ayanamsa
+)
+
+# Calculate ayanamsa for a specific date
+date = datetime(2026, 1, 15, 12, 0, 0)
+
+lahiri = get_lahiri_ayanamsa(date)
+raman = get_raman_ayanamsa(date)
+kp = get_krishnamurti_new_ayanamsa(date)
+fagan = get_fagan_bradley_ayanamsa(date)
+
+print(f"Lahiri Ayanamsa: {lahiri:.4f}°")
+print(f"Raman Ayanamsa: {raman:.4f}°")
+print(f"KP New Ayanamsa: {kp:.4f}°")
+print(f"Fagan-Bradley Ayanamsa: {fagan:.4f}°")
+```
+
 ### Planetary Position Calculation
 
 ```python
@@ -70,6 +100,7 @@ from datetime import datetime
 import pytz
 from ndastro_engine.core import get_planet_position
 from ndastro_engine.enums.planet_enum import Planets
+from ndastro_engine.ayanamsa import get_lahiri_ayanamsa
 
 # Location: Mumbai, India
 lat = 19.0760
@@ -83,7 +114,7 @@ lat_jupiter, lon_jupiter, dist_jupiter = get_planet_position(
 print(f"Jupiter (Tropical): {lon_jupiter:.2f}°")
 
 # Get Jupiter's position (sidereal/Vedic with Lahiri ayanamsa)
-ayanamsa = 24.19  # Lahiri ayanamsa for 2026
+ayanamsa = get_lahiri_ayanamsa(time)
 lat_jupiter, lon_jupiter, dist_jupiter = get_planet_position(
     Planets.JUPITER, lat, lon, time, ayanamsa=ayanamsa
 )
