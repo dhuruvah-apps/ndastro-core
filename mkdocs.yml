@@ -1,0 +1,83 @@
+site_name: ndastro-engine Documentation
+site_description: A modern vedic astrology calculation engine
+site_author: Jaganathan, B
+site_url: https://jaganathanb.github.io/ndastro-core/
+
+repo_name: jaganathanb/ndastro-core
+repo_url: https://github.com/jaganathanb/ndastro-core
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette:
+    # Palette toggle for light mode
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Palette toggle for dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [.]
+          options:
+            docstring_style: google
+            show_source: true
+            show_root_heading: true
+            show_root_full_path: false
+            heading_level: 2
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - admonition
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - attr_list
+  - md_in_html
+  - tables
+
+nav:
+  - Home: index.md
+  - Getting Started:
+      - Installation: getting-started/installation.md
+      - Quick Start: getting-started/quick-start.md
+  - User Guide:
+      - Ayanamsa Calculations: guide/ayanamsa.md
+      - Planet Positions: guide/planets.md
+      - Sunrise & Sunset: guide/sunrise-sunset.md
+      - Retrograde Periods: guide/retrograde.md
+  - API Reference:
+      - Core: api/core.md
+      - Ayanamsa: api/ayanamsa.md
+      - Utils: api/utils.md
+      - Enums: api/enums.md
+  - Contributing: contributing.md
+  - Changelog: changelog.md

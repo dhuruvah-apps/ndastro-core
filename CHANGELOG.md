@@ -5,11 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.4.2] - 2026-01-11
+## [0.5.0] - 2026-01-11
 
 ### Added
 - `time_to_datetime()` utility function to convert Skyfield Time to Python datetime
-- `is_planet_in_retrograde()` function to get the tuple `(bool, start_date, end_date)` for planet retrograde.
+- `is_planet_in_retrograde()` function to get the tuple `(bool, start_date, end_date)` for planet retrograde
+- Complete MkDocs Material documentation site with GitHub Pages deployment
+- Comprehensive user guides for ayanamsa, planet positions, sunrise/sunset, and retrograde periods
+- Auto-generated API reference documentation with mkdocstrings
+- GitHub Actions workflow for automated documentation deployment
+- Documentation dependency group in pyproject.toml
 
 ## [0.4.1] - 2026-01-09
 
@@ -67,6 +72,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+[0.5.0]: https://github.com/jaganathanb/ndastro-core/releases/tag/v0.5.0
 [0.4.1]: https://github.com/jaganathanb/ndastro-core/releases/tag/v0.4.1
 [0.4.0]: https://github.com/jaganathanb/ndastro-core/releases/tag/v0.4.0
 [0.3.2]: https://github.com/jaganathanb/ndastro-core/releases/tag/v0.3.2

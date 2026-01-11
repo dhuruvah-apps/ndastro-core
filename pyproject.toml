@@ -1,6 +1,6 @@
 [project]
 name = "ndastro-engine"
-version = "0.4.2"
+version = "0.5.0"
 description = "A modern vedic astrology calculation engine"
 authors = [
     {name = "Jaganathan, B", email = "jaganathan.eswaran@gmail.com"}
@@ -35,7 +35,7 @@ dependencies = [
 [project.urls]
 Homepage = "https://github.com/jaganathanb/ndastro-core"
 Repository = "https://github.com/jaganathanb/ndastro-core"
-Documentation = "https://github.com/jaganathanb/ndastro-core#readme"
+Documentation = "https://jaganathanb.github.io/ndastro-core/"
 "Bug Tracker" = "https://github.com/jaganathanb/ndastro-core/issues"
 Changelog = "https://github.com/jaganathanb/ndastro-core/releases"
 
@@ -46,6 +46,12 @@ dev = [
     "pytest-xdist>=3.6.1",
     "ruff>=0.14.10",
     "mypy>=1.19.1",
+]
+docs = [
+    "mkdocs>=1.5.0",
+    "mkdocs-material>=9.5.0",
+    "mkdocstrings[python]>=0.24.0",
+    "pymdown-extensions>=10.7.0",
 ]
 
 [build-system]
@@ -128,4 +134,7 @@ directory = "htmlcov"
 [tool.poetry.group.dev.dependencies]
 pytest-xdist = "3.6.1"
 pytest-cov = "6.0.0"
+mkdocs-material = "^9.7.1"
+mkdocstrings = {extras = ["python"], version = "^1.0.0"}
+pymdown-extensions = "^10.20"
 
