@@ -1,7 +1,7 @@
 [project]
 name = "ndastro-engine"
-version = "0.5.1"
-description = "A modern vedic astrology calculation engine"
+version = "0.5.2"
+description = "A modern Vedic astrology calculation engine for Python, providing accurate astronomical calculations for birth charts, planetary positions, and ayanamsa systems."
 authors = [
     {name = "Jaganathan, B", email = "jaganathan.eswaran@gmail.com"}
 ]
@@ -33,7 +33,7 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/jaganathanb/ndastro-core"
+Homepage = "https://jaganathanb.github.io/ndastro-core/"
 Repository = "https://github.com/jaganathanb/ndastro-core"
 Documentation = "https://jaganathanb.github.io/ndastro-core/"
 "Bug Tracker" = "https://github.com/jaganathanb/ndastro-core/issues"

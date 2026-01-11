@@ -3,6 +3,7 @@
 [![PyPI version](https://badge.fury.io/py/ndastro-engine.svg)](https://badge.fury.io/py/ndastro-engine)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Documentation](https://img.shields.io/badge/docs-mkdocs-blue.svg)](https://jaganathanb.github.io/ndastro-core/)
 
 A modern Python library for Vedic and Western astronomical calculations, built on top of [Skyfield](https://rhodesmill.org/skyfield/). ndastro-engine provides a clean, intuitive API for computing planetary positions, sunrise/sunset times, lunar nodes (Rahu/Kethu), ascendant, and other astronomical events for any location on Earth.
 
@@ -37,6 +38,16 @@ For development:
 ```bash
 pip install ndastro-engine[dev]
 ```
+
+## Documentation
+
+Full documentation is available at **[https://jaganathanb.github.io/ndastro-core/](https://jaganathanb.github.io/ndastro-core/)**
+
+The documentation includes:
+- 📖 **Getting Started Guide** - Installation and quick start tutorials
+- 📚 **User Guide** - Detailed guides on ayanamsa, planets, retrograde, and sunrise/sunset calculations
+- 🔍 **API Reference** - Complete API documentation with examples
+- 📝 **Contributing Guide** - Information for contributors
 
 ## Quick Start
 

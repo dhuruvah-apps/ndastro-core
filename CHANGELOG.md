@@ -8,7 +8,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.5.0] - 2026-01-11
 
 ### Added
-- `time_to_datetime()` utility function to convert Skyfield Time to Python datetime
 - `is_planet_in_retrograde()` function to get the tuple `(bool, start_date, end_date)` for planet retrograde
 - Complete MkDocs Material documentation site with GitHub Pages deployment
 - Comprehensive user guides for ayanamsa, planet positions, sunrise/sunset, and retrograde periods
