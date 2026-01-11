@@ -4,11 +4,13 @@ from datetime import datetime
 
 import pytest
 import pytz
+from skyfield.units import Angle
 
 from ndastro_engine.core import (
     get_all_planet_positions,
     get_planet_position,
     get_sunrise_sunset,
+    is_planet_in_retrograde,
 )
 from ndastro_engine.enums.planet_enum import Planets
 
@@ -348,3 +350,62 @@ class TestPlanetPositionEdgeCases:
 
         # Summer days should be longer at this latitude
         assert summer_day_length > winter_day_length
+
+
+class TestIsPlanetInRetrograde:
+    """Test cases for is_planet_in_retrograde function."""
+
+    @pytest.mark.unit
+    def test_mercury_in_retrograde_positive(self) -> None:
+        """Test Mercury is in retrograde during a known retrograde period."""
+        # Mercury retrograde: December 13, 2023 - January 1, 2024 (known period)
+        check_date = datetime(2023, 12, 20, 12, 0, 0, tzinfo=pytz.UTC)
+        latitude = Angle(degrees=12.97)  # Bengaluru
+        longitude = Angle(degrees=77.59)
+
+        is_retrograde, start_date, end_date = is_planet_in_retrograde(check_date, Planets.MERCURY.code, latitude, longitude)
+
+        assert is_retrograde is True
+        assert start_date is not None
+        assert end_date is not None
+        assert start_date <= check_date <= end_date
+
+    @pytest.mark.unit
+    def test_mercury_not_in_retrograde_negative(self) -> None:
+        """Test Mercury is not in retrograde during a known direct motion period."""
+        # Mercury direct motion period (between retrogrades)
+        check_date = datetime(2024, 2, 15, 12, 0, 0, tzinfo=pytz.UTC)
+        latitude = Angle(degrees=28.6139)  # New Delhi
+        longitude = Angle(degrees=77.2090)
+
+        is_retrograde, start_date, end_date = is_planet_in_retrograde(check_date, Planets.MERCURY.code, latitude, longitude)
+
+        assert is_retrograde is False
+        assert start_date is None
+        assert end_date is None
+
+    @pytest.mark.unit
+    def test_sun_never_retrograde(self) -> None:
+        """Test that Sun is never in retrograde."""
+        check_date = datetime(2024, 6, 15, 12, 0, 0, tzinfo=pytz.UTC)
+        latitude = Angle(degrees=28.6139)
+        longitude = Angle(degrees=77.2090)
+
+        is_retrograde, start_date, end_date = is_planet_in_retrograde(check_date, Planets.SUN.code, latitude, longitude)
+
+        assert is_retrograde is False
+        assert start_date is None
+        assert end_date is None
+
+    @pytest.mark.unit
+    def test_moon_never_retrograde(self) -> None:
+        """Test that Moon is never in retrograde."""
+        check_date = datetime(2024, 6, 15, 12, 0, 0, tzinfo=pytz.UTC)
+        latitude = Angle(degrees=28.6139)
+        longitude = Angle(degrees=77.2090)
+
+        is_retrograde, start_date, end_date = is_planet_in_retrograde(check_date, Planets.MOON.code, latitude, longitude)
+
+        assert is_retrograde is False
+        assert start_date is None
+        assert end_date is None
