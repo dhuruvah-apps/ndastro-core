@@ -54,7 +54,7 @@ The documentation includes:
 ```python
 from datetime import datetime
 import pytz
-from ndastro_engine.core import get_planet_position, get_all_planet_positions, get_sunrise_sunset
+from ndastro_engine.core import get_planet_position, get_planets_position, get_sunrise_sunset
 from ndastro_engine.enums.planet_enum import Planets
 
 # Define location (New York City)
@@ -67,7 +67,7 @@ lat, lon, dist = get_planet_position(Planets.SUN, latitude, longitude, time)
 print(f"Sun: Longitude {lon:.2f}°, Latitude {lat:.4f}°, Distance {dist:.4f} AU")
 
 # Get all planetary positions
-positions = get_all_planet_positions(latitude, longitude, time)
+positions = get_planets_position([], latitude, longitude, time)
 for planet, (lat, lon, dist) in positions.items():
     print(f"{planet.name}: {lon:.2f}°")
 
@@ -137,7 +137,7 @@ print(f"Jupiter (Sidereal): {lon_jupiter:.2f}°")
 ```python
 from datetime import datetime
 import pytz
-from ndastro_engine.core import get_all_planet_positions
+from ndastro_engine.core import get_planets_position
 from ndastro_engine.enums.planet_enum import Planets
 
 lat = 51.5074  # London
@@ -145,7 +145,7 @@ lon = -0.1278
 time = datetime(2026, 3, 20, 0, 0, 0, tzinfo=pytz.UTC)
 
 # Get positions for all planets including Rahu, Kethu, and Ascendant
-positions = get_all_planet_positions(lat, lon, time)
+positions = get_planets_position([], lat, lon, time)
 
 for planet, (latitude, longitude, distance) in positions.items():
     if planet in [Planets.RAHU, Planets.KETHU, Planets.ASCENDANT]:
@@ -237,11 +237,12 @@ lat, lon, dist = get_planet_position(
 )
 ```
 
-### `get_all_planet_positions(lat, lon, given_time, ayanamsa=None)`
+### `get_planets_position(planets, lat, lon, given_time, ayanamsa=None)`
 
 Calculate positions for all planets, including Rahu, Kethu, and Ascendant.
 
 **Parameters:**
+- `planets` (list[Planets]): List of planets
 - `lat` (float): Latitude of the observer in decimal degrees
 - `lon` (float): Longitude of the observer in decimal degrees
 - `given_time` (datetime): The datetime of observation in UTC
@@ -254,9 +255,10 @@ Calculate positions for all planets, including Rahu, Kethu, and Ascendant.
 ```python
 from datetime import datetime
 import pytz
-from ndastro_engine.core import get_all_planet_positions
+from ndastro_engine.core import get_planets_position
 
-positions = get_all_planet_positions(
+positions = get_planets_position(
+    [] # gets all planets position
     12.97, 77.59,  # Bangalore, India
     datetime(2026, 1, 15, tzinfo=pytz.UTC)
 )
