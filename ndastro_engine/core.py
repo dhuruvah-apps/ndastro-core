@@ -60,7 +60,7 @@ def get_planet_position(planet: Planets, lat: float, lon: float, given_time: dat
     if planet == Planets.EMPTY:
         return (0.0, 0.0, 0.0)
 
-    eth = eph["earth"]
+    eth: VectorSum = cast("VectorSum", eph["earth"])
     observer: VectorSum = eth + wgs84.latlon(latitude_degrees=lat, longitude_degrees=lon, elevation_m=914)
     astrometric = cast("Barycentric", observer.at(t)).observe(eph[planet.code]).apparent()
 
@@ -72,12 +72,13 @@ def get_planet_position(planet: Planets, lat: float, lon: float, given_time: dat
     )
 
 
-def get_all_planet_positions(
-    lat: float, lon: float, given_time: datetime, ayanamsa: float | None = None
+def get_planets_position(
+    planets: list[Planets], lat: float, lon: float, given_time: datetime, ayanamsa: float | None = None
 ) -> dict[Planets, tuple[float, float, float]]:
     """Return the tropical positions of all planets for the given latitude, longitude, and datetime.
 
     Args:
+        planets (list[Planets]): The list of planets to calculate the positions for.
         lat (float): The latitude of the observer in decimal degrees.
         lon (float): The longitude of the observer in decimal degrees.
         given_time (datetime): The datetime of the observation in UTC.
@@ -90,7 +91,7 @@ def get_all_planet_positions(
 
     """
     positions: dict[Planets, tuple[float, float, float]] = {}
-    for planet in Planets:
+    for planet in planets if len(planets) > 0 else Planets:
         positions[planet] = get_planet_position(planet, lat, lon, given_time, ayanamsa)
 
     return positions

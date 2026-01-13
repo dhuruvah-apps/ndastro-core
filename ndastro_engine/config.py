@@ -6,8 +6,10 @@ application configuration settings in a centralized manner.
 
 import struct
 from pathlib import Path
+from typing import cast
 
 from skyfield.iokit import Loader
+from skyfield.jpllib import SpiceKernel
 
 from ndastro_engine.utils import get_app_data_dir
 
@@ -38,7 +40,7 @@ class ConfigurationManager:
             # Try to load ephemeris, delete and retry if corrupted
             ephemeris_file = "de440t.bsp"
             try:
-                self.eph = loader(ephemeris_file)
+                self.eph: SpiceKernel = cast("SpiceKernel", loader(ephemeris_file))
             except (struct.error, ValueError):
                 # File is corrupted, delete and retry
                 corrupted_file = Path(data_dir) / ephemeris_file
@@ -46,7 +48,7 @@ class ConfigurationManager:
                     print(f"Detected corrupted ephemeris file, deleting: {corrupted_file}")
                     corrupted_file.unlink()
                     print("Re-downloading ephemeris file...")
-                    self.eph = loader(ephemeris_file)
+                    self.eph = cast("SpiceKernel", loader(ephemeris_file))
                 else:
                     raise
         except Exception as e:

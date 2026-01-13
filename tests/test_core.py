@@ -7,8 +7,9 @@ import pytz
 from skyfield.units import Angle
 
 from ndastro_engine.core import (
-    get_all_planet_positions,
+    get_ascendent_position,
     get_planet_position,
+    get_planets_position,
     get_sunrise_sunset,
     is_planet_in_retrograde,
 )
@@ -166,7 +167,7 @@ class TestGetAllPlanetPositions:
         lon = 77.59
         test_time = datetime(2026, 1, 5, 18, 30, 0, tzinfo=pytz.UTC)
 
-        result = get_all_planet_positions(lat, lon, test_time)
+        result = get_planets_position([], lat, lon, test_time)
 
         assert isinstance(result, dict)
         assert len(result) > 0
@@ -178,7 +179,7 @@ class TestGetAllPlanetPositions:
         lon = -74.0060
         test_time = datetime(2026, 1, 1, 12, 0, 0, tzinfo=pytz.UTC)
 
-        result = get_all_planet_positions(lat, lon, test_time)
+        result = get_planets_position([], lat, lon, test_time)
 
         expected_planets = [
             Planets.SUN,
@@ -203,7 +204,7 @@ class TestGetAllPlanetPositions:
         lon = 72.8777
         test_time = datetime(2026, 1, 5, 0, 0, 0, tzinfo=pytz.UTC)
 
-        result = get_all_planet_positions(lat, lon, test_time)
+        result = get_planets_position([], lat, lon, test_time)
 
         for planet, position in result.items():
             assert isinstance(position, tuple)
@@ -217,7 +218,7 @@ class TestGetAllPlanetPositions:
         lon = 0.0
         test_time = datetime(2026, 1, 1, 0, 0, 0, tzinfo=pytz.UTC)
 
-        result = get_all_planet_positions(lat, lon, test_time)
+        result = get_planets_position([], lat, lon, test_time)
 
         rahu_lon = result[Planets.RAHU][1]
         kethu_lon = result[Planets.KETHU][1]
@@ -238,8 +239,8 @@ class TestGetAllPlanetPositions:
         test_time = datetime(2023, 12, 31, 18, 30, 0, tzinfo=pytz.UTC)
         ayanamsa = 24.19166667
 
-        result_tropical = get_all_planet_positions(lat, lon, test_time, ayanamsa=None)
-        result_sidereal = get_all_planet_positions(lat, lon, test_time, ayanamsa=ayanamsa)
+        result_tropical = get_planets_position([], lat, lon, test_time, ayanamsa=None)
+        result_sidereal = get_planets_position([], lat, lon, test_time, ayanamsa=ayanamsa)
 
         # Check that positions differ by approximately the ayanamsa
         for planet in [Planets.SUN, Planets.MOON, Planets.MARS]:
@@ -257,7 +258,7 @@ class TestGetAllPlanetPositions:
         lon = -0.1278
         test_time = datetime(2026, 1, 5, 12, 0, 0, tzinfo=pytz.UTC)
 
-        result = get_all_planet_positions(lat, lon, test_time)
+        result = get_planets_position([], lat, lon, test_time)
 
         assert Planets.ASCENDANT in result
         asc_lat, asc_lon, asc_dist = result[Planets.ASCENDANT]
@@ -272,7 +273,7 @@ class TestGetAllPlanetPositions:
         lon = 139.6503
         test_time = datetime(2026, 3, 20, 0, 0, 0, tzinfo=pytz.UTC)
 
-        result = get_all_planet_positions(lat, lon, test_time)
+        result = get_planets_position([], lat, lon, test_time)
 
         assert result[Planets.RAHU][0] == 0.0
         assert result[Planets.KETHU][0] == 0.0
@@ -409,3 +410,281 @@ class TestIsPlanetInRetrograde:
         assert is_retrograde is False
         assert start_date is None
         assert end_date is None
+
+
+class TestGetAscendentPosition:
+    """Test cases for get_ascendent_position function."""
+
+    @pytest.mark.unit
+    def test_get_ascendent_position_returns_float(self) -> None:
+        """Test that get_ascendent_position returns a float."""
+        lat = 12.97
+        lon = 77.59
+        test_time = datetime(2024, 1, 1, 12, 0, 0, tzinfo=pytz.UTC)
+
+        result = get_ascendent_position(lat, lon, test_time)
+
+        assert isinstance(result, float)
+        assert 0 <= result <= 360
+
+    @pytest.mark.unit
+    def test_get_ascendent_position_with_ayanamsa(self) -> None:
+        """Test ascendant calculation with ayanamsa adjustment."""
+        lat = 12.97
+        lon = 77.59
+        test_time = datetime(2023, 12, 31, 18, 30, 0, tzinfo=pytz.UTC)
+        ayanamsa = 24.19166667
+
+        tropical_asc = get_ascendent_position(lat, lon, test_time, ayanamsa=None)
+        sidereal_asc = get_ascendent_position(lat, lon, test_time, ayanamsa=ayanamsa)
+
+        # Sidereal ascendant should differ from tropical by approximately the ayanamsa
+        diff = abs(tropical_asc - sidereal_asc)
+        # Account for wrap-around at 360 degrees
+        if diff > 180:
+            diff = 360 - diff
+
+        assert abs(diff - ayanamsa) < 1.0, f"Difference {diff} should be close to ayanamsa {ayanamsa}"
+
+    @pytest.mark.unit
+    def test_get_ascendent_position_different_times(self) -> None:
+        """Test that ascendant changes with time."""
+        lat = 40.7128
+        lon = -74.0060
+
+        time1 = datetime(2024, 1, 1, 0, 0, 0, tzinfo=pytz.UTC)
+        time2 = datetime(2024, 1, 1, 6, 0, 0, tzinfo=pytz.UTC)
+
+        asc1 = get_ascendent_position(lat, lon, time1)
+        asc2 = get_ascendent_position(lat, lon, time2)
+
+        # Ascendant should change significantly in 6 hours
+        assert asc1 != asc2
+
+    @pytest.mark.unit
+    def test_get_ascendent_position_different_locations(self) -> None:
+        """Test that ascendant differs based on location."""
+        test_time = datetime(2024, 1, 1, 12, 0, 0, tzinfo=pytz.UTC)
+
+        asc1 = get_ascendent_position(12.97, 77.59, test_time)  # Bengaluru
+        asc2 = get_ascendent_position(40.7128, -74.0060, test_time)  # New York
+
+        # Different locations at same time should have different ascendants
+        assert asc1 != asc2
+
+    @pytest.mark.unit
+    def test_get_ascendent_position_at_poles(self) -> None:
+        """Test ascendant calculation at polar latitudes."""
+        test_time = datetime(2024, 6, 21, 12, 0, 0, tzinfo=pytz.UTC)
+
+        # North pole
+        asc_north = get_ascendent_position(90.0, 0.0, test_time)
+        assert isinstance(asc_north, float)
+        assert 0 <= asc_north <= 360
+
+        # South pole
+        asc_south = get_ascendent_position(-90.0, 0.0, test_time)
+        assert isinstance(asc_south, float)
+        assert 0 <= asc_south <= 360
+
+    @pytest.mark.unit
+    def test_get_ascendent_position_with_negative_ayanamsa(self) -> None:
+        """Test ascendant calculation with negative ayanamsa."""
+        lat = 28.6139
+        lon = 77.2090
+        test_time = datetime(2024, 3, 20, 6, 0, 0, tzinfo=pytz.UTC)
+
+        asc_positive = get_ascendent_position(lat, lon, test_time, ayanamsa=24.0)
+        asc_negative = get_ascendent_position(lat, lon, test_time, ayanamsa=-24.0)
+
+        # With negative ayanamsa, ascendant longitude should increase
+        assert asc_negative != asc_positive
+
+
+class TestGetPlanetsPositionWithSpecificList:
+    """Test cases for get_planets_position with specific planet lists."""
+
+    @pytest.mark.unit
+    def test_get_planets_position_with_specific_planets(self) -> None:
+        """Test that function returns only requested planets."""
+        lat = 12.97
+        lon = 77.59
+        test_time = datetime(2024, 1, 1, 12, 0, 0, tzinfo=pytz.UTC)
+        planets = [Planets.SUN, Planets.MOON, Planets.MARS]
+
+        result = get_planets_position(planets, lat, lon, test_time)
+
+        assert len(result) == 3
+        assert Planets.SUN in result
+        assert Planets.MOON in result
+        assert Planets.MARS in result
+        assert Planets.JUPITER not in result
+        assert Planets.VENUS not in result
+
+    @pytest.mark.unit
+    def test_get_planets_position_single_planet(self) -> None:
+        """Test that function works with a single planet."""
+        lat = 40.7128
+        lon = -74.0060
+        test_time = datetime(2024, 1, 1, 12, 0, 0, tzinfo=pytz.UTC)
+        planets = [Planets.JUPITER]
+
+        result = get_planets_position(planets, lat, lon, test_time)
+
+        assert len(result) == 1
+        assert Planets.JUPITER in result
+
+    @pytest.mark.unit
+    def test_get_planets_position_with_lunar_nodes(self) -> None:
+        """Test that function correctly handles Rahu and Kethu in planet list."""
+        lat = 19.0760
+        lon = 72.8777
+        test_time = datetime(2024, 1, 1, 0, 0, 0, tzinfo=pytz.UTC)
+        planets = [Planets.RAHU, Planets.KETHU]
+
+        result = get_planets_position(planets, lat, lon, test_time)
+
+        assert len(result) == 2
+        assert Planets.RAHU in result
+        assert Planets.KETHU in result
+
+        # Verify they are 180 degrees apart
+        rahu_lon = result[Planets.RAHU][1]
+        kethu_lon = result[Planets.KETHU][1]
+        diff = abs(rahu_lon - kethu_lon)
+        if diff > 180:
+            diff = 360 - diff
+        assert abs(diff - 180) < 0.01
+
+    @pytest.mark.unit
+    def test_get_planets_position_with_ascendant_only(self) -> None:
+        """Test that function works with only ascendant."""
+        lat = 51.5074
+        lon = -0.1278
+        test_time = datetime(2024, 1, 1, 12, 0, 0, tzinfo=pytz.UTC)
+        planets = [Planets.ASCENDANT]
+
+        result = get_planets_position(planets, lat, lon, test_time)
+
+        assert len(result) == 1
+        assert Planets.ASCENDANT in result
+        assert result[Planets.ASCENDANT][0] == 0.0  # latitude
+        assert result[Planets.ASCENDANT][2] == 0.0  # distance
+
+    @pytest.mark.unit
+    def test_get_planets_position_with_ayanamsa_specific_planets(self) -> None:
+        """Test planet positions with ayanamsa for specific planets."""
+        lat = 12.97
+        lon = 77.59
+        test_time = datetime(2023, 12, 31, 18, 30, 0, tzinfo=pytz.UTC)
+        ayanamsa = 24.19166667
+        planets = [Planets.SUN, Planets.MERCURY, Planets.SATURN]
+
+        result_tropical = get_planets_position(planets, lat, lon, test_time, ayanamsa=None)
+        result_sidereal = get_planets_position(planets, lat, lon, test_time, ayanamsa=ayanamsa)
+
+        assert len(result_tropical) == 3
+        assert len(result_sidereal) == 3
+
+        # Check that positions differ by approximately the ayanamsa
+        for planet in planets:
+            trop_lon = result_tropical[planet][1]
+            sid_lon = result_sidereal[planet][1]
+            diff = abs(trop_lon - sid_lon)
+            assert abs(diff - ayanamsa) < 1.0 or abs(diff - ayanamsa + 360) < 1.0
+
+    @pytest.mark.unit
+    def test_get_planets_position_empty_list_returns_all(self) -> None:
+        """Test that empty list returns all planets."""
+        lat = 12.97
+        lon = 77.59
+        test_time = datetime(2024, 1, 1, 12, 0, 0, tzinfo=pytz.UTC)
+
+        result = get_planets_position([], lat, lon, test_time)
+
+        # Should contain all enum members
+        assert len(result) == len(Planets)
+
+
+class TestGetSunriseSunsetElevation:
+    """Test cases for get_sunrise_sunset with various elevations."""
+
+    @pytest.mark.unit
+    def test_sunrise_sunset_sea_level(self) -> None:
+        """Test sunrise/sunset calculation at sea level."""
+        lat = 19.0760  # Mumbai (coastal)
+        lon = 72.8777
+        test_date = datetime(2026, 1, 5, 0, 0, 0, tzinfo=pytz.UTC)
+
+        sunrise, sunset = get_sunrise_sunset(lat, lon, test_date, elevation=0)
+
+        assert isinstance(sunrise, datetime)
+        assert isinstance(sunset, datetime)
+        assert sunrise < sunset
+
+    @pytest.mark.unit
+    def test_sunrise_sunset_high_elevation(self) -> None:
+        """Test sunrise/sunset at high elevation (mountain)."""
+        lat = 27.9881  # Mount Everest base camp area
+        lon = 86.9250
+        test_date = datetime(2026, 1, 5, 0, 0, 0, tzinfo=pytz.UTC)
+
+        sunrise_low = get_sunrise_sunset(lat, lon, test_date, elevation=100)[0]
+        sunrise_high = get_sunrise_sunset(lat, lon, test_date, elevation=5000)[0]
+
+        # Higher elevation typically sees sunrise earlier
+        time_diff = abs((sunrise_high - sunrise_low).total_seconds())
+        assert time_diff > 0  # There should be a difference
+
+    @pytest.mark.unit
+    def test_sunrise_sunset_negative_elevation(self) -> None:
+        """Test sunrise/sunset below sea level."""
+        lat = 31.5  # Dead Sea area (below sea level)
+        lon = 35.5
+        test_date = datetime(2026, 1, 5, 0, 0, 0, tzinfo=pytz.UTC)
+
+        sunrise, sunset = get_sunrise_sunset(lat, lon, test_date, elevation=-400)
+
+        assert isinstance(sunrise, datetime)
+        assert isinstance(sunset, datetime)
+        assert sunrise < sunset
+
+    @pytest.mark.unit
+    def test_sunrise_sunset_elevation_effect_on_day_length(self) -> None:
+        """Test that elevation affects day length."""
+        lat = 35.6762  # Tokyo
+        lon = 139.6503
+        test_date = datetime(2026, 6, 21, 0, 0, 0, tzinfo=pytz.UTC)  # Summer solstice
+
+        sunrise_sea, sunset_sea = get_sunrise_sunset(lat, lon, test_date, elevation=0)
+        sunrise_mountain, sunset_mountain = get_sunrise_sunset(lat, lon, test_date, elevation=3000)
+
+        day_length_sea = (sunset_sea - sunrise_sea).total_seconds()
+        day_length_mountain = (sunset_mountain - sunrise_mountain).total_seconds()
+
+        # Day length should differ with elevation
+        assert day_length_sea != day_length_mountain
+
+    @pytest.mark.unit
+    @pytest.mark.parametrize(
+        ("elevation", "expected_valid"),
+        [
+            (0, True),  # Sea level
+            (914, True),  # Default elevation
+            (5000, True),  # High mountain
+            (8848, True),  # Mount Everest height
+            (-400, True),  # Below sea level (Dead Sea)
+        ],
+    )
+    def test_sunrise_sunset_various_elevations(self, elevation: float, expected_valid: bool) -> None:
+        """Test sunrise/sunset calculation at various elevations."""
+        lat = 40.7128
+        lon = -74.0060
+        test_date = datetime(2026, 1, 5, 0, 0, 0, tzinfo=pytz.UTC)
+
+        sunrise, sunset = get_sunrise_sunset(lat, lon, test_date, elevation=elevation)
+
+        if expected_valid:
+            assert isinstance(sunrise, datetime)
+            assert isinstance(sunset, datetime)
+            assert sunrise < sunset
