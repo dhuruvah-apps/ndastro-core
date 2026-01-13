@@ -79,3 +79,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.3.0]: https://github.com/jaganathanb/ndastro-core/releases/tag/v0.3.0
 [0.2.1]: https://github.com/jaganathanb/ndastro-core/releases/tag/v0.2.1
 [0.2.0]: https://github.com/jaganathanb/ndastro-core/releases/tag/v0.2.0
+
+## v0.6.0 (2026-01-13)
+
+### Refactor
+
+- **core.py**: renamed the get_all_planet_positions to get_planets_position with new args planets
+
+## v0.5.0 (2026-01-11)
+
+## v0.4.1 (2026-01-09)

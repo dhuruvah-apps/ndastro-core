@@ -1,6 +1,6 @@
 [project]
 name = "ndastro-engine"
-version = "0.5.2"
+version = "0.6.0"
 description = "A modern Vedic astrology calculation engine for Python, providing accurate astronomical calculations for birth charts, planetary positions, and ayanamsa systems."
 authors = [
     {name = "Jaganathan, B", email = "jaganathan.eswaran@gmail.com"}
