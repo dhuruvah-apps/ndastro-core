@@ -5,6 +5,9 @@ on:
     types: [closed]
     branches:
       - main
+  push:
+    tags:
+      - 'v*'
   release:
     types: [published]
   workflow_dispatch:
