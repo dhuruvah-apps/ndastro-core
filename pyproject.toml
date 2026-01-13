@@ -144,8 +144,12 @@ pre-commit = "^4.5.1"
 
 [tool.commitizen]
 name = "cz_conventional_commits"
+version = "0.6.0"
 tag_format = "v$version"
 version_scheme = "semver2"
 version_provider = "pep621"
+version_files = [
+    "pyproject.toml:version",
+]
 update_changelog_on_bump = true
 major_version_zero = true
