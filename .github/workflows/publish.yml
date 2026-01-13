@@ -86,7 +86,7 @@ jobs:
         run: poetry build
       
       - name: Publish to PyPI
-        if: github.event.pull_request.merged == true || github.event_name == 'release'
+        if: github.event.pull_request.merged == true || github.event_name == 'release' || github.event_name == 'workflow_dispatch'
         env:
           POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
         run: |
