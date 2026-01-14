@@ -10,6 +10,7 @@ A modern Python library for Vedic and Western astronomical calculations, built o
 ## Features
 
 - 🪐 **Planetary Positions** - Calculate positions for Sun, Moon, Mars, Mercury, Jupiter, Venus, and Saturn
+- 🚀 **Planetary Velocities** - Get speed components (longitude, latitude, distance rates) for all planets
 - 🌅 **Sunrise & Sunset** - Accurate sunrise and sunset times for any location
 - 🌙 **Lunar Nodes** - Rahu (North Node) and Kethu (South Node) calculations
 - ⬆️ **Ascendant Calculation** - Compute rising sign (Lagna) for any time and location
@@ -62,14 +63,16 @@ latitude = 40.7128
 longitude = -74.0060
 time = datetime(2026, 1, 6, 12, 0, 0, tzinfo=pytz.UTC)
 
-# Get Sun's position
-lat, lon, dist = get_planet_position(Planets.SUN, latitude, longitude, time)
-print(f"Sun: Longitude {lon:.2f}°, Latitude {lat:.4f}°, Distance {dist:.4f} AU")
+# Get Sun's position (returns PlanetPosition named tuple)
+position = get_planet_position(Planets.SUN, latitude, longitude, time)
+print(f"Sun: Longitude {position.longitude:.2f}°, Latitude {position.latitude:.4f}°")
+print(f"     Distance {position.distance:.4f} AU")
+print(f"     Speed: {position.speed_longitude:.4f}°/day")
 
 # Get all planetary positions
 positions = get_planets_position([], latitude, longitude, time)
-for planet, (lat, lon, dist) in positions.items():
-    print(f"{planet.name}: {lon:.2f}°")
+for planet, pos in positions.items():
+    print(f"{planet.name}: {pos.longitude:.2f}° (moving {pos.speed_longitude:+.4f}°/day)")
 
 # Get sunrise and sunset
 sunrise, sunset = get_sunrise_sunset(latitude, longitude, time)
@@ -147,11 +150,12 @@ time = datetime(2026, 3, 20, 0, 0, 0, tzinfo=pytz.UTC)
 # Get positions for all planets including Rahu, Kethu, and Ascendant
 positions = get_planets_position([], lat, lon, time)
 
-for planet, (latitude, longitude, distance) in positions.items():
+for planet, pos in positions.items():
     if planet in [Planets.RAHU, Planets.KETHU, Planets.ASCENDANT]:
-        print(f"{planet.name}: {longitude:.2f}°")
+        print(f"{planet.name}: {pos.longitude:.2f}°")
     else:
-        print(f"{planet.name}: {longitude:.2f}° (Distance: {distance:.4f} AU)")
+        print(f"{planet.name}: {pos.longitude:.2f}° (Distance: {pos.distance:.4f} AU)")
+        print(f"  Speed: {pos.speed_longitude:+.4f}°/day")
 ```
 
 ### Basic Sunrise/Sunset Calculation
@@ -220,7 +224,13 @@ Calculate the position of a specific planet.
 - `ayanamsa` (float, optional): Ayanamsa value for sidereal calculations
 
 **Returns:**
-- `tuple[float, float, float]`: (latitude, longitude, distance) - Planet's ecliptic latitude in degrees, ecliptic longitude in degrees, distance in AU
+- `PlanetPosition`: Named tuple with attributes:
+  - `latitude` (float): Planet's ecliptic latitude in degrees
+  - `longitude` (float): Planet's ecliptic longitude in degrees
+  - `distance` (float): Distance from Earth in AU
+  - `speed_latitude` (float): Rate of latitude change in degrees/day
+  - `speed_longitude` (float): Rate of longitude change in degrees/day
+  - `speed_distance` (float): Rate of distance change in AU/day
 
 **Example:**
 ```python
@@ -229,12 +239,14 @@ import pytz
 from ndastro_engine.core import get_planet_position
 from ndastro_engine.enums.planet_enum import Planets
 
-lat, lon, dist = get_planet_position(
+position = get_planet_position(
     Planets.MARS, 
     34.0522, -118.2437,  # Los Angeles
     datetime(2026, 3, 20, tzinfo=pytz.UTC),
     ayanamsa=24.19  # Optional: for sidereal zodiac
 )
+print(f"Mars longitude: {position.longitude:.2f}°")
+print(f"Mars speed: {position.speed_longitude:+.4f}°/day")
 ```
 
 ### `get_planets_position(planets, lat, lon, given_time, ayanamsa=None)`
@@ -249,7 +261,7 @@ Calculate positions for all planets, including Rahu, Kethu, and Ascendant.
 - `ayanamsa` (float, optional): Ayanamsa value for sidereal calculations
 
 **Returns:**
-- `dict[Planets, tuple[float, float, float]]`: Dictionary mapping each planet to its (latitude, longitude, distance)
+- `dict[Planets, PlanetPosition]`: Dictionary mapping each planet to its PlanetPosition named tuple
 
 **Example:**
 ```python
@@ -258,10 +270,13 @@ import pytz
 from ndastro_engine.core import get_planets_position
 
 positions = get_planets_position(
-    [] # gets all planets position
+    [],  # Empty list gets all planets
     12.97, 77.59,  # Bangalore, India
     datetime(2026, 1, 15, tzinfo=pytz.UTC)
 )
+
+for planet, pos in positions.items():
+    print(f"{planet.name}: {pos.longitude:.2f}° @ {pos.speed_longitude:+.4f}°/day")
 ```
 
 ### `get_sunrise_sunset(lat, lon, given_time, elevation=914)`

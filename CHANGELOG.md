@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] - 2026-01-14
+
+### Added
+- `PlanetPosition` named tuple to represent planet positions with velocity components
+- Speed attributes for planetary motion: `speed_latitude`, `speed_longitude`, and `speed_distance`
+- Tests for speed attributes and planetary motion rates
+
+### Changed
+- **Breaking**: `get_planet_position()` now returns `PlanetPosition` named tuple instead of plain tuple
+- **Breaking**: `get_planets_position()` now returns `dict[Planets, PlanetPosition]` instead of tuples
+- Improved workflow conditions for `create-tag` job (PR merge or manual dispatch)
+
+### Fixed
+- Corrected attribute access in all tests to use named tuple attributes
+- Fixed edge case handling for polar coordinates and international dateline
+
 ## [0.5.0] - 2026-01-11
 
 ### Added
