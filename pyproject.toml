@@ -33,11 +33,11 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://dhuruvah-apps.github.io/ndastro-core/"
-Repository = "https://github.com/jaganathanb/ndastro-core"
-Documentation = "https://dhuruvah-apps.github.io/ndastro-core/"
-"Bug Tracker" = "https://github.com/jaganathanb/ndastro-core/issues"
-Changelog = "https://github.com/jaganathanb/ndastro-core/releases"
+Homepage = "https://dhuruvah-in.github.io/ndastro-core/"
+Repository = "https://github.com/dhuruvah-apps/ndastro-core"
+Documentation = "https://docs.dhuruvah.in/ndastro-core/"
+"Bug Tracker" = "https://github.com/dhuruvah-apps/ndastro-core/issues"
+Changelog = "https://github.com/dhuruvah-apps/ndastro-core/releases"
 
 [project.optional-dependencies]
 dev = [

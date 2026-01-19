@@ -1,7 +1,7 @@
 site_name: ND Astro Engine Documentation
 site_description: Python library for Vedic astrology (Jyotish) calculations - ayanamsa systems, planet positions, nakshatras, rashis, transits, dashas, retrograde periods, sunrise/sunset times & panchang. Open-source astronomical computation engine.
 site_author: Dhuruvah Apps
-site_url: https://dhuruvah-apps.github.io/ndastro-core/
+site_url: https://docs.dhuruvah.in/ndastro-core/
 
 repo_name: dhuruvah-apps/ndastro-core
 repo_url: https://github.com/dhuruvah-apps/ndastro-core

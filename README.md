@@ -3,7 +3,7 @@
 [![PyPI version](https://badge.fury.io/py/ndastro-engine.svg)](https://badge.fury.io/py/ndastro-engine)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Documentation](https://img.shields.io/badge/docs-mkdocs-blue.svg)](https://dhuruvah-apps.github.io/ndastro-core/)
+[![Documentation](https://img.shields.io/badge/docs-mkdocs-blue.svg)](https://dhuruvah-in.github.io/ndastro-core/)
 
 A modern Python library for Vedic astronomical calculations, built on top of [Skyfield](https://rhodesmill.org/skyfield/). ndastro-engine provides a clean, intuitive API for computing planetary positions, sunrise/sunset times, lunar nodes (Rahu/Kethu), ascendant, and other astronomical events for any location on Earth.
 
@@ -42,7 +42,7 @@ pip install ndastro-engine[dev]
 
 ## Documentation
 
-Full documentation is available at **[https://dhuruvah-apps.github.io/ndastro-core/](https://dhuruvah-apps.github.io/ndastro-core/)**
+Full documentation is available at **[https://dhuruvah-in.github.io/ndastro-core/](https://dhuruvah-in.github.io/ndastro-core/)**
 
 The documentation includes:
 - 📖 **Getting Started Guide** - Installation and quick start tutorials
@@ -420,8 +420,8 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Support
 
 - 📫 **Email**: jaganathan.eswaran at gmail.com
-- 🐛 **Issues**: [GitHub Issues](https://github.com/jaganathanb/ndastro-core/issues)
-- 📖 **Documentation**: [GitHub Repository](https://github.com/jaganathanb/ndastro-core)
+- 🐛 **Issues**: [GitHub Issues](https://github.com/dhuruvah-apps/ndastro-core/issues)
+- 📖 **Documentation**: [GitHub Repository](https://github.com/dhuruvah-apps/ndastro-core)
 
 ## Roadmap
 
@@ -480,7 +480,7 @@ The library will soon include comprehensive Vedic (Hindu/Indian) astrology funct
 
 ## Changelog
 
-See [CHANGELOG.md](https://github.com/jaganathanb/ndastro-core/releases) for a list of changes.
+See [CHANGELOG.md](https://github.com/dhuruvah-apps/ndastro-core/releases) for a list of changes.
 
 ---
 
