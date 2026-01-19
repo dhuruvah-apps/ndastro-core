@@ -1,6 +1,6 @@
 [project]
 name = "ndastro-engine"
-version = "0.8.0"
+version = "0.8.1"
 description = "A modern Vedic astrology calculation engine for Python, providing accurate astronomical calculations for birth charts, planetary positions, and ayanamsa systems."
 authors = [
     {name = "Jaganathan, B", email = "jaganathan.eswaran@gmail.com"}
@@ -144,7 +144,7 @@ pre-commit = "^4.5.1"
 
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "0.8.0"
+version = "0.8.1"
 tag_format = "v$version"
 version_scheme = "semver2"
 version_provider = "pep621"
