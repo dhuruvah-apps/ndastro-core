@@ -11,11 +11,9 @@ from skyfield.framelib import ecliptic_frame
 from skyfield.nutationlib import mean_obliquity
 from skyfield.toposlib import wgs84
 
-from ndastro_engine.combustion import is_planet_in_combust
 from ndastro_engine.config import eph, ts
 from ndastro_engine.enums import Planets
 from ndastro_engine.models import PlanetPosition
-from ndastro_engine.retrograde import is_planet_in_retrograde
 from ndastro_engine.utils import normalize_degree
 
 if TYPE_CHECKING:
@@ -193,12 +191,4 @@ def get_lunar_node_positions(given_time: datetime) -> tuple[float, float]:
     return rahu_position, kethu_position
 
 
-__all__ = [
-    "get_ascendent_position",
-    "get_lunar_node_positions",
-    "get_planet_position",
-    "get_planets_position",
-    "get_sunrise_sunset",
-    "is_planet_in_combust",
-    "is_planet_in_retrograde",
-]
+__all__ = ["get_ascendent_position", "get_lunar_node_positions", "get_planet_position", "get_planets_position", "get_sunrise_sunset"]

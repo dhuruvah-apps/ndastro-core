@@ -42,7 +42,7 @@ pip install ndastro-engine[dev]
 
 ## Documentation
 
-Full documentation is available at **[https://dhuruvah-in.github.io/ndastro-core/](https://dhuruvah-in.github.io/ndastro-core/)**
+Full documentation is available at **[https://ndastro-engine.dhuruvah.in/](https://ndastro-engine.dhuruvah.in/)**
 
 The documentation includes:
 - 📖 **Getting Started Guide** - Installation and quick start tutorials

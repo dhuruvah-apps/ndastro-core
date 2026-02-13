@@ -10,10 +10,10 @@ from ndastro_engine.core import (
     get_planet_position,
     get_planets_position,
     get_sunrise_sunset,
-    is_planet_in_retrograde,
 )
 from ndastro_engine.enums import Planets
 from ndastro_engine.models import PlanetPosition
+from ndastro_engine.retrograde import is_planet_in_retrograde
 
 
 class TestGetPlanetPosition:
