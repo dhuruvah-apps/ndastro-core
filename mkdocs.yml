@@ -1,10 +1,10 @@
 site_name: ND Astro Engine Documentation
 site_description: Python library for Vedic astrology (Jyotish) calculations - ayanamsa systems, planet positions, nakshatras, rashis, transits, dashas, retrograde periods, sunrise/sunset times & panchang. Open-source astronomical computation engine.
 site_author: Dhuruvah Apps
-site_url: https://docs.dhuruvah.in/ndastro-core/
+site_url: https://ndastro-engine.dhuruvah.in/
 
 repo_name: dhuruvah-apps/ndastro-core
-repo_url: https://github.com/dhuruvah-apps/ndastro-core
+repo_url: https://github.com/dhuruvah-apps/ndastro-core.git
 edit_uri: edit/main/docs/
 
 theme:
@@ -60,6 +60,8 @@ theme:
 
 plugins:
   - search
+  - social
+  - typeset
   - mkdocstrings:
       handlers:
         python:
@@ -98,7 +100,7 @@ nav:
       - Planet Positions: guide/planets.md
       - Sunrise & Sunset: guide/sunrise-sunset.md
       - Retrograde Periods: guide/retrograde.md
-      - Planetary Combustion: guide/combustion.md
+      - Combustion Periods: guide/combustion.md
   - API Reference:
       - Core: api/core.md
       - Ayanamsa: api/ayanamsa.md
@@ -107,3 +109,32 @@ nav:
       - Enums: api/enums.md
   - Contributing: contributing.md
   - Changelog: changelog.md
+
+extra:
+  homepage: https://dhuruvah.in/
+  social:
+  - icon: fontawesome/brands/github-alt
+    link: https://github.com/dhuruvah-apps
+  - icon: fontawesome/brands/twitter
+    link: https://twitter.com/dhuruvah
+  - icon: fontawesome/brands/linkedin
+    link: https://www.linkedin.com/in/dhuruvah
+  - icon: fontawesome/brands/dev
+    link: https://dev.to/dhuruvah
+  - icon: fontawesome/brands/medium
+    link: https://medium.com/@dhuruvah
+  - icon: fontawesome/solid/globe
+    link: https://dhuruvah.in
+  - icon: fontawesome/solid/envelope
+    link: mailto:dhuruvah@gmail.com
+
+extra_css:
+  - css/termynal.css
+  - css/custom.css
+
+extra_javascript:
+  - js/termynal.js
+  - js/custom.js
+
+hooks:
+  - scripts/mkdocs_hooks.py
