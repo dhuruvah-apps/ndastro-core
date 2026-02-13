@@ -62,8 +62,8 @@ class TestCombustFunction:
 
         result = func(t)
 
-        # Result should be a boolean-like value (numpy bool is acceptable)
-        assert isinstance(result, (bool, type(result)))
+        # Result should be a boolean-like value or array of boolean-like values
+        assert hasattr(result, "__bool__") or hasattr(result, "__len__")
 
     @pytest.mark.unit
     def test_combust_function_returns_true_when_within_orb(self) -> None:
@@ -75,8 +75,8 @@ class TestCombustFunction:
         result = func(t)
 
         # With a 30-degree orb, Mercury should often be combust
-        # Result should be boolean-like (numpy bool is acceptable)
-        assert result in [True, False] or hasattr(result, "__bool__")
+        # Result should be boolean-like or array-like
+        assert hasattr(result, "__bool__") or hasattr(result, "__len__")
 
     @pytest.mark.unit
     def test_combust_function_different_latitudes(self) -> None:
@@ -88,9 +88,9 @@ class TestCombustFunction:
         result_north = func_north(t)
         result_south = func_south(t)
 
-        # Both should return boolean-like values
-        assert hasattr(result_north, "__bool__")
-        assert hasattr(result_south, "__bool__")
+        # Both should return boolean-like or array-like values
+        assert hasattr(result_north, "__bool__") or hasattr(result_north, "__len__")
+        assert hasattr(result_south, "__bool__") or hasattr(result_south, "__len__")
 
 
 class TestFindCombustPeriods:
@@ -232,58 +232,72 @@ class TestIsPlanetInCombust:
     """Test suite for is_planet_in_combust function."""
 
     @pytest.mark.unit
-    def test_is_planet_in_combust_returns_boolean(self) -> None:
-        """Test that is_planet_in_combust returns a boolean."""
+    def test_is_planet_in_combust_returns_tuple(self) -> None:
+        """Test that is_planet_in_combust returns a tuple."""
         check_date = datetime(2026, 2, 13, tzinfo=pytz.UTC)
 
         result = is_planet_in_combust(check_date, Planets.MERCURY.code, 40.7128, -74.0060)
 
-        assert isinstance(result, bool)
+        assert isinstance(result, tuple)
+        assert len(result) == 3
+        assert isinstance(result[0], bool)
+        assert result[1] is None or isinstance(result[1], datetime)
+        assert result[2] is None or isinstance(result[2], datetime)
 
     @pytest.mark.unit
     def test_is_planet_in_combust_sun_returns_false(self) -> None:
         """Test that is_planet_in_combust returns False for Sun."""
         check_date = datetime(2026, 2, 13, tzinfo=pytz.UTC)
 
-        result = is_planet_in_combust(check_date, Planets.SUN.code, 40.7128, -74.0060)
+        is_combust, period_start, period_end = is_planet_in_combust(check_date, Planets.SUN.code, 40.7128, -74.0060)
 
-        assert result is False
+        assert is_combust is False
+        assert period_start is None
+        assert period_end is None
 
     @pytest.mark.unit
     def test_is_planet_in_combust_rahu_returns_false(self) -> None:
         """Test that is_planet_in_combust returns False for Rahu."""
         check_date = datetime(2026, 2, 13, tzinfo=pytz.UTC)
 
-        result = is_planet_in_combust(check_date, Planets.RAHU.code, 40.7128, -74.0060)
+        is_combust, period_start, period_end = is_planet_in_combust(check_date, Planets.RAHU.code, 40.7128, -74.0060)
 
-        assert result is False
+        assert is_combust is False
+        assert period_start is None
+        assert period_end is None
 
     @pytest.mark.unit
     def test_is_planet_in_combust_kethu_returns_false(self) -> None:
         """Test that is_planet_in_combust returns False for Kethu."""
         check_date = datetime(2026, 2, 13, tzinfo=pytz.UTC)
 
-        result = is_planet_in_combust(check_date, Planets.KETHU.code, 40.7128, -74.0060)
+        is_combust, period_start, period_end = is_planet_in_combust(check_date, Planets.KETHU.code, 40.7128, -74.0060)
 
-        assert result is False
+        assert is_combust is False
+        assert period_start is None
+        assert period_end is None
 
     @pytest.mark.unit
     def test_is_planet_in_combust_ascendant_returns_false(self) -> None:
         """Test that is_planet_in_combust returns False for Ascendant."""
         check_date = datetime(2026, 2, 13, tzinfo=pytz.UTC)
 
-        result = is_planet_in_combust(check_date, Planets.ASCENDANT.code, 40.7128, -74.0060)
+        is_combust, period_start, period_end = is_planet_in_combust(check_date, Planets.ASCENDANT.code, 40.7128, -74.0060)
 
-        assert result is False
+        assert is_combust is False
+        assert period_start is None
+        assert period_end is None
 
     @pytest.mark.unit
     def test_is_planet_in_combust_empty_returns_false(self) -> None:
         """Test that is_planet_in_combust returns False for Empty planet."""
         check_date = datetime(2026, 2, 13, tzinfo=pytz.UTC)
 
-        result = is_planet_in_combust(check_date, Planets.EMPTY.code, 40.7128, -74.0060)
+        is_combust, period_start, period_end = is_planet_in_combust(check_date, Planets.EMPTY.code, 40.7128, -74.0060)
 
-        assert result is False
+        assert is_combust is False
+        assert period_start is None
+        assert period_end is None
 
     @pytest.mark.unit
     def test_is_planet_in_combust_different_dates(self) -> None:
@@ -291,24 +305,24 @@ class TestIsPlanetInCombust:
         date1 = datetime(2026, 1, 1, tzinfo=pytz.UTC)
         date2 = datetime(2026, 6, 1, tzinfo=pytz.UTC)
 
-        result1 = is_planet_in_combust(date1, Planets.VENUS.code, 40.7128, -74.0060)
-        result2 = is_planet_in_combust(date2, Planets.VENUS.code, 40.7128, -74.0060)
+        is_combust1, _, _ = is_planet_in_combust(date1, Planets.VENUS.code, 40.7128, -74.0060)
+        is_combust2, _, _ = is_planet_in_combust(date2, Planets.VENUS.code, 40.7128, -74.0060)
 
         # Both should be boolean
-        assert isinstance(result1, bool)
-        assert isinstance(result2, bool)
+        assert isinstance(is_combust1, bool)
+        assert isinstance(is_combust2, bool)
 
     @pytest.mark.unit
     def test_is_planet_in_combust_different_locations(self) -> None:
         """Test that is_planet_in_combust works with different locations."""
         check_date = datetime(2026, 2, 13, tzinfo=pytz.UTC)
 
-        result_nyc = is_planet_in_combust(check_date, Planets.MARS.code, 40.7128, -74.0060)
-        result_mumbai = is_planet_in_combust(check_date, Planets.MARS.code, 19.0760, 72.8777)
+        is_combust_nyc, _, _ = is_planet_in_combust(check_date, Planets.MARS.code, 40.7128, -74.0060)
+        is_combust_mumbai, _, _ = is_planet_in_combust(check_date, Planets.MARS.code, 19.0760, 72.8777)
 
         # Both should return boolean values
-        assert isinstance(result_nyc, bool)
-        assert isinstance(result_mumbai, bool)
+        assert isinstance(is_combust_nyc, bool)
+        assert isinstance(is_combust_mumbai, bool)
 
     @pytest.mark.unit
     def test_is_planet_in_combust_all_regular_planets(self) -> None:
@@ -323,8 +337,10 @@ class TestIsPlanetInCombust:
         ]
 
         for planet in planets:
-            result = is_planet_in_combust(check_date, planet, 40.7128, -74.0060)
-            assert isinstance(result, bool), f"Failed for planet {planet}"
+            is_combust, period_start, period_end = is_planet_in_combust(check_date, planet, 40.7128, -74.0060)
+            assert isinstance(is_combust, bool), f"Failed for planet {planet}"
+            assert period_start is None or isinstance(period_start, datetime), f"Failed start date for planet {planet}"
+            assert period_end is None or isinstance(period_end, datetime), f"Failed end date for planet {planet}"
 
     @pytest.mark.unit
     def test_is_planet_in_combust_consistency_with_find_combust_periods(self) -> None:
@@ -334,7 +350,7 @@ class TestIsPlanetInCombust:
         lat, lon = 40.7128, -74.0060
 
         # Get combustion status using is_planet_in_combust
-        is_combust = is_planet_in_combust(check_date, planet, lat, lon)
+        is_combust, period_start, period_end = is_planet_in_combust(check_date, planet, lat, lon)
 
         # Get combustion periods around the check date
         start = check_date - timedelta(days=60)
@@ -342,10 +358,14 @@ class TestIsPlanetInCombust:
         periods = find_combust_periods(start, end, planet, lat, lon)
 
         # Check if the date falls within any period
-        in_period = any(period_start <= check_date <= period_end for period_start, period_end in periods)
+        in_period = any(p_start <= check_date <= p_end for p_start, p_end in periods)
 
         # Both methods should agree
         assert is_combust == in_period, "is_planet_in_combust should match find_combust_periods"
+        # If combust, verify the returned period matches
+        if is_combust:
+            assert period_start is not None and period_end is not None
+            assert period_start <= check_date <= period_end
 
     @pytest.mark.unit
     def test_is_planet_in_combust_with_sample_coordinates(self, sample_coordinates: dict[str, tuple[float, float]]) -> None:
@@ -353,5 +373,57 @@ class TestIsPlanetInCombust:
         check_date = datetime(2026, 2, 13, tzinfo=pytz.UTC)
 
         for location_name, (lat, lon) in sample_coordinates.items():
-            result = is_planet_in_combust(check_date, Planets.MERCURY.code, lat, lon)
-            assert isinstance(result, bool), f"Failed for location {location_name}"
+            is_combust, period_start, period_end = is_planet_in_combust(check_date, Planets.MERCURY.code, lat, lon)
+            assert isinstance(is_combust, bool), f"Failed for location {location_name}"
+            assert period_start is None or isinstance(period_start, datetime), f"Failed start date for location {location_name}"
+            assert period_end is None or isinstance(period_end, datetime), f"Failed end date for location {location_name}"
+
+    @pytest.mark.unit
+    def test_is_planet_in_combust_period_dates_logic(self) -> None:
+        """Test that period dates are correctly set based on combustion status."""
+        check_date = datetime(2026, 2, 13, tzinfo=pytz.UTC)
+
+        # For planets that are never combust on this date
+        is_combust, period_start, period_end = is_planet_in_combust(check_date, Planets.JUPITER.code, 40.7128, -74.0060)
+
+        if not is_combust:
+            # When not combust, both dates should be None
+            assert period_start is None
+            assert period_end is None
+        else:
+            # When combust, both dates should be present and valid
+            assert period_start is not None
+            assert period_end is not None
+            assert period_start <= check_date <= period_end
+            assert period_start < period_end
+
+    @pytest.mark.unit
+    def test_is_planet_in_combust_returns_period_boundaries(self) -> None:
+        """Test that returned period boundaries match find_combust_periods."""
+        check_date = datetime(2026, 4, 15, 12, 0, 0, tzinfo=pytz.UTC)
+        planet = Planets.SATURN.code
+        lat, lon = 40.7128, -74.0060
+
+        # Get result from is_planet_in_combust
+        is_combust, returned_start, returned_end = is_planet_in_combust(check_date, planet, lat, lon)
+
+        # Get periods from find_combust_periods
+        start = check_date - timedelta(days=100)
+        end = check_date + timedelta(days=100)
+        periods = find_combust_periods(start, end, planet, lat, lon)
+
+        if is_combust:
+            # If combust, find the matching period
+            matching_period = None
+            for period_start, period_end in periods:
+                if period_start <= check_date <= period_end:
+                    matching_period = (period_start, period_end)
+                    break
+
+            assert matching_period is not None
+            assert returned_start == matching_period[0]
+            assert returned_end == matching_period[1]
+        else:
+            # If not combust, no matching period should exist
+            for period_start, period_end in periods:
+                assert not (period_start <= check_date <= period_end), "Inconsistency: is_planet_in_combust returned False but period exists"

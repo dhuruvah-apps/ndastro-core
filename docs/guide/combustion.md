@@ -36,7 +36,7 @@ check_date = datetime(2026, 2, 13, 12, 0, 0, tzinfo=pytz.UTC)
 latitude = 40.7128  # New York
 longitude = -74.0060
 
-is_combust = is_planet_in_combust(
+is_combust, period_start, period_end = is_planet_in_combust(
     check_date=check_date,
     planet_name=Planets.MERCURY.code,
     latitude=latitude,
@@ -45,9 +45,15 @@ is_combust = is_planet_in_combust(
 
 if is_combust:
     print(f"Mercury is combust on {check_date.date()}")
+    print(f"Combustion period: {period_start.date()} to {period_end.date()}")
 else:
     print(f"Mercury is not combust on {check_date.date()}")
 ```
+
+The function returns a tuple containing:
+- `is_combust` (bool): Whether the planet is combust on the specified date
+- `period_start` (datetime | None): The start date of the combustion period, or None if not combust
+- `period_end` (datetime | None): The end date of the combustion period, or None if not combust
 
 ## Finding Combustion Periods
 
@@ -104,14 +110,16 @@ planets = [
 
 print(f"Combustion status on {check_date.date()}:\n")
 for planet in planets:
-    is_combust = is_planet_in_combust(
+    is_combust, period_start, period_end = is_planet_in_combust(
         check_date=check_date,
         planet_name=planet.code,
         latitude=latitude,
         longitude=longitude
     )
-    status = "Combust" if is_combust else "Not combust"
-    print(f"{planet.name}: {status}")
+    if is_combust:
+        print(f"{planet.name}: Combust (until {period_end.date()})")
+    else:
+        print(f"{planet.name}: Not combust")
 ```
 
 ## Understanding the Results
@@ -194,12 +202,28 @@ for planet_name, planet_code in planets:
     print(f"{planet_name:8} : {total_days:3} days ({len(periods)} period(s))")
 ```
 
-## API Reference
+### Example 3: Get Combustion Period Details
 
-For detailed API documentation, see:
-- [Combustion API Reference](../api/combustion.md)
+```python
+from datetime import datetime
+import pytz
+from ndastro_engine.combustion import is_planet_in_combust
+from ndastro_engine.enums import Planets
 
-## See Also
+check_date = datetime(2026, 3, 15, 12, 0, 0, tzinfo=pytz.UTC)
+lat, lon = 40.7128, -74.0060  # New York
 
-- [Planet Positions](planets.md) - Calculate planetary positions
-- [Retrograde Periods](retrograde.md) - Find retrograde periods
+is_combust, period_start, period_end = is_planet_in_combust(
+    check_date, Planets.SATURN.code, lat, lon
+)
+
+if is_combust:
+    duration = (period_end - check_date).days
+    print(f"Saturn is combust on {check_date.date()}")
+    print(f"Combustion started: {period_start.date()}")
+    print(f"Combustion ends: {period_end.date()}")
+    print(f"Days remaining in combustion: {duration}")
+else:
+    print(f"Saturn is not combust on {check_date.date()}")
+```
+

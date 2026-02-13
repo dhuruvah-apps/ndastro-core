@@ -128,7 +128,7 @@ def is_planet_in_combust(
     planet_name: str,
     latitude: float,
     longitude: float,
-) -> bool:
+) -> tuple[bool, datetime | None, datetime | None]:
     """Check if a planet is combust on a specific date.
 
     Args:
@@ -138,11 +138,13 @@ def is_planet_in_combust(
         longitude: The longitude of the observation location.
 
     Returns:
-        True if the planet is combust on the given date, otherwise False.
+        A tuple containing a boolean indicating if the planet is combust,
+        the start datetime of the combustion period, and the end datetime of the combustion period.
+        If the planet is not combust, the start and end datetimes will be None.
 
     """
     if planet_name in [Planets.SUN.code, Planets.ASCENDANT.code, Planets.EMPTY.code, Planets.RAHU.code, Planets.KETHU.code]:
-        return False
+        return (False, None, None)
 
     start_date = check_date - timedelta(days=DAYS_IN_YEAR)
     end_date = check_date + timedelta(days=DAYS_IN_YEAR)
@@ -154,4 +156,8 @@ def is_planet_in_combust(
         longitude,
     )
 
-    return any(period_start <= check_date <= period_end for period_start, period_end in combust_periods)
+    for period_start, period_end in combust_periods:
+        if period_start <= check_date <= period_end:
+            return (True, period_start, period_end)
+
+    return (False, None, None)
