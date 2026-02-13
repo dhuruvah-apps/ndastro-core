@@ -11,6 +11,7 @@ A modern Vedic astrology calculation engine for Python, providing accurate astro
 🌍 **Planetary Calculations**
 - Real-time planetary positions (tropical and sidereal)
 - Retrograde motion detection with period tracking
+- Planetary combustion calculations
 - Support for all major planets including Rahu and Ketu
 
 🌅 **Astronomical Events**

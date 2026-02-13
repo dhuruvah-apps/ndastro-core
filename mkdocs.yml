@@ -9,30 +9,54 @@ edit_uri: edit/main/docs/
 
 theme:
   name: material
+  custom_dir: docs/overrides
   palette:
-    # Palette toggle for light mode
-    - scheme: default
-      primary: indigo
-      accent: indigo
-      toggle:
-        icon: material/brightness-7
-        name: Switch to dark mode
-    # Palette toggle for dark mode
-    - scheme: slate
-      primary: indigo
-      accent: indigo
-      toggle:
-        icon: material/brightness-4
-        name: Switch to light mode
+  - media: "(prefers-color-scheme)"
+    toggle:
+      icon: material/lightbulb-auto
+      name: Switch to light mode
+  - media: '(prefers-color-scheme: light)'
+    scheme: default
+    primary: blue grey
+    accent: teal
+    toggle:
+      icon: material/lightbulb
+      name: Switch to dark mode
+  - media: '(prefers-color-scheme: dark)'
+    scheme: slate
+    primary: blue grey
+    accent: teal
+    toggle:
+      icon: material/lightbulb-outline
+      name: Switch to system preference
   features:
-    - navigation.tabs
-    - navigation.sections
-    - navigation.expand
-    - navigation.top
-    - search.suggest
-    - search.highlight
-    - content.code.copy
-    - content.code.annotate
+  - content.code.annotate
+  - content.code.copy
+  # - content.code.select
+  - content.footnote.tooltips
+  - navigation.tabs
+  - content.tabs.link
+  - navigation.tabs.sticky
+  - content.tooltips
+  - navigation.footer
+  - navigation.indexes
+  - navigation.instant
+  - navigation.instant.prefetch
+  # - navigation.instant.preview
+  - navigation.instant.progress
+  - navigation.path
+  - navigation.top
+  - navigation.tracking
+  - search.highlight
+  - search.share
+  - search.suggest
+  - toc.follow
+
+  icon:
+    repo: fontawesome/brands/github-alt
+  logo: /assets/images/logo.svg
+  favicon: img/icon.ico
+  language: en
 
 plugins:
   - search
@@ -74,9 +98,11 @@ nav:
       - Planet Positions: guide/planets.md
       - Sunrise & Sunset: guide/sunrise-sunset.md
       - Retrograde Periods: guide/retrograde.md
+      - Planetary Combustion: guide/combustion.md
   - API Reference:
       - Core: api/core.md
       - Ayanamsa: api/ayanamsa.md
+      - Combustion: api/combustion.md
       - Utils: api/utils.md
       - Enums: api/enums.md
   - Contributing: contributing.md
