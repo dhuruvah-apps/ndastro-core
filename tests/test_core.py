@@ -383,7 +383,7 @@ class TestIsPlanetInRetrograde:
         latitude = 12.97  # Bengaluru
         longitude = 77.59
 
-        is_retrograde, start_date, end_date = is_planet_in_retrograde(check_date, Planets.MERCURY.code, latitude, longitude)
+        is_retrograde, start_date, end_date = is_planet_in_retrograde(check_date, Planets.MERCURY.astronomical_code, latitude, longitude)
 
         assert is_retrograde is True
         assert start_date is not None
@@ -398,7 +398,7 @@ class TestIsPlanetInRetrograde:
         latitude = 28.6139  # New Delhi
         longitude = 77.2090
 
-        is_retrograde, start_date, end_date = is_planet_in_retrograde(check_date, Planets.MERCURY.code, latitude, longitude)
+        is_retrograde, start_date, end_date = is_planet_in_retrograde(check_date, Planets.MERCURY.astronomical_code, latitude, longitude)
 
         assert is_retrograde is False
         assert start_date is None
@@ -411,7 +411,7 @@ class TestIsPlanetInRetrograde:
         latitude = 28.6139
         longitude = 77.2090
 
-        is_retrograde, start_date, end_date = is_planet_in_retrograde(check_date, Planets.SUN.code, latitude, longitude)
+        is_retrograde, start_date, end_date = is_planet_in_retrograde(check_date, Planets.SUN.astronomical_code, latitude, longitude)
 
         assert is_retrograde is False
         assert start_date is None
@@ -424,7 +424,7 @@ class TestIsPlanetInRetrograde:
         latitude = 28.6139
         longitude = 77.2090
 
-        is_retrograde, start_date, end_date = is_planet_in_retrograde(check_date, Planets.MOON.code, latitude, longitude)
+        is_retrograde, start_date, end_date = is_planet_in_retrograde(check_date, Planets.MOON.astronomical_code, latitude, longitude)
 
         assert is_retrograde is False
         assert start_date is None

@@ -24,7 +24,7 @@ from ndastro_engine.constants import (
 from ndastro_engine.core import ts
 
 
-def get_lahiri_ayanamsa(date: datetime.datetime) -> float:
+def _get_lahiri_ayanamsa(date: datetime.datetime) -> float:
     """Calculate the Lahiri Ayanamsa for a given date."""
     # Constants in the Lahiri Ayanamsa formula
     c0 = AYANAMSA_AT_J2000  # Constant term adjusted for J2000 epoch
@@ -37,7 +37,7 @@ def get_lahiri_ayanamsa(date: datetime.datetime) -> float:
     return c0 + c1 * b6 + c2 * (b6**2)
 
 
-def get_raman_ayanamsa(date: datetime.datetime) -> float:
+def _get_raman_ayanamsa(date: datetime.datetime) -> float:
     """Calculate the Raman Ayanamsa for a given date."""
     # Constants in the Raman Ayanamsa formula
     # At J2000 (2000-01-01 12:00), Raman ayanamsa = 22:24:44 = 22.412222°
@@ -52,7 +52,7 @@ def get_raman_ayanamsa(date: datetime.datetime) -> float:
     return c0 + c1 * b6 + c2 * (b6**2)
 
 
-def get_kali_ayanamsa(date: datetime.datetime) -> float:
+def _get_kali_ayanamsa(date: datetime.datetime) -> float:
     """Calculate the Kali Ayanamsa for a given date."""
     # Constants in the Kali Ayanamsa formula
     c0 = 27.4  # Constant term
@@ -65,7 +65,7 @@ def get_kali_ayanamsa(date: datetime.datetime) -> float:
     return c0 + c1 * b6 + c2 * (b6**2)
 
 
-def get_krishnamurti_new_ayanamsa(date: datetime.datetime) -> float:
+def _get_krishnamurti_new_ayanamsa(date: datetime.datetime) -> float:
     """Calculate the Krishnamurti Ayanamsa for a given date."""
     # Constants in the Krishnamurti Ayanamsa formula
     # At J2000 (2000-01-01), KP ayanamsa = 23:45:00 = 23.75°
@@ -80,7 +80,7 @@ def get_krishnamurti_new_ayanamsa(date: datetime.datetime) -> float:
     return c0 + c1 * b6 + c2 * (b6**2)
 
 
-def get_krishnamurti_old_ayanamsa(date: datetime.datetime) -> float:
+def _get_krishnamurti_old_ayanamsa(date: datetime.datetime) -> float:
     """Calculate the Krishnamurti Old Ayanamsa for a given date."""
     # Constants in the Krishnamurti Old Ayanamsa formula
     # KP Old is 15 seconds (0.0041666667°) less than KP New
@@ -96,7 +96,7 @@ def get_krishnamurti_old_ayanamsa(date: datetime.datetime) -> float:
     return c0 + c1 * b6 + c2 * (b6**2)
 
 
-def get_fagan_bradley_ayanamsa(date: datetime.datetime) -> float:
+def _get_fagan_bradley_ayanamsa(date: datetime.datetime) -> float:
     """Calculate the Fagan-Bradley Ayanamsa for a given date."""
     # Constants in the Fagan-Bradley Ayanamsa formula
     # At J2000 (2000-01-01 12:00), Fagan-Bradley ayanamsa = 24:44:00 = 24.733333°
@@ -111,7 +111,7 @@ def get_fagan_bradley_ayanamsa(date: datetime.datetime) -> float:
     return c0 + c1 * b6 + c2 * (b6**2)
 
 
-def get_janma_ayanamsa(date: datetime.datetime) -> float:
+def _get_janma_ayanamsa(date: datetime.datetime) -> float:
     """Calculate the Janma Ayanamsa for a given date."""
     # Constants in the Janma Ayanamsa formula
     c0 = 22.4602  # Constant term
@@ -124,7 +124,7 @@ def get_janma_ayanamsa(date: datetime.datetime) -> float:
     return c0 + c1 * b6 + c2 * (b6**2)
 
 
-def get_true_ayanamsa(date: datetime.datetime) -> float:
+def _get_true_ayanamsa(date: datetime.datetime) -> float:
     """Calculate the True Ayanamsa for a given date."""
     # Constants in the True Ayanamsa formula
     c0 = 24.0422  # Constant term
@@ -137,7 +137,7 @@ def get_true_ayanamsa(date: datetime.datetime) -> float:
     return c0 + c1 * b6 + c2 * (b6**2)
 
 
-def get_madhava_ayanamsa(date: datetime.datetime) -> float:
+def _get_madhava_ayanamsa(date: datetime.datetime) -> float:
     """Calculate the Madhava Ayanamsa for a given date."""
     # Constants in the Madhava Ayanamsa formula
     c0 = 23.8958  # Constant term
@@ -150,7 +150,7 @@ def get_madhava_ayanamsa(date: datetime.datetime) -> float:
     return c0 + c1 * b6 + c2 * (b6**2)
 
 
-def get_vishnu_ayanamsa(date: datetime.datetime) -> float:
+def _get_vishnu_ayanamsa(date: datetime.datetime) -> float:
     """Calculate the Vishnu Ayanamsa for a given date."""
     # Constants in the Vishnu Ayanamsa formula
     c0 = 24.0084  # Constant term
@@ -163,7 +163,7 @@ def get_vishnu_ayanamsa(date: datetime.datetime) -> float:
     return c0 + c1 * b6 + c2 * (b6**2)
 
 
-def get_yukteshwar_ayanamsa(date: datetime.datetime) -> float:
+def _get_yukteshwar_ayanamsa(date: datetime.datetime) -> float:
     """Calculate the Yukteshwar Ayanamsa for a given date."""
     # Constants in the Yukteshwar Ayanamsa formula
     # At J2000 (2000-01-01), Yukteshwar ayanamsa = 22:28:00 = 22.466667°
@@ -178,7 +178,7 @@ def get_yukteshwar_ayanamsa(date: datetime.datetime) -> float:
     return c0 + c1 * b6 + c2 * (b6**2)
 
 
-def get_suryasiddhanta_ayanamsa(date: datetime.datetime) -> float:
+def _get_suryasiddhanta_ayanamsa(date: datetime.datetime) -> float:
     """Calculate the Suryasiddhanta Ayanamsa for a given date."""
     # Constants in the Suryasiddhanta Ayanamsa formula
     c0 = 24.0  # Constant term
@@ -191,7 +191,7 @@ def get_suryasiddhanta_ayanamsa(date: datetime.datetime) -> float:
     return c0 + c1 * b6 + c2 * (b6**2)
 
 
-def get_aryabhatta_ayanamsa(date: datetime.datetime) -> float:
+def _get_aryabhatta_ayanamsa(date: datetime.datetime) -> float:
     """Calculate the Aryabhatta Ayanamsa for a given date."""
     # Constants in the Aryabhatta Ayanamsa formula
     c0 = 23.7  # Constant term
@@ -204,7 +204,7 @@ def get_aryabhatta_ayanamsa(date: datetime.datetime) -> float:
     return c0 + c1 * b6 + c2 * (b6**2)
 
 
-def get_ushashasi_ayanamsa(date: datetime.datetime) -> float:
+def _get_ushashasi_ayanamsa(date: datetime.datetime) -> float:
     """Calculate the Ushashasi Ayanamsa for a given date."""
     # Constants in the Ushashasi Ayanamsa formula
     # At J2000 (2000-01-01), Ushashasi ayanamsa = 20:03:00 = 20.05°
@@ -219,7 +219,7 @@ def get_ushashasi_ayanamsa(date: datetime.datetime) -> float:
     return c0 + c1 * b6 + c2 * (b6**2)
 
 
-def get_true_citra_ayanamsa(date: datetime.datetime) -> float:
+def _get_true_citra_ayanamsa(date: datetime.datetime) -> float:
     """Calculate the True Citra Ayanamsa for a given date."""
     # Constants in the True Citra Ayanamsa formula
     # At J2000 (2000-01-01), True Citra ayanamsa = 23:50:00 = 23.833333°
@@ -234,7 +234,7 @@ def get_true_citra_ayanamsa(date: datetime.datetime) -> float:
     return c0 + c1 * b6 + c2 * (b6**2)
 
 
-def get_true_revati_ayanamsa(date: datetime.datetime) -> float:
+def _get_true_revati_ayanamsa(date: datetime.datetime) -> float:
     """Calculate the True Revati Ayanamsa for a given date."""
     # Constants in the True Revati Ayanamsa formula
     # At J2000 (2000-01-01), True Revati ayanamsa = 20:02:00 = 20.033333°
@@ -249,7 +249,7 @@ def get_true_revati_ayanamsa(date: datetime.datetime) -> float:
     return c0 + c1 * b6 + c2 * (b6**2)
 
 
-def get_true_pusya_ayanamsa(date: datetime.datetime) -> float:
+def _get_true_pusya_ayanamsa(date: datetime.datetime) -> float:
     """Calculate the True Pusya Ayanamsa for a given date."""
     # Constants in the True Pusya Ayanamsa formula
     c0 = 24.1  # Constant term
@@ -260,6 +260,45 @@ def get_true_pusya_ayanamsa(date: datetime.datetime) -> float:
     b6 = _calculate_b6((date.year, date.month, date.day))
 
     return c0 + c1 * b6 + c2 * (b6**2)
+
+
+def get_ayanamsa(date: datetime.datetime, system: str) -> float:
+    """Calculate the ayanamsa for a given date and system.
+
+    Args:
+        date (datetime): The date for which to calculate the ayanamsa.
+        system (str): The ayanamsa system to use (e.g., "lahiri", "raman", "kali", etc.).
+
+    Returns:
+        float: The calculated ayanamsa in degrees.
+
+    """
+    ayanamsa_systems = {
+        "lahiri": _get_lahiri_ayanamsa,
+        "raman": _get_raman_ayanamsa,
+        "kali": _get_kali_ayanamsa,
+        "krishnamurti_new": _get_krishnamurti_new_ayanamsa,
+        "krishnamurti_old": _get_krishnamurti_old_ayanamsa,
+        "fagan_bradley": _get_fagan_bradley_ayanamsa,
+        "janma": _get_janma_ayanamsa,
+        "true": _get_true_ayanamsa,
+        "madhava": _get_madhava_ayanamsa,
+        "vishnu": _get_vishnu_ayanamsa,
+        "yukteshwar": _get_yukteshwar_ayanamsa,
+        "suryasiddhanta": _get_suryasiddhanta_ayanamsa,
+        "aryabhatta": _get_aryabhatta_ayanamsa,
+        "ushashasi": _get_ushashasi_ayanamsa,
+        "true_citra": _get_true_citra_ayanamsa,
+        "true_revati": _get_true_revati_ayanamsa,
+        "true_pusya": _get_true_pusya_ayanamsa,
+    }
+
+    system = system.lower()
+    if system not in ayanamsa_systems:
+        error_message = f"Unknown ayanamsa system: {system}"
+        raise ValueError(error_message)
+
+    return ayanamsa_systems[system](date)
 
 
 def _calculate_b6(date: tuple[int, int, int]) -> float:

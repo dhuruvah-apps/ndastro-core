@@ -15,7 +15,7 @@ class RetrogradeFunction:
     """A class to determine if a planet is in retrograde motion from a given location on Earth.
 
     Attributes:
-        planet_name (str): The name of the planet to observe.
+        astronomical_code (str): The astronomical code of the planet to observe.
         latitude (float): The latitude of the observer's location.
         longitude (float): The longitude of the observer's location.
         step_days (int): The number of days to step back for comparison (default is 7).
@@ -27,16 +27,16 @@ class RetrogradeFunction:
 
     """
 
-    def __init__(self, planet_name: str, latitude: float, longitude: float) -> None:
+    def __init__(self, astronomical_code: str, latitude: float, longitude: float) -> None:
         """Initialize a new instance of the retrograde class.
 
         Args:
-            planet_name (str): The name of the planet.
+            astronomical_code (str): The astronomical code of the planet.
             latitude (float): The latitude coordinate.
             longitude (float): The longitude coordinate.
 
         """
-        self.planet_name = planet_name
+        self.astronomical_code = astronomical_code
         self.latitude = latitude
         self.longitude = longitude
         self.step_days = 7
@@ -55,8 +55,12 @@ class RetrogradeFunction:
             bool: True if the planet is in retrograde motion, False otherwise.
 
         """
-        lon_now = get_planet_position(Planets.from_code(self.planet_name), self.latitude, self.longitude, cast("datetime", t.utc_datetime()))
-        lon_prev = get_planet_position(Planets.from_code(self.planet_name), self.latitude, self.longitude, cast("datetime", (t - 1).utc_datetime()))
+        lon_now = get_planet_position(
+            Planets.from_astronomical_code(self.astronomical_code), self.latitude, self.longitude, cast("datetime", t.utc_datetime())
+        )
+        lon_prev = get_planet_position(
+            Planets.from_astronomical_code(self.astronomical_code), self.latitude, self.longitude, cast("datetime", (t - 1).utc_datetime())
+        )
 
         return cast("float", lon_now.longitude) < cast(
             "float",
@@ -65,14 +69,14 @@ class RetrogradeFunction:
 
 
 def __get_retrograde_function(
-    planet_name: str,
+    astronomical_code: str,
     latitude: float,
     longitude: float,
 ) -> RetrogradeFunction:
     """Create a RetrogradeFunction instance for a given planet and location.
 
     Args:
-        planet_name (str): The name of the planet.
+        astronomical_code (str): The astronomical code of the planet.
         latitude (float): The latitude of the location.
         longitude (float): The longitude of the location.
 
@@ -80,13 +84,13 @@ def __get_retrograde_function(
         RetrogradeFunction: An instance of RetrogradeFunction for the specified planet and location.
 
     """
-    return RetrogradeFunction(planet_name, latitude, longitude)
+    return RetrogradeFunction(astronomical_code, latitude, longitude)
 
 
 def find_retrograde_periods(
     start_date: datetime,
     end_date: datetime,
-    planet_name: str,
+    astronomical_code: str,
     latitude: float,
     longitude: float,
 ) -> list[tuple[datetime, datetime]]:
@@ -95,7 +99,7 @@ def find_retrograde_periods(
     Args:
         start_date (datetime): The start date of the period to check for retrograde motion.
         end_date (datetime): The end date of the period to check for retrograde motion.
-        planet_name (str): The name of the planet to check for retrograde motion.
+        astronomical_code (str): The astronomical code of the planet to check for retrograde motion.
         latitude (float): The latitude of the observation location.
         longitude (float): The longitude of the observation location.
 
@@ -111,7 +115,7 @@ def find_retrograde_periods(
     times, values = find_discrete(
         t0,
         t1,
-        __get_retrograde_function(planet_name, latitude, longitude),
+        __get_retrograde_function(astronomical_code, latitude, longitude),
     )
     retrograde_periods = []
     in_retrograde = False
@@ -134,7 +138,7 @@ def find_retrograde_periods(
 
 def is_planet_in_retrograde(
     check_date: datetime,
-    planet_name: str,
+    astronomical_code: str,
     latitude: float,
     longitude: float,
 ) -> tuple[bool, datetime | None, datetime | None]:
@@ -142,7 +146,7 @@ def is_planet_in_retrograde(
 
     Args:
         check_date (datetime): The date to check for retrograde motion.
-        planet_name (str): The name of the planet to check.
+        astronomical_code (str): The astronomical code of the planet to check.
         latitude (float): The latitude in decimal degrees of the observation location.
         longitude (float): The longitude in decimal degrees of the observation location.
 
@@ -153,13 +157,18 @@ def is_planet_in_retrograde(
             - datetime | None: The end date of the retrograde period (None if not in retrograde).
 
     """
-    if planet_name not in [Planets.SUN.code, Planets.MOON.code, Planets.ASCENDANT.code, Planets.EMPTY.code]:
+    if astronomical_code not in [
+        Planets.SUN.astronomical_code,
+        Planets.MOON.astronomical_code,
+        Planets.ASCENDANT.astronomical_code,
+        Planets.EMPTY.astronomical_code,
+    ]:
         start_date = check_date - timedelta(days=365)
         end_date = check_date + timedelta(days=365)
         retrograde_periods = find_retrograde_periods(
             start_date,
             end_date,
-            planet_name,
+            astronomical_code,
             latitude,
             longitude,
         )

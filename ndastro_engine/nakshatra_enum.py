@@ -83,7 +83,7 @@ class Natchaththirams(Enum):
             27: "mercury",
         }
 
-        return Planets.from_code(owners[self.value])
+        return Planets.from_astronomical_code(owners[self.value])
 
     @staticmethod
     def to_string(num: int) -> str:

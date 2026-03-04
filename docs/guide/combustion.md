@@ -38,7 +38,7 @@ longitude = -74.0060
 
 is_combust, period_start, period_end = is_planet_in_combust(
     check_date=check_date,
-    planet_name=Planets.MERCURY.code,
+    planet_name=Planets.MERCURY.astronomical_code,
     latitude=latitude,
     longitude=longitude
 )
@@ -74,7 +74,7 @@ longitude = 72.8777
 combust_periods = find_combust_periods(
     start_date=start_date,
     end_date=end_date,
-    planet_name=Planets.VENUS.code,
+    planet_name=Planets.VENUS.astronomical_code,
     latitude=latitude,
     longitude=longitude
 )
@@ -112,7 +112,7 @@ print(f"Combustion status on {check_date.date()}:\n")
 for planet in planets:
     is_combust, period_start, period_end = is_planet_in_combust(
         check_date=check_date,
-        planet_name=planet.code,
+        planet_name=planet.astronomical_code,
         latitude=latitude,
         longitude=longitude
     )
@@ -155,7 +155,7 @@ start = datetime(2026, 6, 1, tzinfo=pytz.UTC)
 end = datetime(2026, 9, 30, tzinfo=pytz.UTC)
 lat, lon = 35.6762, 139.6503  # Tokyo
 
-combust_periods = find_combust_periods(start, end, Planets.MERCURY.code, lat, lon)
+combust_periods = find_combust_periods(start, end, Planets.MERCURY.astronomical_code, lat, lon)
 
 # Find non-combust periods
 current = start
@@ -188,11 +188,11 @@ end = datetime(2026, 12, 31, tzinfo=pytz.UTC)
 lat, lon = 40.7128, -74.0060  # New York
 
 planets = [
-    ("Mercury", Planets.MERCURY.code),
-    ("Venus", Planets.VENUS.code),
-    ("Mars", Planets.MARS.code),
-    ("Jupiter", Planets.JUPITER.code),
-    ("Saturn", Planets.SATURN.code)
+    ("Mercury", Planets.MERCURY.astronomical_code),
+    ("Venus", Planets.VENUS.astronomical_code),
+    ("Mars", Planets.MARS.astronomical_code),
+    ("Jupiter", Planets.JUPITER.astronomical_code),
+    ("Saturn", Planets.SATURN.astronomical_code)
 ]
 
 print("Total combust days in 2026:\n")
@@ -214,7 +214,7 @@ check_date = datetime(2026, 3, 15, 12, 0, 0, tzinfo=pytz.UTC)
 lat, lon = 40.7128, -74.0060  # New York
 
 is_combust, period_start, period_end = is_planet_in_combust(
-    check_date, Planets.SATURN.code, lat, lon
+    check_date, Planets.SATURN.astronomical_code, lat, lon
 )
 
 if is_combust:

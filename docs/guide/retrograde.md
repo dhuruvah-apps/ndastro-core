@@ -26,7 +26,7 @@ check_date = datetime(2023, 12, 20, 12, 0, 0)
 # Check Mercury retrograde
 is_retro, start_date, end_date = is_planet_in_retrograde(
     check_date,
-    Planets.MERCURY.code,
+    Planets.MERCURY.astronomical_code,
     latitude,
     longitude
 )
@@ -59,7 +59,7 @@ check_date = datetime(2024, 2, 15, 12, 0, 0)
 
 is_retro, start, end = is_planet_in_retrograde(
     check_date,
-    Planets.VENUS.code,
+    Planets.VENUS.astronomical_code,
     latitude,
     longitude
 )
@@ -90,7 +90,7 @@ longitude = 77.2090
 periods = find_retrograde_periods(
     start_date,
     end_date,
-    Planets.MERCURY.code,
+    Planets.MERCURY.astronomical_code,
     latitude,
     longitude
 )
@@ -132,7 +132,7 @@ print(f"Retrograde status on {check_date.strftime('%Y-%m-%d')}:\n")
 for planet in planets:
     is_retro, start, end = is_planet_in_retrograde(
         check_date,
-        planet.code,
+        planet.astronomical_code,
         latitude,
         longitude
     )
@@ -161,7 +161,7 @@ check_date = datetime(2024, 6, 15, 12, 0, 0)
 # Sun never goes retrograde
 is_retro, _, _ = is_planet_in_retrograde(
     check_date,
-    Planets.SUN.code,
+    Planets.SUN.astronomical_code,
     latitude,
     longitude
 )
@@ -170,7 +170,7 @@ print(f"Sun retrograde: {is_retro}")  # Always False
 # Moon never goes retrograde
 is_retro, _, _ = is_planet_in_retrograde(
     check_date,
-    Planets.MOON.code,
+    Planets.MOON.astronomical_code,
     latitude,
     longitude
 )
@@ -208,7 +208,7 @@ end = datetime(2024, 12, 31, 23, 59, 59)
 periods = find_retrograde_periods(
     start,
     end,
-    Planets.MERCURY.code,
+    Planets.MERCURY.astronomical_code,
     28.6139,
     77.2090
 )
@@ -250,7 +250,7 @@ retrograde_planets = []
 for planet in planets_to_check:
     is_retro, _, _ = is_planet_in_retrograde(
         birth_datetime,
-        planet.code,
+        planet.astronomical_code,
         birth_latitude,
         birth_longitude
     )
@@ -287,7 +287,7 @@ for month in range(1, 13):
     for planet in planets:
         is_retro, start, end = is_planet_in_retrograde(
             check_date,
-            planet.code,
+            planet.astronomical_code,
             latitude,
             longitude
         )
@@ -312,7 +312,7 @@ end = datetime(2024, 12, 31, 23, 59, 59)
 periods = find_retrograde_periods(
     start,
     end,
-    Planets.JUPITER.code,
+    Planets.JUPITER.astronomical_code,
     28.6139,
     77.2090
 )
@@ -343,7 +343,7 @@ longitude = Angle(degrees=77.2090)
 # Cached for efficiency
 is_retro, start, end = is_planet_in_retrograde(
     check_date,
-    Planets.SATURN.code,
+    Planets.SATURN.astronomical_code,
     latitude,
     longitude
 )

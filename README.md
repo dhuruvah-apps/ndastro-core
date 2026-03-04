@@ -86,20 +86,15 @@ print(f"Sunset: {sunset}")
 
 ```python
 from datetime import datetime
-from ndastro_engine.ayanamsa import (
-    get_lahiri_ayanamsa,
-    get_raman_ayanamsa,
-    get_krishnamurti_new_ayanamsa,
-    get_fagan_bradley_ayanamsa
-)
+from ndastro_engine.ayanamsa import get_ayanamsa
 
 # Calculate ayanamsa for a specific date
 date = datetime(2026, 1, 15, 12, 0, 0)
 
-lahiri = get_lahiri_ayanamsa(date)
-raman = get_raman_ayanamsa(date)
-kp = get_krishnamurti_new_ayanamsa(date)
-fagan = get_fagan_bradley_ayanamsa(date)
+lahiri = get_ayanamsa(date, "lahiri")
+raman = get_ayanamsa(date, "raman")
+kp = get_ayanamsa(date, "krishnamurti_new")
+fagan = get_ayanamsa(date, "fagan_bradley")
 
 print(f"Lahiri Ayanamsa: {lahiri:.4f}°")
 print(f"Raman Ayanamsa: {raman:.4f}°")

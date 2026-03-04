@@ -8,6 +8,31 @@ In Vedic astrology, planetary positions are calculated using the sidereal zodiac
 
 The ayanamsa value represents the angular offset between these two systems at any given time.
 
+## Basic Usage
+
+Use the `get_ayanamsa()` function with a date and system name:
+
+```python
+from datetime import datetime
+from ndastro_engine.ayanamsa import get_ayanamsa
+
+date = datetime(2026, 1, 11, 12, 0, 0)
+
+# Calculate Lahiri ayanamsa
+lahiri = get_ayanamsa(date, "lahiri")
+print(f"Lahiri: {lahiri:.6f}°")
+# Output: Lahiri: 24.260000°
+
+# Calculate other systems
+raman = get_ayanamsa(date, "raman")
+kp_new = get_ayanamsa(date, "krishnamurti_new")
+fagan = get_ayanamsa(date, "fagan_bradley")
+
+print(f"Raman: {raman:.6f}°")
+print(f"KP New: {kp_new:.6f}°")
+print(f"Fagan-Bradley: {fagan:.6f}°")
+```
+
 ## Available Ayanamsa Systems
 
 ndastro-engine supports 16 different ayanamsa calculation methods:
@@ -19,26 +44,23 @@ The most widely used ayanamsa in Indian astrology, officially adopted by the Ind
 
 ```python
 from datetime import datetime
-from ndastro_engine.ayanamsa import get_lahiri_ayanamsa
+from ndastro_engine.ayanamsa import get_ayanamsa
 
 date = datetime(2026, 1, 11, 12, 0, 0)
-ayanamsa = get_lahiri_ayanamsa(date)
+ayanamsa = get_ayanamsa(date, "lahiri")
 print(f"Lahiri: {ayanamsa:.6f}°")
-# Output: Lahiri: 24.260000°
 ```
 
 #### Krishnamurti (KP) Systems
 Two variants used in the Krishnamurti Paddhati system.
 
 ```python
-from ndastro_engine.ayanamsa import (
-    get_krishnamurti_new_ayanamsa,
-    get_krishnamurti_old_ayanamsa
-)
+from datetime import datetime
+from ndastro_engine.ayanamsa import get_ayanamsa
 
 date = datetime(2026, 1, 11, 12, 0, 0)
-kp_new = get_krishnamurti_new_ayanamsa(date)
-kp_old = get_krishnamurti_old_ayanamsa(date)
+kp_new = get_ayanamsa(date, "krishnamurti_new")
+kp_old = get_ayanamsa(date, "krishnamurti_old")
 
 print(f"KP New: {kp_new:.6f}°")
 print(f"KP Old: {kp_old:.6f}°")
@@ -48,9 +70,11 @@ print(f"KP Old: {kp_old:.6f}°")
 Used by B.V. Raman and his followers.
 
 ```python
-from ndastro_engine.ayanamsa import get_raman_ayanamsa
+from datetime import datetime
+from ndastro_engine.ayanamsa import get_ayanamsa
 
-ayanamsa = get_raman_ayanamsa(datetime(2026, 1, 11, 12, 0, 0))
+date = datetime(2026, 1, 11, 12, 0, 0)
+ayanamsa = get_ayanamsa(date, "raman")
 print(f"Raman: {ayanamsa:.6f}°")
 ```
 
@@ -58,26 +82,28 @@ print(f"Raman: {ayanamsa:.6f}°")
 Western sidereal astrology system.
 
 ```python
-from ndastro_engine.ayanamsa import get_fagan_bradley_ayanamsa
+from datetime import datetime
+from ndastro_engine.ayanamsa import get_ayanamsa
 
-ayanamsa = get_fagan_bradley_ayanamsa(datetime(2026, 1, 11, 12, 0, 0))
+date = datetime(2026, 1, 11, 12, 0, 0)
+ayanamsa = get_ayanamsa(date, "fagan_bradley")
 print(f"Fagan-Bradley: {ayanamsa:.6f}°")
 ```
 
 ### Traditional Systems
 
 ```python
-from ndastro_engine import ayanamsa
 from datetime import datetime
+from ndastro_engine.ayanamsa import get_ayanamsa
 
 date = datetime(2026, 1, 11, 12, 0, 0)
 
 # Traditional Indian systems
-kali = ayanamsa.get_kali_ayanamsa(date)
-janma = ayanamsa.get_janma_ayanamsa(date)
-yukteshwar = ayanamsa.get_yukteshwar_ayanamsa(date)
-suryasiddhanta = ayanamsa.get_suryasiddhanta_ayanamsa(date)
-aryabhatta = ayanamsa.get_aryabhatta_ayanamsa(date)
+kali = get_ayanamsa(date, "kali")
+janma = get_ayanamsa(date, "janma")
+yukteshwar = get_ayanamsa(date, "yukteshwar")
+suryasiddhanta = get_ayanamsa(date, "suryasiddhanta")
+aryabhatta = get_ayanamsa(date, "aryabhatta")
 
 print(f"Kali: {kali:.6f}°")
 print(f"Janma: {janma:.6f}°")
@@ -87,14 +113,15 @@ print(f"Yukteshwar: {yukteshwar:.6f}°")
 ### Star-Based Systems
 
 ```python
-from ndastro_engine import ayanamsa
+from datetime import datetime
+from ndastro_engine.ayanamsa import get_ayanamsa
 
 date = datetime(2026, 1, 11, 12, 0, 0)
 
 # Star-based calculations
-true_citra = ayanamsa.get_true_citra_ayanamsa(date)
-true_revati = ayanamsa.get_true_revati_ayanamsa(date)
-true_pusya = ayanamsa.get_true_pusya_ayanamsa(date)
+true_citra = get_ayanamsa(date, "true_citra")
+true_revati = get_ayanamsa(date, "true_revati")
+true_pusya = get_ayanamsa(date, "true_pusya")
 
 print(f"True Citra: {true_citra:.6f}°")
 print(f"True Revati: {true_revati:.6f}°")
@@ -104,38 +131,39 @@ print(f"True Pusya: {true_pusya:.6f}°")
 ### Other Systems
 
 ```python
-from ndastro_engine import ayanamsa
+from datetime import datetime
+from ndastro_engine.ayanamsa import get_ayanamsa
 
 date = datetime(2026, 1, 11, 12, 0, 0)
 
 # Additional systems
-true = ayanamsa.get_true_ayanamsa(date)
-madhava = ayanamsa.get_madhava_ayanamsa(date)
-vishnu = ayanamsa.get_vishnu_ayanamsa(date)
-ushashasi = ayanamsa.get_ushashasi_ayanamsa(date)
+true = get_ayanamsa(date, "true")
+madhava = get_ayanamsa(date, "madhava")
+vishnu = get_ayanamsa(date, "vishnu")
+ushashasi = get_ayanamsa(date, "ushashasi")
 ```
 
-## Complete List of Functions
+## Complete List of System Names
 
-| Function | Description |
-|----------|-------------|
-| `get_lahiri_ayanamsa()` | Lahiri (Chitrapaksha) ayanamsa |
-| `get_krishnamurti_new_ayanamsa()` | KP New (0°0'0" at 291 CE) |
-| `get_krishnamurti_old_ayanamsa()` | KP Old (15" less than KP New) |
-| `get_raman_ayanamsa()` | B.V. Raman's ayanamsa |
-| `get_fagan_bradley_ayanamsa()` | Fagan-Bradley (Western sidereal) |
-| `get_kali_ayanamsa()` | Kali (0° at Kali Yuga start) |
-| `get_janma_ayanamsa()` | Janma system |
-| `get_yukteshwar_ayanamsa()` | Sri Yukteshwar's system |
-| `get_suryasiddhanta_ayanamsa()` | Surya Siddhanta |
-| `get_aryabhatta_ayanamsa()` | Aryabhatta system |
-| `get_true_citra_ayanamsa()` | Based on Citra (Spica) star |
-| `get_true_revati_ayanamsa()` | Based on Revati (ζ Piscium) star |
-| `get_true_pusya_ayanamsa()` | Based on Pusya nakshatra |
-| `get_true_ayanamsa()` | True ayanamsa |
-| `get_madhava_ayanamsa()` | Madhava system |
-| `get_vishnu_ayanamsa()` | Vishnu system |
-| `get_ushashasi_ayanamsa()` | Ushashasi system |
+| System Name | Description |
+|-------------|-------------|
+| `lahiri` | Lahiri (Chitrapaksha) ayanamsa |
+| `krishnamurti_new` | KP New (0°0'0" at 291 CE) |
+| `krishnamurti_old` | KP Old (15" less than KP New) |
+| `raman` | B.V. Raman's ayanamsa |
+| `fagan_bradley` | Fagan-Bradley (Western sidereal) |
+| `kali` | Kali (0° at Kali Yuga start) |
+| `janma` | Janma system |
+| `yukteshwar` | Sri Yukteshwar's system |
+| `suryasiddhanta` | Surya Siddhanta |
+| `aryabhatta` | Aryabhatta system |
+| `true_citra` | Based on Citra (Spica) star |
+| `true_revati` | Based on Revati (ζ Piscium) star |
+| `true_pusya` | Based on Pusya nakshatra |
+| `true` | True ayanamsa |
+| `madhava` | Madhava system |
+| `vishnu` | Vishnu system |
+| `ushashasi` | Ushashasi system |
 
 ## Understanding the Calculations
 
@@ -155,20 +183,16 @@ Where:
 
 ```python
 from datetime import datetime
-from ndastro_engine import ayanamsa
+from ndastro_engine.ayanamsa import get_ayanamsa
 
 date = datetime(2026, 1, 11, 12, 0, 0)
 
 # Compare popular systems
-systems = {
-    "Lahiri": ayanamsa.get_lahiri_ayanamsa(date),
-    "KP New": ayanamsa.get_krishnamurti_new_ayanamsa(date),
-    "Raman": ayanamsa.get_raman_ayanamsa(date),
-    "Fagan-Bradley": ayanamsa.get_fagan_bradley_ayanamsa(date),
-}
+systems = ["lahiri", "krishnamurti_new", "raman", "fagan_bradley"]
 
-for name, value in systems.items():
-    print(f"{name:15s}: {value:8.4f}°")
+for system in systems:
+    value = get_ayanamsa(date, system)
+    print(f"{system:20s}: {value:8.4f}°")
 ```
 
 ## Historical Values
@@ -177,7 +201,7 @@ The ayanamsa value changes over time due to precession:
 
 ```python
 from datetime import datetime
-from ndastro_engine.ayanamsa import get_lahiri_ayanamsa
+from ndastro_engine.ayanamsa import get_ayanamsa
 
 # Historical dates
 dates = [
@@ -189,7 +213,7 @@ dates = [
 ]
 
 for date in dates:
-    ayanamsa = get_lahiri_ayanamsa(date)
+    ayanamsa = get_ayanamsa(date, "lahiri")
     print(f"{date.year}: {ayanamsa:.4f}°")
 ```
 

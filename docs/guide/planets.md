@@ -50,17 +50,40 @@ for planet in planets:
 
 ## Planet Codes
 
-Each planet has a code used internally:
+Each planet has two code properties:
+
+### Short Codes
+
+The `code` property returns a short 2-letter code:
 
 ```python
-from ndastro_engine.enums.planet_enum import Planets
+from ndastro_engine.enums import Planets
 
-print(Planets.SUN.code)        # "sun"
-print(Planets.MOON.code)       # "moon"
-print(Planets.JUPITER.code)    # "jupiter barycenter"
-print(Planets.RAHU.code)       # "rahu"
-print(Planets.KETHU.code)      # "kethu"
+print(Planets.SUN.code)        # "SU"
+print(Planets.MOON.code)       # "MO"
+print(Planets.MERCURY.code)    # "ME"
+print(Planets.JUPITER.code)    # "JU"
+print(Planets.RAHU.code)       # "RA"
+print(Planets.KETHU.code)      # "KE"
 ```
+
+### Astronomical Codes
+
+The `astronomical_code` property returns the full Skyfield-compatible name:
+
+```python
+from ndastro_engine.enums import Planets
+
+print(Planets.SUN.astronomical_code)        # "sun"
+print(Planets.MOON.astronomical_code)       # "moon"
+print(Planets.MERCURY.astronomical_code)    # "mercury"
+print(Planets.JUPITER.astronomical_code)    # "jupiter barycenter"
+print(Planets.RAHU.astronomical_code)       # "rahu"
+print(Planets.KETHU.astronomical_code)      # "kethu"
+```
+
+!!! note
+    Use `astronomical_code` when calling combustion and retrograde functions, as they require the full astronomical name.
 
 ## Calculating Multiple Positions
 

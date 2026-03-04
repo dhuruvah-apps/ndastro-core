@@ -32,11 +32,11 @@ class Planets(IntEnum):
         return Planets(num).name if num in Planets._value2member_map_ else "empty"
 
     @staticmethod
-    def from_code(code: str) -> "Planets":
-        """Convert planet code to planet enum.
+    def from_astronomical_code(code: str) -> "Planets":
+        """Convert planet's astronomical code to planet enum.
 
         Args:
-            code (str): the planet code
+            code (str): the planet's astronomical code
 
         Returns:
             Planets: the corresponding planet enum
@@ -54,6 +54,33 @@ class Planets(IntEnum):
             "saturn barycenter": Planets.SATURN,
             "rahu": Planets.RAHU,
             "kethu": Planets.KETHU,
+        }
+
+        return planet_codes.get(code, Planets.EMPTY)
+
+    @staticmethod
+    def from_code(code: str) -> "Planets":
+        """Convert planet code to planet enum.
+
+        Args:
+            code (str): the planet code
+
+        Returns:
+            Planets: the corresponding planet enum
+
+        """
+        planet_codes = {
+            "EMPTY": Planets.EMPTY,
+            "AS": Planets.ASCENDANT,
+            "SU": Planets.SUN,
+            "MO": Planets.MOON,
+            "MA": Planets.MARS,
+            "ME": Planets.MERCURY,
+            "JU": Planets.JUPITER,
+            "VE": Planets.VENUS,
+            "SA": Planets.SATURN,
+            "RA": Planets.RAHU,
+            "KE": Planets.KETHU,
         }
 
         return planet_codes.get(code, Planets.EMPTY)

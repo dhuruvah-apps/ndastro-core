@@ -72,7 +72,7 @@ def get_planet_position(planet: Planets, lat: float, lon: float, given_time: dat
 
     eth: VectorSum = cast("VectorSum", eph["earth"])
     observer: VectorSum = eth + wgs84.latlon(latitude_degrees=lat, longitude_degrees=lon, elevation_m=914)
-    astrometric = cast("Barycentric", observer.at(t)).observe(eph[planet.code]).apparent()
+    astrometric = cast("Barycentric", observer.at(t)).observe(eph[planet.astronomical_code]).apparent()
 
     latitude, longitude, distance, speed_latitude, speed_longitude, speed_distance = astrometric.frame_latlon_and_rates(ecliptic_frame)
 

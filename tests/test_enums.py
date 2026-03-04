@@ -55,16 +55,16 @@ class TestPlanetsEnum:
     @pytest.mark.unit
     def test_planets_from_code(self) -> None:
         """Test from_code method converts planet codes to enums."""
-        assert Planets.from_code("sun") == Planets.SUN
-        assert Planets.from_code("moon") == Planets.MOON
-        assert Planets.from_code("mars barycenter") == Planets.MARS
-        assert Planets.from_code("mercury") == Planets.MERCURY
-        assert Planets.from_code("jupiter barycenter") == Planets.JUPITER
-        assert Planets.from_code("venus") == Planets.VENUS
-        assert Planets.from_code("saturn barycenter") == Planets.SATURN
-        assert Planets.from_code("rahu") == Planets.RAHU
-        assert Planets.from_code("kethu") == Planets.KETHU
-        assert Planets.from_code("invalid") == Planets.EMPTY
+        assert Planets.from_astronomical_code("sun") == Planets.SUN
+        assert Planets.from_astronomical_code("moon") == Planets.MOON
+        assert Planets.from_astronomical_code("mars barycenter") == Planets.MARS
+        assert Planets.from_astronomical_code("mercury") == Planets.MERCURY
+        assert Planets.from_astronomical_code("jupiter barycenter") == Planets.JUPITER
+        assert Planets.from_astronomical_code("venus") == Planets.VENUS
+        assert Planets.from_astronomical_code("saturn barycenter") == Planets.SATURN
+        assert Planets.from_astronomical_code("rahu") == Planets.RAHU
+        assert Planets.from_astronomical_code("kethu") == Planets.KETHU
+        assert Planets.from_astronomical_code("invalid") == Planets.EMPTY
 
     @pytest.mark.unit
     def test_planets_to_list(self) -> None:
@@ -82,18 +82,52 @@ class TestPlanetsEnum:
 
     @pytest.mark.unit
     def test_planets_code_property(self) -> None:
-        """Test code property returns correct planet codes."""
-        assert Planets.SUN.code == "sun"
-        assert Planets.MOON.code == "moon"
-        assert Planets.MARS.code == "mars barycenter"
-        assert Planets.MERCURY.code == "mercury"
-        assert Planets.JUPITER.code == "jupiter barycenter"
-        assert Planets.VENUS.code == "venus"
-        assert Planets.SATURN.code == "saturn barycenter"
-        assert Planets.RAHU.code == "rahu"
-        assert Planets.KETHU.code == "kethu"
-        assert Planets.ASCENDANT.code == "ascendant"
-        assert Planets.EMPTY.code == "empty"
+        """Test code property returns correct planet short codes."""
+        assert Planets.SUN.code == "SU"
+        assert Planets.MOON.code == "MO"
+        assert Planets.MARS.code == "MA"
+        assert Planets.MERCURY.code == "ME"
+        assert Planets.JUPITER.code == "JU"
+        assert Planets.VENUS.code == "VE"
+        assert Planets.SATURN.code == "SA"
+        assert Planets.RAHU.code == "RA"
+        assert Planets.KETHU.code == "KE"
+        assert Planets.ASCENDANT.code == "AS"
+        assert Planets.EMPTY.code == "EMPTY"
+
+    @pytest.mark.unit
+    @pytest.mark.parametrize(
+        "planet,expected_code",
+        [
+            (Planets.SUN, "SU"),
+            (Planets.MOON, "MO"),
+            (Planets.MARS, "MA"),
+            (Planets.MERCURY, "ME"),
+            (Planets.JUPITER, "JU"),
+            (Planets.VENUS, "VE"),
+            (Planets.SATURN, "SA"),
+            (Planets.RAHU, "RA"),
+            (Planets.KETHU, "KE"),
+        ],
+    )
+    def test_planets_code_property_parametrized(self, planet: Planets, expected_code: str) -> None:
+        """Test code property with all major planets."""
+        assert planet.code == expected_code
+
+    @pytest.mark.unit
+    def test_planets_astronomical_code_property(self) -> None:
+        """Test astronomical_code property returns correct astronomical codes."""
+        assert Planets.SUN.astronomical_code == "sun"
+        assert Planets.MOON.astronomical_code == "moon"
+        assert Planets.MARS.astronomical_code == "mars barycenter"
+        assert Planets.MERCURY.astronomical_code == "mercury"
+        assert Planets.JUPITER.astronomical_code == "jupiter barycenter"
+        assert Planets.VENUS.astronomical_code == "venus"
+        assert Planets.SATURN.astronomical_code == "saturn barycenter"
+        assert Planets.RAHU.astronomical_code == "rahu"
+        assert Planets.KETHU.astronomical_code == "kethu"
+        assert Planets.ASCENDANT.astronomical_code == "ascendant"
+        assert Planets.EMPTY.astronomical_code == "empty"
 
     @pytest.mark.unit
     @pytest.mark.parametrize(
@@ -110,9 +144,9 @@ class TestPlanetsEnum:
             (Planets.KETHU, "kethu"),
         ],
     )
-    def test_planets_code_property_parametrized(self, planet: Planets, expected_code: str) -> None:
-        """Test code property with all major planets."""
-        assert planet.code == expected_code
+    def test_planets_astronomical_code_property_parametrized(self, planet: Planets, expected_code: str) -> None:
+        """Test astronomical_code property with all major planets."""
+        assert planet.astronomical_code == expected_code
 
     @pytest.mark.unit
     def test_planets_color_property(self) -> None:
@@ -163,11 +197,11 @@ class TestPlanetsEnum:
 
     @pytest.mark.unit
     def test_planets_roundtrip_code_conversion(self) -> None:
-        """Test that code conversion works both ways."""
+        """Test that astronomical_code conversion works both ways."""
         for planet in Planets:
             if planet != Planets.EMPTY:
-                code = planet.code
-                converted = Planets.from_code(code)
+                code = planet.astronomical_code
+                converted = Planets.from_astronomical_code(code)
                 assert converted == planet
 
     @pytest.mark.unit

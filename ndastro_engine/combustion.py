@@ -18,11 +18,11 @@ if TYPE_CHECKING:
 earth = eph["earth"]
 
 ORB_BY_PLANET: dict[str, float] = {
-    Planets.MERCURY.code: 12.0,
-    Planets.VENUS.code: 8.0,
-    Planets.MARS.code: 17.0,
-    Planets.JUPITER.code: 11.0,
-    Planets.SATURN.code: 15.0,
+    Planets.MERCURY.astronomical_code: 12.0,
+    Planets.VENUS.astronomical_code: 8.0,
+    Planets.MARS.astronomical_code: 17.0,
+    Planets.JUPITER.astronomical_code: 11.0,
+    Planets.SATURN.astronomical_code: 15.0,
 }
 
 
@@ -51,7 +51,7 @@ class CombustFunction:
         observer = (earth + Topos(latitude=self.latitude, longitude=self.longitude)).at(t)
 
         astrometric_planet = cast("Barycentric", observer).observe(eph[self.planet_name]).apparent()
-        astrometric_sun = cast("Barycentric", observer).observe(eph[Planets.SUN.code]).apparent()
+        astrometric_sun = cast("Barycentric", observer).observe(eph[Planets.SUN.astronomical_code]).apparent()
 
         separation = astrometric_planet.separation_from(astrometric_sun).degrees
         # Return the comparison result directly (handles both scalar and array cases)
@@ -88,7 +88,13 @@ def find_combust_periods(
         List of (start, end) datetimes representing combustion periods.
 
     """
-    if planet_name in [Planets.SUN.code, Planets.ASCENDANT.code, Planets.EMPTY.code, Planets.RAHU.code, Planets.KETHU.code]:
+    if planet_name in [
+        Planets.SUN.astronomical_code,
+        Planets.ASCENDANT.astronomical_code,
+        Planets.EMPTY.astronomical_code,
+        Planets.RAHU.astronomical_code,
+        Planets.KETHU.astronomical_code,
+    ]:
         return []
 
     orb = ORB_BY_PLANET.get(planet_name)
@@ -143,7 +149,13 @@ def is_planet_in_combust(
         If the planet is not combust, the start and end datetimes will be None.
 
     """
-    if planet_name in [Planets.SUN.code, Planets.ASCENDANT.code, Planets.EMPTY.code, Planets.RAHU.code, Planets.KETHU.code]:
+    if planet_name in [
+        Planets.SUN.astronomical_code,
+        Planets.ASCENDANT.astronomical_code,
+        Planets.EMPTY.astronomical_code,
+        Planets.RAHU.astronomical_code,
+        Planets.KETHU.astronomical_code,
+    ]:
         return (False, None, None)
 
     start_date = check_date - timedelta(days=DAYS_IN_YEAR)

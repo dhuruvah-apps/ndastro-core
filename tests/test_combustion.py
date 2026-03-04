@@ -26,19 +26,19 @@ class TestOrbByPlanet:
     @pytest.mark.unit
     def test_orb_by_planet_has_correct_values(self) -> None:
         """Test that ORB_BY_PLANET has correct orb values for each planet."""
-        assert ORB_BY_PLANET[Planets.MERCURY.code] == 12.0
-        assert ORB_BY_PLANET[Planets.VENUS.code] == 8.0
-        assert ORB_BY_PLANET[Planets.MARS.code] == 17.0
-        assert ORB_BY_PLANET[Planets.JUPITER.code] == 11.0
-        assert ORB_BY_PLANET[Planets.SATURN.code] == 15.0
+        assert ORB_BY_PLANET[Planets.MERCURY.astronomical_code] == 12.0
+        assert ORB_BY_PLANET[Planets.VENUS.astronomical_code] == 8.0
+        assert ORB_BY_PLANET[Planets.MARS.astronomical_code] == 17.0
+        assert ORB_BY_PLANET[Planets.JUPITER.astronomical_code] == 11.0
+        assert ORB_BY_PLANET[Planets.SATURN.astronomical_code] == 15.0
 
     @pytest.mark.unit
     def test_orb_by_planet_excludes_special_planets(self) -> None:
         """Test that ORB_BY_PLANET excludes Sun, Moon, Rahu, Kethu."""
-        assert Planets.SUN.code not in ORB_BY_PLANET
-        assert Planets.MOON.code not in ORB_BY_PLANET
-        assert Planets.RAHU.code not in ORB_BY_PLANET
-        assert Planets.KETHU.code not in ORB_BY_PLANET
+        assert Planets.SUN.astronomical_code not in ORB_BY_PLANET
+        assert Planets.MOON.astronomical_code not in ORB_BY_PLANET
+        assert Planets.RAHU.astronomical_code not in ORB_BY_PLANET
+        assert Planets.KETHU.astronomical_code not in ORB_BY_PLANET
 
 
 class TestCombustFunction:
@@ -47,9 +47,9 @@ class TestCombustFunction:
     @pytest.mark.unit
     def test_combust_function_initialization(self) -> None:
         """Test that CombustFunction initializes correctly."""
-        func = CombustFunction(Planets.MERCURY.code, 40.7128, -74.0060, 12.0)
+        func = CombustFunction(Planets.MERCURY.astronomical_code, 40.7128, -74.0060, 12.0)
 
-        assert func.planet_name == Planets.MERCURY.code
+        assert func.planet_name == Planets.MERCURY.astronomical_code
         assert func.latitude == 40.7128
         assert func.longitude == -74.0060
         assert func.orb == 12.0
@@ -57,7 +57,7 @@ class TestCombustFunction:
     @pytest.mark.unit
     def test_combust_function_callable(self) -> None:
         """Test that CombustFunction is callable."""
-        func = CombustFunction(Planets.MERCURY.code, 40.7128, -74.0060, 12.0)
+        func = CombustFunction(Planets.MERCURY.astronomical_code, 40.7128, -74.0060, 12.0)
         t = ts.utc(2026, 2, 13, 12, 0, 0)
 
         result = func(t)
@@ -69,7 +69,7 @@ class TestCombustFunction:
     def test_combust_function_returns_true_when_within_orb(self) -> None:
         """Test that CombustFunction returns True when planet is within orb of Sun."""
         # Mercury is typically close to Sun, use a large orb to ensure combustion
-        func = CombustFunction(Planets.MERCURY.code, 40.7128, -74.0060, 30.0)
+        func = CombustFunction(Planets.MERCURY.astronomical_code, 40.7128, -74.0060, 30.0)
         t = ts.utc(2026, 2, 13, 12, 0, 0)
 
         result = func(t)
@@ -81,8 +81,8 @@ class TestCombustFunction:
     @pytest.mark.unit
     def test_combust_function_different_latitudes(self) -> None:
         """Test that CombustFunction works with different latitudes."""
-        func_north = CombustFunction(Planets.VENUS.code, 40.7128, -74.0060, 8.0)
-        func_south = CombustFunction(Planets.VENUS.code, -33.8688, 151.2093, 8.0)
+        func_north = CombustFunction(Planets.VENUS.astronomical_code, 40.7128, -74.0060, 8.0)
+        func_south = CombustFunction(Planets.VENUS.astronomical_code, -33.8688, 151.2093, 8.0)
         t = ts.utc(2026, 2, 13, 12, 0, 0)
 
         result_north = func_north(t)
@@ -102,7 +102,7 @@ class TestFindCombustPeriods:
         start = datetime(2026, 1, 1, tzinfo=pytz.UTC)
         end = datetime(2026, 12, 31, tzinfo=pytz.UTC)
 
-        result = find_combust_periods(start, end, Planets.MERCURY.code, 40.7128, -74.0060)
+        result = find_combust_periods(start, end, Planets.MERCURY.astronomical_code, 40.7128, -74.0060)
 
         assert isinstance(result, list)
 
@@ -112,7 +112,7 @@ class TestFindCombustPeriods:
         start = datetime(2026, 1, 1, tzinfo=pytz.UTC)
         end = datetime(2026, 12, 31, tzinfo=pytz.UTC)
 
-        result = find_combust_periods(start, end, Planets.VENUS.code, 40.7128, -74.0060)
+        result = find_combust_periods(start, end, Planets.VENUS.astronomical_code, 40.7128, -74.0060)
 
         if result:
             assert all(isinstance(period, tuple) for period in result)
@@ -126,7 +126,7 @@ class TestFindCombustPeriods:
         start = datetime(2026, 1, 1, tzinfo=pytz.UTC)
         end = datetime(2026, 12, 31, tzinfo=pytz.UTC)
 
-        result = find_combust_periods(start, end, Planets.SUN.code, 40.7128, -74.0060)
+        result = find_combust_periods(start, end, Planets.SUN.astronomical_code, 40.7128, -74.0060)
 
         assert result == []
 
@@ -136,7 +136,7 @@ class TestFindCombustPeriods:
         start = datetime(2026, 1, 1, tzinfo=pytz.UTC)
         end = datetime(2026, 12, 31, tzinfo=pytz.UTC)
 
-        result = find_combust_periods(start, end, Planets.RAHU.code, 40.7128, -74.0060)
+        result = find_combust_periods(start, end, Planets.RAHU.astronomical_code, 40.7128, -74.0060)
 
         assert result == []
 
@@ -146,7 +146,7 @@ class TestFindCombustPeriods:
         start = datetime(2026, 1, 1, tzinfo=pytz.UTC)
         end = datetime(2026, 12, 31, tzinfo=pytz.UTC)
 
-        result = find_combust_periods(start, end, Planets.KETHU.code, 40.7128, -74.0060)
+        result = find_combust_periods(start, end, Planets.KETHU.astronomical_code, 40.7128, -74.0060)
 
         assert result == []
 
@@ -156,7 +156,7 @@ class TestFindCombustPeriods:
         start = datetime(2026, 1, 1, tzinfo=pytz.UTC)
         end = datetime(2026, 12, 31, tzinfo=pytz.UTC)
 
-        result = find_combust_periods(start, end, Planets.ASCENDANT.code, 40.7128, -74.0060)
+        result = find_combust_periods(start, end, Planets.ASCENDANT.astronomical_code, 40.7128, -74.0060)
 
         assert result == []
 
@@ -166,7 +166,7 @@ class TestFindCombustPeriods:
         start = datetime(2026, 1, 1, tzinfo=pytz.UTC)
         end = datetime(2026, 12, 31, tzinfo=pytz.UTC)
 
-        result = find_combust_periods(start, end, Planets.EMPTY.code, 40.7128, -74.0060)
+        result = find_combust_periods(start, end, Planets.EMPTY.astronomical_code, 40.7128, -74.0060)
 
         assert result == []
 
@@ -186,7 +186,7 @@ class TestFindCombustPeriods:
         start = datetime(2026, 1, 1, tzinfo=pytz.UTC)
         end = datetime(2026, 12, 31, tzinfo=pytz.UTC)
 
-        result = find_combust_periods(start, end, Planets.MARS.code, 40.7128, -74.0060)
+        result = find_combust_periods(start, end, Planets.MARS.astronomical_code, 40.7128, -74.0060)
 
         if len(result) > 1:
             for i in range(len(result) - 1):
@@ -198,7 +198,7 @@ class TestFindCombustPeriods:
         start = datetime(2026, 1, 1, tzinfo=pytz.UTC)
         end = datetime(2026, 12, 31, tzinfo=pytz.UTC)
 
-        result = find_combust_periods(start, end, Planets.JUPITER.code, 40.7128, -74.0060)
+        result = find_combust_periods(start, end, Planets.JUPITER.astronomical_code, 40.7128, -74.0060)
 
         if result:
             for period_start, period_end in result:
@@ -210,8 +210,8 @@ class TestFindCombustPeriods:
         start = datetime(2026, 1, 1, tzinfo=pytz.UTC)
         end = datetime(2026, 6, 30, tzinfo=pytz.UTC)
 
-        result_nyc = find_combust_periods(start, end, Planets.SATURN.code, 40.7128, -74.0060)
-        result_tokyo = find_combust_periods(start, end, Planets.SATURN.code, 35.6762, 139.6503)
+        result_nyc = find_combust_periods(start, end, Planets.SATURN.astronomical_code, 40.7128, -74.0060)
+        result_tokyo = find_combust_periods(start, end, Planets.SATURN.astronomical_code, 35.6762, 139.6503)
 
         # Both should return valid lists (combustion doesn't depend heavily on location)
         assert isinstance(result_nyc, list)
@@ -223,7 +223,7 @@ class TestFindCombustPeriods:
         start = datetime(2026, 2, 13, tzinfo=pytz.UTC)
         end = datetime(2026, 2, 20, tzinfo=pytz.UTC)
 
-        result = find_combust_periods(start, end, Planets.MERCURY.code, 40.7128, -74.0060)
+        result = find_combust_periods(start, end, Planets.MERCURY.astronomical_code, 40.7128, -74.0060)
 
         assert isinstance(result, list)
 
@@ -236,7 +236,7 @@ class TestIsPlanetInCombust:
         """Test that is_planet_in_combust returns a tuple."""
         check_date = datetime(2026, 2, 13, tzinfo=pytz.UTC)
 
-        result = is_planet_in_combust(check_date, Planets.MERCURY.code, 40.7128, -74.0060)
+        result = is_planet_in_combust(check_date, Planets.MERCURY.astronomical_code, 40.7128, -74.0060)
 
         assert isinstance(result, tuple)
         assert len(result) == 3
@@ -249,7 +249,7 @@ class TestIsPlanetInCombust:
         """Test that is_planet_in_combust returns False for Sun."""
         check_date = datetime(2026, 2, 13, tzinfo=pytz.UTC)
 
-        is_combust, period_start, period_end = is_planet_in_combust(check_date, Planets.SUN.code, 40.7128, -74.0060)
+        is_combust, period_start, period_end = is_planet_in_combust(check_date, Planets.SUN.astronomical_code, 40.7128, -74.0060)
 
         assert is_combust is False
         assert period_start is None
@@ -260,7 +260,7 @@ class TestIsPlanetInCombust:
         """Test that is_planet_in_combust returns False for Rahu."""
         check_date = datetime(2026, 2, 13, tzinfo=pytz.UTC)
 
-        is_combust, period_start, period_end = is_planet_in_combust(check_date, Planets.RAHU.code, 40.7128, -74.0060)
+        is_combust, period_start, period_end = is_planet_in_combust(check_date, Planets.RAHU.astronomical_code, 40.7128, -74.0060)
 
         assert is_combust is False
         assert period_start is None
@@ -271,7 +271,7 @@ class TestIsPlanetInCombust:
         """Test that is_planet_in_combust returns False for Kethu."""
         check_date = datetime(2026, 2, 13, tzinfo=pytz.UTC)
 
-        is_combust, period_start, period_end = is_planet_in_combust(check_date, Planets.KETHU.code, 40.7128, -74.0060)
+        is_combust, period_start, period_end = is_planet_in_combust(check_date, Planets.KETHU.astronomical_code, 40.7128, -74.0060)
 
         assert is_combust is False
         assert period_start is None
@@ -282,7 +282,7 @@ class TestIsPlanetInCombust:
         """Test that is_planet_in_combust returns False for Ascendant."""
         check_date = datetime(2026, 2, 13, tzinfo=pytz.UTC)
 
-        is_combust, period_start, period_end = is_planet_in_combust(check_date, Planets.ASCENDANT.code, 40.7128, -74.0060)
+        is_combust, period_start, period_end = is_planet_in_combust(check_date, Planets.ASCENDANT.astronomical_code, 40.7128, -74.0060)
 
         assert is_combust is False
         assert period_start is None
@@ -293,7 +293,7 @@ class TestIsPlanetInCombust:
         """Test that is_planet_in_combust returns False for Empty planet."""
         check_date = datetime(2026, 2, 13, tzinfo=pytz.UTC)
 
-        is_combust, period_start, period_end = is_planet_in_combust(check_date, Planets.EMPTY.code, 40.7128, -74.0060)
+        is_combust, period_start, period_end = is_planet_in_combust(check_date, Planets.EMPTY.astronomical_code, 40.7128, -74.0060)
 
         assert is_combust is False
         assert period_start is None
@@ -305,8 +305,8 @@ class TestIsPlanetInCombust:
         date1 = datetime(2026, 1, 1, tzinfo=pytz.UTC)
         date2 = datetime(2026, 6, 1, tzinfo=pytz.UTC)
 
-        is_combust1, _, _ = is_planet_in_combust(date1, Planets.VENUS.code, 40.7128, -74.0060)
-        is_combust2, _, _ = is_planet_in_combust(date2, Planets.VENUS.code, 40.7128, -74.0060)
+        is_combust1, _, _ = is_planet_in_combust(date1, Planets.VENUS.astronomical_code, 40.7128, -74.0060)
+        is_combust2, _, _ = is_planet_in_combust(date2, Planets.VENUS.astronomical_code, 40.7128, -74.0060)
 
         # Both should be boolean
         assert isinstance(is_combust1, bool)
@@ -317,8 +317,8 @@ class TestIsPlanetInCombust:
         """Test that is_planet_in_combust works with different locations."""
         check_date = datetime(2026, 2, 13, tzinfo=pytz.UTC)
 
-        is_combust_nyc, _, _ = is_planet_in_combust(check_date, Planets.MARS.code, 40.7128, -74.0060)
-        is_combust_mumbai, _, _ = is_planet_in_combust(check_date, Planets.MARS.code, 19.0760, 72.8777)
+        is_combust_nyc, _, _ = is_planet_in_combust(check_date, Planets.MARS.astronomical_code, 40.7128, -74.0060)
+        is_combust_mumbai, _, _ = is_planet_in_combust(check_date, Planets.MARS.astronomical_code, 19.0760, 72.8777)
 
         # Both should return boolean values
         assert isinstance(is_combust_nyc, bool)
@@ -329,11 +329,11 @@ class TestIsPlanetInCombust:
         """Test that is_planet_in_combust works for all regular planets."""
         check_date = datetime(2026, 2, 13, tzinfo=pytz.UTC)
         planets = [
-            Planets.MERCURY.code,
-            Planets.VENUS.code,
-            Planets.MARS.code,
-            Planets.JUPITER.code,
-            Planets.SATURN.code,
+            Planets.MERCURY.astronomical_code,
+            Planets.VENUS.astronomical_code,
+            Planets.MARS.astronomical_code,
+            Planets.JUPITER.astronomical_code,
+            Planets.SATURN.astronomical_code,
         ]
 
         for planet in planets:
@@ -346,7 +346,7 @@ class TestIsPlanetInCombust:
     def test_is_planet_in_combust_consistency_with_find_combust_periods(self) -> None:
         """Test that is_planet_in_combust is consistent with find_combust_periods."""
         check_date = datetime(2026, 3, 15, 12, 0, 0, tzinfo=pytz.UTC)
-        planet = Planets.JUPITER.code
+        planet = Planets.JUPITER.astronomical_code
         lat, lon = 40.7128, -74.0060
 
         # Get combustion status using is_planet_in_combust
@@ -373,7 +373,7 @@ class TestIsPlanetInCombust:
         check_date = datetime(2026, 2, 13, tzinfo=pytz.UTC)
 
         for location_name, (lat, lon) in sample_coordinates.items():
-            is_combust, period_start, period_end = is_planet_in_combust(check_date, Planets.MERCURY.code, lat, lon)
+            is_combust, period_start, period_end = is_planet_in_combust(check_date, Planets.MERCURY.astronomical_code, lat, lon)
             assert isinstance(is_combust, bool), f"Failed for location {location_name}"
             assert period_start is None or isinstance(period_start, datetime), f"Failed start date for location {location_name}"
             assert period_end is None or isinstance(period_end, datetime), f"Failed end date for location {location_name}"
@@ -384,7 +384,7 @@ class TestIsPlanetInCombust:
         check_date = datetime(2026, 2, 13, tzinfo=pytz.UTC)
 
         # For planets that are never combust on this date
-        is_combust, period_start, period_end = is_planet_in_combust(check_date, Planets.JUPITER.code, 40.7128, -74.0060)
+        is_combust, period_start, period_end = is_planet_in_combust(check_date, Planets.JUPITER.astronomical_code, 40.7128, -74.0060)
 
         if not is_combust:
             # When not combust, both dates should be None
@@ -401,7 +401,7 @@ class TestIsPlanetInCombust:
     def test_is_planet_in_combust_returns_period_boundaries(self) -> None:
         """Test that returned period boundaries match find_combust_periods."""
         check_date = datetime(2026, 4, 15, 12, 0, 0, tzinfo=pytz.UTC)
-        planet = Planets.SATURN.code
+        planet = Planets.SATURN.astronomical_code
         lat, lon = 40.7128, -74.0060
 
         # Get result from is_planet_in_combust

@@ -76,7 +76,7 @@ longitude = Angle(degrees=77.2090)
 
 is_retro, start_date, end_date = is_planet_in_retrograde(
     check_date, 
-    Planets.MERCURY.code, 
+    Planets.MERCURY.astronomical_code, 
     latitude, 
     longitude
 )
@@ -93,21 +93,21 @@ ndastro-engine supports 16 different ayanamsa calculation methods:
 
 ```python
 from datetime import datetime
-from ndastro_engine import ayanamsa
+from ndastro_engine.ayanamsa import get_ayanamsa
 
 date = datetime(2026, 1, 11, 12, 0, 0)
 
 # Popular systems
-lahiri = ayanamsa.get_lahiri_ayanamsa(date)
-kp_new = ayanamsa.get_krishnamurti_new_ayanamsa(date)
-kp_old = ayanamsa.get_krishnamurti_old_ayanamsa(date)
-raman = ayanamsa.get_raman_ayanamsa(date)
-fagan_bradley = ayanamsa.get_fagan_bradley_ayanamsa(date)
+lahiri = get_ayanamsa(date, "lahiri")
+kp_new = get_ayanamsa(date, "krishnamurti_new")
+kp_old = get_ayanamsa(date, "krishnamurti_old")
+raman = get_ayanamsa(date, "raman")
+fagan_bradley = get_ayanamsa(date, "fagan_bradley")
 
 # Traditional systems
-kali = ayanamsa.get_kali_ayanamsa(date)
-yukteshwar = ayanamsa.get_yukteshwar_ayanamsa(date)
-aryabhatta = ayanamsa.get_aryabhatta_ayanamsa(date)
+kali = get_ayanamsa(date, "kali")
+yukteshwar = get_ayanamsa(date, "yukteshwar")
+aryabhatta = get_ayanamsa(date, "aryabhatta")
 
 print(f"Lahiri: {lahiri:.6f}°")
 print(f"KP New: {kp_new:.6f}°")
@@ -137,9 +137,13 @@ planets = [
     Planets.KETHU,
 ]
 
-# Get planet code
-print(Planets.JUPITER.code)  # Output: "jupiter"
-print(Planets.RAHU.code)     # Output: "rahu"
+# Get planet codes
+print(Planets.JUPITER.code)  # Output: "JU" (short code)
+print(Planets.RAHU.code)     # Output: "RA" (short code)
+
+# Get astronomical codes (for API functions)
+print(Planets.JUPITER.astronomical_code)  # Output: "jupiter barycenter"
+print(Planets.RAHU.astronomical_code)     # Output: "rahu"
 ```
 
 ## Utility Functions
