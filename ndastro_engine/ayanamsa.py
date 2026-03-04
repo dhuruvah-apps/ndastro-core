@@ -12,6 +12,7 @@ based on Julian centuries from the J2000.0 epoch.
 """
 
 import datetime
+from typing import Literal
 
 from ndastro_engine.constants import (
     AYANAMSA_AT_J2000,
@@ -262,12 +263,33 @@ def _get_true_pusya_ayanamsa(date: datetime.datetime) -> float:
     return c0 + c1 * b6 + c2 * (b6**2)
 
 
-def get_ayanamsa(date: datetime.datetime, system: str) -> float:
+def get_ayanamsa(
+    date: datetime.datetime,
+    system: Literal[
+        "lahiri",
+        "raman",
+        "kali",
+        "krishnamurti_new",
+        "krishnamurti_old",
+        "fagan_bradley",
+        "janma",
+        "true",
+        "madhava",
+        "vishnu",
+        "yukteshwar",
+        "suryasiddhanta",
+        "aryabhatta",
+        "ushashasi",
+        "true_citra",
+        "true_revati",
+        "true_pusya",
+    ],
+) -> float:
     """Calculate the ayanamsa for a given date and system.
 
     Args:
         date (datetime): The date for which to calculate the ayanamsa.
-        system (str): The ayanamsa system to use (e.g., "lahiri", "raman", "kali", etc.).
+        system (Literal["lahiri", "raman", "kali", "krishnamurti_new", "krishnamurti_old", "fagan_bradley", "janma", "true", "madhava", "vishnu", "yukteshwar", "suryasiddhanta", "aryabhatta", "ushashasi", "true_citra", "true_revati", "true_pusya"]): The ayanamsa system to use.
 
     Returns:
         float: The calculated ayanamsa in degrees.
@@ -293,7 +315,6 @@ def get_ayanamsa(date: datetime.datetime, system: str) -> float:
         "true_pusya": _get_true_pusya_ayanamsa,
     }
 
-    system = system.lower()
     if system not in ayanamsa_systems:
         error_message = f"Unknown ayanamsa system: {system}"
         raise ValueError(error_message)
