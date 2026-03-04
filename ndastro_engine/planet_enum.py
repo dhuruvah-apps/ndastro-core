@@ -77,6 +77,30 @@ class Planets(IntEnum):
 
         """
         planet_codes = {
+            Planets.EMPTY: "EMPTY",
+            Planets.ASCENDANT: "AS",
+            Planets.SUN: "SU",
+            Planets.MOON: "MO",
+            Planets.MARS: "MA",
+            Planets.MERCURY: "ME",
+            Planets.JUPITER: "JU",
+            Planets.VENUS: "VE",
+            Planets.SATURN: "SA",
+            Planets.RAHU: "RA",
+            Planets.KETHU: "KE",
+        }
+
+        return planet_codes.get(self, "EMPTY")
+
+    @property
+    def astronomical_code(self) -> str:
+        """Return the astronomical code for the planet.
+
+        Returns:
+            str: the astronomical code for the planet
+
+        """
+        astronomical_codes = {
             Planets.EMPTY: "empty",
             Planets.ASCENDANT: "ascendant",
             Planets.SUN: "sun",
@@ -90,7 +114,7 @@ class Planets(IntEnum):
             Planets.KETHU: "kethu",
         }
 
-        return planet_codes.get(self, "empty")
+        return astronomical_codes.get(self, "empty")
 
     @property
     def color(self) -> str:
