@@ -3,8 +3,11 @@
 from __future__ import annotations
 
 from enum import IntEnum
+from typing import Literal, TypeAlias, cast
 
 from ndastro_engine.planet_enum import Planets
+
+RasiCode: TypeAlias = Literal["AR", "TA", "GE", "CA", "LE", "VI", "LI", "SC", "SA", "CP", "AQ", "PI"]
 
 
 class Rasis(IntEnum):
@@ -59,18 +62,72 @@ class Rasis(IntEnum):
         }
         return rasi_to_planet[self.value]
 
+    @property
+    def code(self) -> RasiCode:
+        """Get the astronomical code for a given Rasi.
+
+        Returns:
+            RasiCode: The astronomical code for the Rasi.
+
+        """
+        rasi_to_code = {
+            Rasis.ARIES: "AR",
+            Rasis.TAURUS: "TA",
+            Rasis.GEMINI: "GE",
+            Rasis.CANCER: "CA",
+            Rasis.LEO: "LE",
+            Rasis.VIRGO: "VI",
+            Rasis.LIBRA: "LI",
+            Rasis.SCORPIO: "SC",
+            Rasis.SAGITTARIUS: "SA",
+            Rasis.CAPRICORN: "CP",
+            Rasis.AQUARIUS: "AQ",
+            Rasis.PISCES: "PI",
+        }
+        return cast("RasiCode", rasi_to_code[self])
+
+    @staticmethod
+    def from_code(code: RasiCode) -> Rasis | None:
+        """Convert a Rasi code to its corresponding enum member.
+
+        Args:
+            code (RasiCode): The Rasi code.
+
+        Returns:
+            Rasis | None: The corresponding enum member or None if invalid code.
+
+        """
+        code_to_rasi = {
+            "AR": Rasis.ARIES,
+            "TA": Rasis.TAURUS,
+            "GE": Rasis.GEMINI,
+            "CA": Rasis.CANCER,
+            "LE": Rasis.LEO,
+            "VI": Rasis.VIRGO,
+            "LI": Rasis.LIBRA,
+            "SC": Rasis.SCORPIO,
+            "SA": Rasis.SAGITTARIUS,
+            "CP": Rasis.CAPRICORN,
+            "AQ": Rasis.AQUARIUS,
+            "PI": Rasis.PISCES,
+        }
+        return code_to_rasi.get(code)
+
     @classmethod
-    def from_string(cls, rasi: str) -> Rasis:
+    def from_string(cls, rasi: str) -> Rasis | None:
         """Convert a Rasi name to its corresponding enum member.
 
         Args:
             rasi (str): The name of the Rasi.
 
         Returns:
-            Rasis: The corresponding enum member.
+            Rasis | None: The corresponding enum member or None if invalid name.
 
         """
-        return cls[rasi.upper()]
+        try:
+            return cls[rasi.upper()]
+        except KeyError:
+            return None
 
     @classmethod
     def to_string(cls) -> str:
@@ -108,3 +165,6 @@ class Rasis(IntEnum):
             [rasis[9], "", "", rasis[4]],
             [rasis[8], rasis[7], rasis[6], rasis[5]],
         ]
+
+
+__all__ = ["RasiCode", "Rasis"]

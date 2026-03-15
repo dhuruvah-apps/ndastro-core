@@ -1,6 +1,9 @@
 """Module is to hold planet enums."""
 
 from enum import IntEnum
+from typing import Literal, TypeAlias, cast
+
+PlanetCode: TypeAlias = Literal["EMPTY", "AS", "SU", "MO", "MA", "ME", "JU", "VE", "SA", "RA", "KE"]
 
 
 class Planets(IntEnum):
@@ -59,11 +62,11 @@ class Planets(IntEnum):
         return planet_codes.get(code, Planets.EMPTY)
 
     @staticmethod
-    def from_code(code: str) -> "Planets":
+    def from_code(code: PlanetCode) -> "Planets":
         """Convert planet code to planet enum.
 
         Args:
-            code (str): the planet code
+            code (PlanetCode): the planet code
 
         Returns:
             Planets: the corresponding planet enum
@@ -96,11 +99,11 @@ class Planets(IntEnum):
         return [el.name for el in Planets]
 
     @property
-    def code(self) -> str:
+    def code(self) -> PlanetCode:
         """Return the planet code.
 
         Returns:
-            str: the planet code
+            PlanetCode: the planet code
 
         """
         planet_codes = {
@@ -117,7 +120,7 @@ class Planets(IntEnum):
             Planets.KETHU: "KE",
         }
 
-        return planet_codes.get(self, "EMPTY")
+        return cast("PlanetCode", planet_codes.get(self, "EMPTY"))
 
     @property
     def astronomical_code(self) -> str:
@@ -166,6 +169,3 @@ class Planets(IntEnum):
         }
 
         return planet_colors.get(self, "#000000")  # Default to Black
-
-
-__all__ = ["Planets"]

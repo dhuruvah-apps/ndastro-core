@@ -1,8 +1,11 @@
 """Module is to hold enums."""
 
 from enum import IntEnum
+from typing import Literal, TypeAlias, cast
 
 from ndastro_engine.planet_enum import Planets
+
+HouseCode: TypeAlias = Literal["H1", "H2", "H3", "H4", "H5", "H6", "H7", "H8", "H9", "H10", "H11", "H12"]
 
 
 class Houses(IntEnum):
@@ -54,5 +57,53 @@ class Houses(IntEnum):
         }
         return house_to_planet[self.value]
 
+    @property
+    def code(self) -> HouseCode:
+        """Get the astronomical code for a given house.
 
-__all__ = ["Houses"]
+        Returns:
+            HouseCode: The astronomical code for the house.
+
+        """
+        house_codes = {
+            1: "H1",
+            2: "H2",
+            3: "H3",
+            4: "H4",
+            5: "H5",
+            6: "H6",
+            7: "H7",
+            8: "H8",
+            9: "H9",
+            10: "H10",
+            11: "H11",
+            12: "H12",
+        }
+        return cast("HouseCode", house_codes[self.value])
+
+    @staticmethod
+    def from_code(code: HouseCode) -> "Houses":
+        """Convert house code to house enum.
+
+        Args:
+            code (HouseCode): the house code
+
+        Returns:
+            Houses: the corresponding house enum
+
+        """
+        house_codes = {
+            "H1": Houses.HOUSE1,
+            "H2": Houses.HOUSE2,
+            "H3": Houses.HOUSE3,
+            "H4": Houses.HOUSE4,
+            "H5": Houses.HOUSE5,
+            "H6": Houses.HOUSE6,
+            "H7": Houses.HOUSE7,
+            "H8": Houses.HOUSE8,
+            "H9": Houses.HOUSE9,
+            "H10": Houses.HOUSE10,
+            "H11": Houses.HOUSE11,
+            "H12": Houses.HOUSE12,
+        }
+        return house_codes.get(code, Houses.HOUSE1)

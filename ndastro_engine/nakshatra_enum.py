@@ -1,11 +1,42 @@
 """Module is to hold start enums."""
 
 from enum import Enum
+from typing import Literal, TypeAlias, cast
 
 from ndastro_engine.planet_enum import Planets
 
+NakshatraCode: TypeAlias = Literal[
+    "ASW",
+    "BHA",
+    "KAA",
+    "ROG",
+    "MIR",
+    "THI",
+    "PUN",
+    "POO",
+    "AAY",
+    "MAG",
+    "PRM",
+    "UTH",
+    "AST",
+    "CHI",
+    "SUV",
+    "VIS",
+    "ANU",
+    "KET",
+    "MOO",
+    "PDM",
+    "UTD",
+    "TVO",
+    "AVI",
+    "SHA",
+    "PRI",
+    "UTI",
+    "REV",
+]
 
-class Natchaththirams(Enum):
+
+class Nakshatras(Enum):
     """Enum to hold stars."""
 
     ASWINNI = 1
@@ -85,6 +116,89 @@ class Natchaththirams(Enum):
 
         return Planets.from_astronomical_code(owners[self.value])
 
+    @property
+    def code(self) -> NakshatraCode:
+        """Return the astronomical code of the star.
+
+        Returns:
+            NakshatraCode: The astronomical code of the star.
+
+        """
+        nakshatra_codes = {
+            Nakshatras.ASWINNI: "ASW",
+            Nakshatras.BHARANI: "BHA",
+            Nakshatras.KAARTHIKAI: "KAA",
+            Nakshatras.ROGHINI: "ROG",
+            Nakshatras.MIRUGASIRISAM: "MIR",
+            Nakshatras.THIRUVAATHIRAI: "THI",
+            Nakshatras.PUNARPOOSAM: "PUN",
+            Nakshatras.POOSAM: "POO",
+            Nakshatras.AAYILYAM: "AAY",
+            Nakshatras.MAGAM: "MAG",
+            Nakshatras.POORAM: "PRM",
+            Nakshatras.UTHTHIRAM: "UTH",
+            Nakshatras.ASTHTHAM: "AST",
+            Nakshatras.CHITHTHIRAI: "CHI",
+            Nakshatras.SUVAATHI: "SUV",
+            Nakshatras.VISAAGAM: "VIS",
+            Nakshatras.ANUSHAM: "ANU",
+            Nakshatras.KETTAI: "KET",
+            Nakshatras.MOOLAM: "MOO",
+            Nakshatras.POORAADAM: "PDM",
+            Nakshatras.UTHTHIRAADAM: "UTD",
+            Nakshatras.THIRUVONAM: "TVO",
+            Nakshatras.AVITTAM: "AVI",
+            Nakshatras.SHATHAYAM: "SHA",
+            Nakshatras.POORATTAATHI: "PRI",
+            Nakshatras.UTHTHIRATTAATHI: "UTI",
+            Nakshatras.REVATHI: "REV",
+        }
+
+        return cast("NakshatraCode", nakshatra_codes[self])
+
+    @staticmethod
+    def from_code(code: NakshatraCode) -> "Nakshatras":
+        """Convert a Nakshatra code to its corresponding enum member.
+
+        Args:
+            code (NakshatraCode): The Nakshatra code.
+
+        Returns:
+            Nakshatras: The corresponding enum member.
+
+        """
+        code_to_nakshatra = {
+            "ASW": Nakshatras.ASWINNI,
+            "BHA": Nakshatras.BHARANI,
+            "KAA": Nakshatras.KAARTHIKAI,
+            "ROG": Nakshatras.ROGHINI,
+            "MIR": Nakshatras.MIRUGASIRISAM,
+            "THI": Nakshatras.THIRUVAATHIRAI,
+            "PUN": Nakshatras.PUNARPOOSAM,
+            "POO": Nakshatras.POOSAM,
+            "AAY": Nakshatras.AAYILYAM,
+            "MAG": Nakshatras.MAGAM,
+            "PRM": Nakshatras.POORAM,
+            "UTH": Nakshatras.UTHTHIRAM,
+            "AST": Nakshatras.ASTHTHAM,
+            "CHI": Nakshatras.CHITHTHIRAI,
+            "SUV": Nakshatras.SUVAATHI,
+            "VIS": Nakshatras.VISAAGAM,
+            "ANU": Nakshatras.ANUSHAM,
+            "KET": Nakshatras.KETTAI,
+            "MOO": Nakshatras.MOOLAM,
+            "PDM": Nakshatras.POORAADAM,
+            "UTD": Nakshatras.UTHTHIRAADAM,
+            "TVO": Nakshatras.THIRUVONAM,
+            "AVI": Nakshatras.AVITTAM,
+            "SHA": Nakshatras.SHATHAYAM,
+            "PRI": Nakshatras.POORATTAATHI,
+            "UTI": Nakshatras.UTHTHIRATTAATHI,
+            "REV": Nakshatras.REVATHI,
+        }
+
+        return code_to_nakshatra[code]
+
     @staticmethod
     def to_string(num: int) -> str:
         """Convert star number to display name of the star.
@@ -96,7 +210,7 @@ class Natchaththirams(Enum):
             str: return the star name
 
         """
-        return Natchaththirams(num).name
+        return Nakshatras(num).name
 
     @staticmethod
     def to_list() -> list[str]:
@@ -106,4 +220,4 @@ class Natchaththirams(Enum):
             list[str]: list of enum item name
 
         """
-        return [el.name for el in Natchaththirams]
+        return [el.name for el in Nakshatras]

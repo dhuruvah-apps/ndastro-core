@@ -19,11 +19,13 @@ A modern Python library for Vedic astronomical calculations, built on top of [Sk
   - Traditional: Kali, Janma, Yukteshwar, Suryasiddhanta, Aryabhatta
   - Star-based: True Citra, True Revati, True Pusya, Ushashasi
   - Additional: Madhava, Vishnu, True ayanamsa
-- 🌍 **WGS84 Coordinates** - Support for standard latitude/longitude coordinates
+- � **House & Nakshatra Enums** - `Houses` with owner lookup; `Nakshatras` (27 lunar mansions) with lord lookup
+- �🌍 **WGS84 Coordinates** - Support for standard latitude/longitude coordinates
 - 📅 **Date-based Queries** - Calculate astronomical events for any date and time
 - 🎯 **High Precision** - Powered by Skyfield using JPL ephemeris data (DE440s)
 - ✅ **Verified Accuracy** - All ayanamsa values verified against astro-seek.com reference
 - 🔧 **Easy Configuration** - Automatic ephemeris data management
+- 🏷️ **Type-safe Enum Codes** - `PlanetCode`, `HouseCode`, `NakshatraCode`, `RasiCode` TypeAliases for safe string lookups via `.code` property and `from_code()` helpers
 - 📦 **Modern Python** - Full type hints, clean API, and comprehensive test coverage
 
 ## Installation
@@ -81,6 +83,27 @@ print(f"Sunset: {sunset}")
 ```
 
 ## Usage Examples
+
+### Working with Enum Codes
+
+```python
+from ndastro_engine.enums import Planets, Rasis, Houses, Nakshatras, PlanetCode, RasiCode
+
+# Each enum exposes a .code property for type-safe string identifiers
+print(Planets.SUN.code)        # "SU"
+print(Rasis.ARIES.code)        # "AR"
+print(Houses.HOUSE1.code)      # "H1"
+print(Nakshatras.ASWINNI.code) # "ASW"
+
+# Convert a code back to the enum
+planet = Planets.from_code("MA")   # → Planets.MARS
+rasi = Rasis.from_code("SC")        # → Rasis.SCORPIO  (returns None if invalid)
+house = Houses.from_code("H7")      # → Houses.HOUSE7
+nakshatra = Nakshatras.from_code("REV")  # → Nakshatras.REVATHI
+
+# Rasi.from_string() is now safe — returns None instead of raising KeyError
+rasi = Rasis.from_string("invalid")  # → None
+```
 
 ### Ayanamsa Calculation
 
