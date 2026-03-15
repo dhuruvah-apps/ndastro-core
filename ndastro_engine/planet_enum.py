@@ -4,6 +4,9 @@ from enum import IntEnum
 from typing import Literal, TypeAlias, cast
 
 PlanetCode: TypeAlias = Literal["EMPTY", "AS", "SU", "MO", "MA", "ME", "JU", "VE", "SA", "RA", "KE"]
+AstronomicalCode: TypeAlias = Literal[
+    "sun", "moon", "mars barycenter", "mercury", "jupiter barycenter", "venus", "saturn barycenter", "rahu", "kethu", "earth", "ascendant", ""
+]
 
 
 class Planets(IntEnum):
@@ -35,11 +38,11 @@ class Planets(IntEnum):
         return Planets(num).name if num in Planets._value2member_map_ else "empty"
 
     @staticmethod
-    def from_astronomical_code(code: str) -> "Planets":
+    def from_astronomical_code(code: AstronomicalCode) -> "Planets":
         """Convert planet's astronomical code to planet enum.
 
         Args:
-            code (str): the planet's astronomical code
+            code (AstronomicalCode): the planet's astronomical code
 
         Returns:
             Planets: the corresponding planet enum
@@ -123,11 +126,11 @@ class Planets(IntEnum):
         return cast("PlanetCode", planet_codes.get(self, "EMPTY"))
 
     @property
-    def astronomical_code(self) -> str:
+    def astronomical_code(self) -> AstronomicalCode:
         """Return the astronomical code for the planet.
 
         Returns:
-            str: the astronomical code for the planet
+            AstronomicalCode: the astronomical code for the planet
 
         """
         astronomical_codes = {
@@ -144,7 +147,7 @@ class Planets(IntEnum):
             Planets.KETHU: "kethu",
         }
 
-        return astronomical_codes.get(self, "empty")
+        return cast("AstronomicalCode", astronomical_codes.get(self, "empty"))
 
     @property
     def color(self) -> str:
