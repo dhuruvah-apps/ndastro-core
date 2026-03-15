@@ -8,7 +8,7 @@ from skyfield.timelib import Time
 
 from ndastro_engine.config import ts
 from ndastro_engine.core import get_planet_position
-from ndastro_engine.enums import Planets
+from ndastro_engine.enums import AstronomicalCode, Planets
 
 
 class RetrogradeFunction:
@@ -27,16 +27,16 @@ class RetrogradeFunction:
 
     """
 
-    def __init__(self, astronomical_code: str, latitude: float, longitude: float) -> None:
+    def __init__(self, astronomical_code: AstronomicalCode, latitude: float, longitude: float) -> None:
         """Initialize a new instance of the retrograde class.
 
         Args:
-            astronomical_code (str): The astronomical code of the planet.
+            astronomical_code (AstronomicalCode): The astronomical code of the planet.
             latitude (float): The latitude coordinate.
             longitude (float): The longitude coordinate.
 
         """
-        self.astronomical_code = astronomical_code
+        self.astronomical_code: AstronomicalCode = astronomical_code
         self.latitude = latitude
         self.longitude = longitude
         self.step_days = 7
@@ -69,14 +69,14 @@ class RetrogradeFunction:
 
 
 def __get_retrograde_function(
-    astronomical_code: str,
+    astronomical_code: AstronomicalCode,
     latitude: float,
     longitude: float,
 ) -> RetrogradeFunction:
     """Create a RetrogradeFunction instance for a given planet and location.
 
     Args:
-        astronomical_code (str): The astronomical code of the planet.
+        astronomical_code (AstronomicalCode): The astronomical code of the planet.
         latitude (float): The latitude of the location.
         longitude (float): The longitude of the location.
 
@@ -90,7 +90,7 @@ def __get_retrograde_function(
 def find_retrograde_periods(
     start_date: datetime,
     end_date: datetime,
-    astronomical_code: str,
+    astronomical_code: AstronomicalCode,
     latitude: float,
     longitude: float,
 ) -> list[tuple[datetime, datetime]]:
@@ -99,7 +99,7 @@ def find_retrograde_periods(
     Args:
         start_date (datetime): The start date of the period to check for retrograde motion.
         end_date (datetime): The end date of the period to check for retrograde motion.
-        astronomical_code (str): The astronomical code of the planet to check for retrograde motion.
+        astronomical_code (AstronomicalCode): The astronomical code of the planet to check for retrograde motion.
         latitude (float): The latitude of the observation location.
         longitude (float): The longitude of the observation location.
 
@@ -138,7 +138,7 @@ def find_retrograde_periods(
 
 def is_planet_in_retrograde(
     check_date: datetime,
-    astronomical_code: str,
+    astronomical_code: AstronomicalCode,
     latitude: float,
     longitude: float,
 ) -> tuple[bool, datetime | None, datetime | None]:
@@ -146,7 +146,7 @@ def is_planet_in_retrograde(
 
     Args:
         check_date (datetime): The date to check for retrograde motion.
-        astronomical_code (str): The astronomical code of the planet to check.
+        astronomical_code (AstronomicalCode): The astronomical code of the planet to check.
         latitude (float): The latitude in decimal degrees of the observation location.
         longitude (float): The longitude in decimal degrees of the observation location.
 

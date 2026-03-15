@@ -7,7 +7,7 @@ from typing import Literal, TypeAlias, cast
 
 from ndastro_engine.planet_enum import Planets
 
-RasiCode: TypeAlias = Literal["AR", "TA", "GE", "CA", "LE", "VI", "LI", "SC", "SA", "CP", "AQ", "PI"]
+RasiCode: TypeAlias = Literal["R01", "R02", "R03", "R04", "R05", "R06", "R07", "R08", "R09", "R10", "R11", "R12"]
 
 
 class Rasis(IntEnum):
@@ -71,18 +71,18 @@ class Rasis(IntEnum):
 
         """
         rasi_to_code = {
-            Rasis.ARIES: "AR",
-            Rasis.TAURUS: "TA",
-            Rasis.GEMINI: "GE",
-            Rasis.CANCER: "CA",
-            Rasis.LEO: "LE",
-            Rasis.VIRGO: "VI",
-            Rasis.LIBRA: "LI",
-            Rasis.SCORPIO: "SC",
-            Rasis.SAGITTARIUS: "SA",
-            Rasis.CAPRICORN: "CP",
-            Rasis.AQUARIUS: "AQ",
-            Rasis.PISCES: "PI",
+            Rasis.ARIES: "R01",
+            Rasis.TAURUS: "R02",
+            Rasis.GEMINI: "R03",
+            Rasis.CANCER: "R04",
+            Rasis.LEO: "R05",
+            Rasis.VIRGO: "R06",
+            Rasis.LIBRA: "R07",
+            Rasis.SCORPIO: "R08",
+            Rasis.SAGITTARIUS: "R09",
+            Rasis.CAPRICORN: "R10",
+            Rasis.AQUARIUS: "R11",
+            Rasis.PISCES: "R12",
         }
         return cast("RasiCode", rasi_to_code[self])
 
@@ -98,18 +98,18 @@ class Rasis(IntEnum):
 
         """
         code_to_rasi = {
-            "AR": Rasis.ARIES,
-            "TA": Rasis.TAURUS,
-            "GE": Rasis.GEMINI,
-            "CA": Rasis.CANCER,
-            "LE": Rasis.LEO,
-            "VI": Rasis.VIRGO,
-            "LI": Rasis.LIBRA,
-            "SC": Rasis.SCORPIO,
-            "SA": Rasis.SAGITTARIUS,
-            "CP": Rasis.CAPRICORN,
-            "AQ": Rasis.AQUARIUS,
-            "PI": Rasis.PISCES,
+            "R01": Rasis.ARIES,
+            "R02": Rasis.TAURUS,
+            "R03": Rasis.GEMINI,
+            "R04": Rasis.CANCER,
+            "R05": Rasis.LEO,
+            "R06": Rasis.VIRGO,
+            "R07": Rasis.LIBRA,
+            "R08": Rasis.SCORPIO,
+            "R09": Rasis.SAGITTARIUS,
+            "R10": Rasis.CAPRICORN,
+            "R11": Rasis.AQUARIUS,
+            "R12": Rasis.PISCES,
         }
         return code_to_rasi.get(code)
 
