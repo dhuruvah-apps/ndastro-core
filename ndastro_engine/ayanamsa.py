@@ -12,7 +12,7 @@ based on Julian centuries from the J2000.0 epoch.
 """
 
 import datetime
-from typing import Literal
+from typing import Literal, TypeAlias
 
 from ndastro_engine.constants import (
     AYANAMSA_AT_J2000,
@@ -23,6 +23,26 @@ from ndastro_engine.constants import (
     DEG_PER_SQUARE_JCENTURY,
 )
 from ndastro_engine.core import ts
+
+AyanamsaSystem: TypeAlias = Literal[
+    "lahiri",
+    "raman",
+    "kali",
+    "krishnamurti_new",
+    "krishnamurti_old",
+    "fagan_bradley",
+    "janma",
+    "true",
+    "madhava",
+    "vishnu",
+    "yukteshwar",
+    "suryasiddhanta",
+    "aryabhatta",
+    "ushashasi",
+    "true_citra",
+    "true_revati",
+    "true_pusya",
+]
 
 
 def _get_lahiri_ayanamsa(date: datetime.datetime) -> float:
@@ -265,31 +285,13 @@ def _get_true_pusya_ayanamsa(date: datetime.datetime) -> float:
 
 def get_ayanamsa(
     date: datetime.datetime,
-    system: Literal[
-        "lahiri",
-        "raman",
-        "kali",
-        "krishnamurti_new",
-        "krishnamurti_old",
-        "fagan_bradley",
-        "janma",
-        "true",
-        "madhava",
-        "vishnu",
-        "yukteshwar",
-        "suryasiddhanta",
-        "aryabhatta",
-        "ushashasi",
-        "true_citra",
-        "true_revati",
-        "true_pusya",
-    ],
+    system: AyanamsaSystem,
 ) -> float:
     """Calculate the ayanamsa for a given date and system.
 
     Args:
         date (datetime): The date for which to calculate the ayanamsa.
-        system (Literal["lahiri", "raman", "kali", "krishnamurti_new", "krishnamurti_old", "fagan_bradley", "janma", "true", "madhava", "vishnu", "yukteshwar", "suryasiddhanta", "aryabhatta", "ushashasi", "true_citra", "true_revati", "true_pusya"]): The ayanamsa system to use.
+        system (AyanamsaSystem): The ayanamsa system to use.
 
     Returns:
         float: The calculated ayanamsa in degrees.
@@ -353,3 +355,6 @@ def _get_days_since_julian(century: int) -> float:
     start = ts.tt(century, 1, 1, 12)  # J2000.0 epoch (2451545.0 JD)
 
     return start.tt
+
+
+__all__ = ["AyanamsaSystem", "get_ayanamsa"]
