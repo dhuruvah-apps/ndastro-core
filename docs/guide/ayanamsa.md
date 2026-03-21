@@ -10,21 +10,22 @@ The ayanamsa value represents the angular offset between these two systems at an
 
 ## Basic Usage
 
-Use the `get_ayanamsa()` function with a date and system name:
+Use the type-safe `get_ayanamsa()` function with a date and system name:
 
 ```python
 from datetime import datetime
-from ndastro_engine.ayanamsa import get_ayanamsa
+from ndastro_engine.ayanamsa import get_ayanamsa, AyanamsaSystem
+from typing import cast
 
 date = datetime(2026, 1, 11, 12, 0, 0)
 
 # Calculate Lahiri ayanamsa
-lahiri = get_ayanamsa(date, "lahiri")
+lahiri = get_ayanamsa(date, cast(AyanamsaSystem, "lahiri"))
 print(f"Lahiri: {lahiri:.6f}°")
 # Output: Lahiri: 24.260000°
 
-# Calculate other systems
-raman = get_ayanamsa(date, "raman")
+# Or use without cast if your IDE supports it:
+raman = get_ayanamsa(date, "raman")  # type: AyanamsaSystem
 kp_new = get_ayanamsa(date, "krishnamurti_new")
 fagan = get_ayanamsa(date, "fagan_bradley")
 
@@ -32,6 +33,8 @@ print(f"Raman: {raman:.6f}°")
 print(f"KP New: {kp_new:.6f}°")
 print(f"Fagan-Bradley: {fagan:.6f}°")
 ```
+
+**Type-Safety:** The `AyanamsaSystem` type ensures autocomplete support in your IDE and catches invalid system names at development time.
 
 ## Available Ayanamsa Systems
 

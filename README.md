@@ -14,7 +14,8 @@ A modern Python library for Vedic astronomical calculations, built on top of [Sk
 - 🌅 **Sunrise & Sunset** - Accurate sunrise and sunset times for any location
 - 🌙 **Lunar Nodes** - Rahu (North Node) and Kethu (South Node) calculations
 - ⬆️ **Ascendant Calculation** - Compute rising sign (Lagna) for any time and location
-- 🔄 **16 Ayanamsa Systems** - Comprehensive support for Vedic and Western sidereal systems:
+- � **Type-safe Ayanamsa Systems** - `AyanamsaSystem` TypeAlias covering 16 calculation methods (Lahiri, Raman, Krishnamurti, Fagan-Bradley, and more) with IDE autocomplete
+- �🔄 **16 Ayanamsa Systems** - Comprehensive support for Vedic and Western sidereal systems:
   - Lahiri, Raman, Krishnamurti (KP New & Old), Fagan-Bradley
   - Traditional: Kali, Janma, Yukteshwar, Suryasiddhanta, Aryabhatta
   - Star-based: True Citra, True Revati, True Pusya, Ushashasi
