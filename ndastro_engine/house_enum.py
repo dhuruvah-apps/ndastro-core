@@ -5,7 +5,7 @@ from typing import Literal, TypeAlias, cast
 
 from ndastro_engine.planet_enum import Planets
 
-HouseCode: TypeAlias = Literal["H1", "H2", "H3", "H4", "H5", "H6", "H7", "H8", "H9", "H10", "H11", "H12"]
+HouseCode: TypeAlias = Literal["H01", "H02", "H03", "H04", "H05", "H06", "H07", "H08", "H09", "H10", "H11", "H12"]
 
 
 class Houses(IntEnum):

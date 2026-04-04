@@ -95,7 +95,7 @@ from ndastro_engine.enums import Planets, Rasis, Houses, Nakshatras, PlanetCode,
 # Each enum exposes a .code property for type-safe string identifiers
 print(Planets.SUN.code)        # "SU"
 print(Rasis.ARIES.code)        # "AR"
-print(Houses.HOUSE1.code)      # "H1"
+print(Houses.HOUSE1.code)      # "H01"
 print(Nakshatras.ASWINNI.code) # "ASW"
 
 # Convert a code back to the enum
