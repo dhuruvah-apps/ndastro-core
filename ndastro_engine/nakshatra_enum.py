@@ -3,6 +3,7 @@
 from enum import Enum
 from typing import Literal, TypeAlias, cast
 
+from ndastro_engine.constants import DEGREE_PER_NAKSHATRA
 from ndastro_engine.planet_enum import AstronomicalCode, Planets
 
 NakshatraCode: TypeAlias = Literal[
@@ -155,6 +156,60 @@ class Nakshatras(Enum):
         }
 
         return cast("NakshatraCode", nakshatra_codes[self])
+
+    @property
+    def start_degree(self) -> float:
+        """Return the starting degree of the star.
+
+        Returns:
+            float: The starting degree of the star.
+
+        """
+        return (self.value - 1) * DEGREE_PER_NAKSHATRA
+
+    @property
+    def end_degree(self) -> float:
+        """Return the ending degree of the star.
+
+        Returns:
+            float: The ending degree of the star.
+
+        """
+        return self.value * DEGREE_PER_NAKSHATRA
+
+    @staticmethod
+    def planet_advancement(planet_longitude: float) -> float:
+        """Calculate the advancement of a planet in its current star.
+
+        Args:
+            planet_longitude (float): The longitude of the planet.
+
+        Returns:
+            float: The advancement of the planet in its current star, expressed as decimal degrees.
+
+        """
+        nakshatra_number = int(planet_longitude // DEGREE_PER_NAKSHATRA) + 1
+        nakshatra = Nakshatras(nakshatra_number)
+
+        return planet_longitude - nakshatra.start_degree
+
+    @staticmethod
+    def degrees_until_star_end(planet_longitude: float) -> float:
+        """Calculate the remaining degrees for a planet to complete its current star.
+
+        Args:
+            planet_longitude (float): The longitude of the planet.
+
+        Returns:
+            float: The remaining degrees for the planet to complete its current star.
+
+        """
+        # fractions of nakshatra yet to be completed
+        nakshatra_number = int(planet_longitude // DEGREE_PER_NAKSHATRA) + 1
+        nakshatra = Nakshatras(nakshatra_number)
+
+        # result should be in fractions 0 to 1, so divide by degree per nakshatra
+        return (nakshatra.end_degree - planet_longitude) / DEGREE_PER_NAKSHATRA
 
     @staticmethod
     def from_code(code: NakshatraCode) -> "Nakshatras":

@@ -7,7 +7,11 @@ from unittest.mock import patch
 import pytest
 
 from ndastro_engine.constants import OS_LINUX, OS_MAC, OS_WIN
-from ndastro_engine.utils import get_app_data_dir, normalize_degree
+from ndastro_engine.utils import (
+    decimal_years_to_years_months_days_ghatis,
+    get_app_data_dir,
+    normalize_degree,
+)
 
 
 class TestGetAppDataDir:
@@ -197,3 +201,10 @@ class TestNormalizeDegree:
             first = normalize_degree(value)
             second = normalize_degree(first)
             assert first == second
+
+    @pytest.mark.unit
+    def test_decimal_years_to_years_months_days_ghatis(self) -> None:
+        """Test decimal_years_to_years_months_days_ghatis function."""
+        # Test with 2.25 years
+        result = decimal_years_to_years_months_days_ghatis(2.24875)
+        assert result == (2, 2, 29, 23, 32, 32, 57)

@@ -8,7 +8,12 @@ import os
 import sys
 from pathlib import Path
 
-from ndastro_engine.constants import DEGREE_MAX, OS_MAC, OS_WIN
+from ndastro_engine.constants import (
+    AVERAGE_DAYS_IN_MONTH,
+    DEGREE_MAX,
+    OS_MAC,
+    OS_WIN,
+)
 
 
 def get_app_data_dir(appname: str) -> Path:
@@ -99,3 +104,34 @@ def dd2dmsstr(decimal_degrees: float) -> str:
     degrees, minutes, seconds, sign = dd2dms(decimal_degrees)
     sign_str = "" if sign >= 0 else "-"
     return f"{sign_str}{degrees}° {minutes}' {seconds:.2f}\""
+
+
+def decimal_years_to_years_months_days_ghatis(decimal_years: float) -> tuple[int, int, int, int, int, int, int]:
+    """Convert decimal years to years, months, days, hours, minutes, seconds, and ghatis.
+
+    Args:
+        decimal_years (float): The time duration in decimal years.
+
+    Returns:
+        tuple[int, int, int, int, int, int, int]: A tuple containing years, months, days, hours, minutes, seconds, and ghatis.
+
+    """
+    years = int(decimal_years)
+    remaining_years = decimal_years - years
+
+    months = int(remaining_years * 12)
+    remaining_months = (remaining_years * 12 - months) * AVERAGE_DAYS_IN_MONTH  # Average days in a month
+
+    days = int(remaining_months)  # Average days in a month
+    remaining_days = remaining_months - days
+
+    hours = int(remaining_days * 24)  # 1 day = 24 hours
+    remaining_hours = remaining_days * 24 - hours
+
+    mins = int(remaining_hours * 60)  # 1 hour = 60 minutes
+    remaining_mins = remaining_hours * 60 - mins
+
+    secs = int(remaining_mins * 60)  # 1 minute = 60 seconds
+    ghatis = int(hours * 60 / 24)  # 1 ghati = 24 minutes
+
+    return years, months, days, hours, mins, secs, ghatis

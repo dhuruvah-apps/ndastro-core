@@ -2,7 +2,7 @@
 
 import pytest
 
-from ndastro_engine.enums import Planets
+from ndastro_engine.enums import Nakshatras, Planets
 
 
 class TestPlanetsEnum:
@@ -229,3 +229,13 @@ class TestPlanetsEnum:
         assert Planets.MOON in Planets
         assert 1 in Planets._value2member_map_
         assert 99 not in Planets._value2member_map_
+
+
+class TestNakshatrasEnum:
+    """Test cases for Nakshatras enum."""
+
+    @pytest.mark.unit
+    def test_degrees_until_star_end(self) -> None:
+        """Test degrees_until_star_end method calculates remaining degrees correctly."""
+        # Test with a planet at 10 degrees in the first Nakshatra
+        assert Nakshatras.degrees_until_star_end(302.383) == 0.3212750000000028
