@@ -41,11 +41,11 @@ To verify the installation works correctly:
 ```python
 import ndastro_engine
 from datetime import datetime
-from ndastro_engine.ayanamsa import get_lahiri_ayanamsa
+from ndastro_engine.ayanamsa import get_ayanamsa
 
 # Calculate ayanamsa
 date = datetime(2026, 1, 11, 12, 0, 0)
-ayanamsa = get_lahiri_ayanamsa(date)
+ayanamsa = get_ayanamsa(date, "lahiri")
 print(f"Lahiri Ayanamsa: {ayanamsa:.6f}°")
 ```
 

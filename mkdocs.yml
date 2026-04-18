@@ -101,12 +101,15 @@ nav:
       - Sunrise & Sunset: guide/sunrise-sunset.md
       - Retrograde Periods: guide/retrograde.md
       - Combustion Periods: guide/combustion.md
+      - Dasa Calculations: guide/dasa.md
   - API Reference:
       - Core: api/core.md
       - Ayanamsa: api/ayanamsa.md
       - Combustion: api/combustion.md
-      - Utils: api/utils.md
+      - Dasa: api/dasa.md
       - Enums: api/enums.md
+      - Retrograde: api/retrograde.md
+      - Utils: api/utils.md
   - Contributing: contributing.md
   - Changelog: changelog.md
 

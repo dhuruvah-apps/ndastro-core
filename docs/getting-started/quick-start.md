@@ -10,11 +10,11 @@ Calculate the ayanamsa (precession correction) for a given date:
 
 ```python
 from datetime import datetime
-from ndastro_engine.ayanamsa import get_lahiri_ayanamsa
+from ndastro_engine.ayanamsa import get_ayanamsa
 
 # Calculate Lahiri ayanamsa for a date
 date = datetime(2026, 1, 11, 12, 0, 0)
-ayanamsa = get_lahiri_ayanamsa(date)
+ayanamsa = get_ayanamsa(date, "lahiri")
 print(f"Lahiri Ayanamsa: {ayanamsa:.6f}°")
 # Output: Lahiri Ayanamsa: 24.260000°
 ```
@@ -60,7 +60,42 @@ print(f"Sunrise: {sunrise}")
 print(f"Sunset: {sunset}")
 ```
 
-### 4. Check Retrograde Motion
+### 4. Calculate Dasa Periods
+
+Compute multi-level dasa periods for a birth chart:
+
+```python
+from datetime import datetime
+import pytz
+from ndastro_engine.dasa import DasaContext, get_dasa_birth_info, get_running_dasa
+
+# Birth details (e.g., Chennai, India)
+birth_datetime = datetime(1985, 10, 24, 6, 30, 0, tzinfo=pytz.timezone('Asia/Kolkata'))
+latitude = 13.0827
+longitude = 80.2707
+
+# Create dasa context
+context = DasaContext(
+    birth_datetime=birth_datetime,
+    lat=latitude,
+    lon=longitude,
+    ayanamsa_system="lahiri",
+    dasa_type="vimshottari"
+)
+
+# Get birth info (nakshatra, lord, progress)
+birth_info = get_dasa_birth_info(context)
+print(f"Nakshatra: {birth_info.janma_nakshatra.name}")
+print(f"Start Lord: {birth_info.start_lord}")
+
+# Get running dasa at a specific date
+query_datetime = datetime(2026, 4, 18, 12, 0, 0, tzinfo=pytz.UTC)
+running_dasa = get_running_dasa(query_datetime, context)
+print(f"Current Mahadasa: {running_dasa.maha.lord}")
+print(f"Current Antardasa: {running_dasa.antara.lord}")
+```
+
+### 5. Check Retrograde Motion
 
 Determine if a planet is in retrograde motion:
 
@@ -87,7 +122,7 @@ else:
     print("Mercury is in direct motion")
 ```
 
-## Available Ayanamsa Systems
+### 6. Available Ayanamsa Systems
 
 ndastro-engine supports 16 different ayanamsa calculation methods:
 

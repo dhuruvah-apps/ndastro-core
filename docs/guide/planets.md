@@ -117,7 +117,7 @@ By default, positions are calculated in the tropical zodiac. For sidereal positi
 ```python
 from datetime import datetime
 from ndastro_engine.core import get_planet_position
-from ndastro_engine.ayanamsa import get_lahiri_ayanamsa
+from ndastro_engine.ayanamsa import get_ayanamsa
 from ndastro_engine.enums.planet_enum import Planets
 
 latitude = 28.6139
@@ -128,7 +128,7 @@ date = datetime(2026, 1, 11, 12, 0, 0)
 tropical = get_planet_position(Planets.JUPITER, latitude, longitude, date)
 
 # Get ayanamsa
-ayanamsa = get_lahiri_ayanamsa(date)
+ayanamsa = get_ayanamsa(date, "lahiri")
 
 # Calculate sidereal position
 sidereal = tropical - ayanamsa
@@ -145,7 +145,7 @@ Determine which rashi (zodiac sign) a planet is in:
 ```python
 from datetime import datetime
 from ndastro_engine.core import get_planet_position
-from ndastro_engine.ayanamsa import get_lahiri_ayanamsa
+from ndastro_engine.ayanamsa import get_ayanamsa
 from ndastro_engine.enums.planet_enum import Planets
 from ndastro_engine.enums.rasi_enum import Rasi
 
@@ -155,7 +155,7 @@ date = datetime(2026, 1, 11, 12, 0, 0)
 
 # Get sidereal position
 tropical = get_planet_position(Planets.MOON, latitude, longitude, date)
-ayanamsa = get_lahiri_ayanamsa(date)
+ayanamsa = get_ayanamsa(date, "lahiri")
 sidereal = (tropical - ayanamsa) % 360
 
 # Get rashi (each rashi is 30°)
@@ -175,7 +175,7 @@ Determine which nakshatra a planet occupies:
 ```python
 from datetime import datetime
 from ndastro_engine.core import get_planet_position
-from ndastro_engine.ayanamsa import get_lahiri_ayanamsa
+from ndastro_engine.ayanamsa import get_ayanamsa
 from ndastro_engine.enums.planet_enum import Planets
 from ndastro_engine.enums.nakshatra_enum import Nakshatra
 
@@ -185,7 +185,7 @@ date = datetime(2026, 1, 11, 12, 0, 0)
 
 # Get sidereal position
 tropical = get_planet_position(Planets.MOON, latitude, longitude, date)
-ayanamsa = get_lahiri_ayanamsa(date)
+ayanamsa = get_ayanamsa(date, "lahiri")
 sidereal = (tropical - ayanamsa) % 360
 
 # Each nakshatra is 13°20' (13.333...)

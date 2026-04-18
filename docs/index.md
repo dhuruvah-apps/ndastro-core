@@ -19,6 +19,10 @@ A modern Vedic astrology calculation engine for Python, providing accurate astro
 - WGS84 coordinate system support
 - Timezone-aware datetime handling
 
+⏱️ **Dasa Calculations**
+- Multi-level dasa periods (Mahadasa, Antardasa, Pratyantardasa, Sookshmadasa)
+- Vimshottari system built-in with full extensibility for custom systems
+
 🎯 **Developer Friendly**
 - Type-annotated for better IDE support
 - Comprehensive test coverage (>90%)
@@ -28,13 +32,13 @@ A modern Vedic astrology calculation engine for Python, providing accurate astro
 
 ```python
 from datetime import datetime
-from ndastro_engine.ayanamsa import get_lahiri_ayanamsa
+from ndastro_engine.ayanamsa import get_ayanamsa
 from ndastro_engine.core import get_planet_position
 from ndastro_engine.enums.planet_enum import Planets
 
 # Calculate Lahiri Ayanamsa for today
 date = datetime(2026, 1, 11, 12, 0, 0)
-ayanamsa = get_lahiri_ayanamsa(date)
+ayanamsa = get_ayanamsa(date, "lahiri")
 print(f"Lahiri Ayanamsa: {ayanamsa:.6f}°")
 
 # Get Sun's position
