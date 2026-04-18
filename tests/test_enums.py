@@ -239,3 +239,21 @@ class TestNakshatrasEnum:
         """Test degrees_until_star_end method calculates remaining degrees correctly."""
         # Test with a planet at 10 degrees in the first Nakshatra
         assert Nakshatras.degrees_until_star_end(302.383) == 0.3212750000000028
+
+    @pytest.mark.unit
+    @pytest.mark.parametrize(
+        ("planet_longitude", "expected_pada"),
+        [
+            (0.0, 1),
+            (3.3333333333333335, 2),
+            (6.666666666666667, 3),
+            (10.0, 4),
+            (13.333333333333334, 1),
+            (359.999, 4),
+            (360.0, 1),
+            (-1.0, 4),
+        ],
+    )
+    def test_current_pada(self, planet_longitude: float, expected_pada: int) -> None:
+        """Test current_pada returns a valid pada index from 1 to 4."""
+        assert Nakshatras.current_pada(planet_longitude) == expected_pada

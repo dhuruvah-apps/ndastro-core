@@ -78,6 +78,30 @@ from ndastro_engine.ayanamsa import get_ayanamsa
 
 date = datetime(2026, 1, 11, 12, 0, 0)
 ayanamsa = get_ayanamsa(date, "raman")
+```
+
+## Parsing ISO Datetime Strings
+
+When working with datetime strings from external sources, use `parse_iso_datetime()` to safely parse ISO format strings with automatic UTC default for missing timezone information:
+
+```python
+from ndastro_engine.utils import parse_iso_datetime
+from ndastro_engine.ayanamsa import get_ayanamsa
+
+# Parse ISO datetime strings
+# If no timezone is present, UTC is assumed
+date1 = parse_iso_datetime("2026-01-11T12:00:00")
+date2 = parse_iso_datetime("2026-01-11T12:00:00Z")
+date3 = parse_iso_datetime("2026-01-11T12:00:00+05:30")
+
+# All parsed datetimes are timezone-aware
+print(f"Date1 timezone: {date1.tzinfo}")
+print(f"Date2 timezone: {date2.tzinfo}")
+print(f"Date3 timezone: {date3.tzinfo}")
+
+# Use with ayanamsa calculations
+lahiri = get_ayanamsa(date1, "lahiri")
+print(f"Lahiri ayanamsa: {lahiri:.6f}°")
 print(f"Raman: {ayanamsa:.6f}°")
 ```
 

@@ -198,6 +198,32 @@ nakshatra = Nakshatra.from_index(nakshatra_number)
 print(f"Moon is in {nakshatra.name} at {position_in_nakshatra:.4f}°")
 ```
 
+## Pada (Quarter) Calculation
+
+Determine which pada (quarter, 1-4) within a nakshatra a planet is in:
+
+```python
+from datetime import datetime
+from ndastro_engine.core import get_planet_position
+from ndastro_engine.ayanamsa import get_ayanamsa
+from ndastro_engine.enums.planet_enum import Planets
+from ndastro_engine.enums.nakshatra_enum import Nakshatras
+
+latitude = 28.6139
+longitude = 77.2090
+date = datetime(2026, 1, 11, 12, 0, 0)
+
+# Get sidereal position
+tropical = get_planet_position(Planets.MOON, latitude, longitude, date)
+ayanamsa = get_ayanamsa(date, "lahiri")
+sidereal = (tropical - ayanamsa) % 360
+
+# Get current pada (1-4)
+pada = Nakshatras.current_pada(sidereal)
+
+print(f"Moon is in pada {pada}")
+```
+
 ## Time-based Calculations
 
 Calculate positions at different times:

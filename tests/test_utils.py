@@ -1,6 +1,7 @@
 """Unit tests for ndastro_engine.utils module."""
 
 import sys
+from datetime import UTC, datetime
 from pathlib import Path
 from unittest.mock import patch
 
@@ -11,6 +12,7 @@ from ndastro_engine.utils import (
     decimal_years_to_years_months_days_ghatis,
     get_app_data_dir,
     normalize_degree,
+    parse_iso_datetime,
 )
 
 
@@ -208,3 +210,34 @@ class TestNormalizeDegree:
         # Test with 2.25 years
         result = decimal_years_to_years_months_days_ghatis(2.24875)
         assert result == (2, 2, 29, 23, 33, 18, 57)
+
+
+class TestParseIsoDatetime:
+    """Test cases for parse_iso_datetime function."""
+
+    @pytest.mark.unit
+    def test_parse_iso_datetime_defaults_to_utc_when_tz_missing(self) -> None:
+        """Naive ISO datetime should default to UTC."""
+        result = parse_iso_datetime("2026-01-11T12:30:45")
+
+        assert result == datetime(2026, 1, 11, 12, 30, 45, tzinfo=UTC)
+
+    @pytest.mark.unit
+    def test_parse_iso_datetime_keeps_existing_offset(self) -> None:
+        """Timezone-aware ISO datetime should preserve its offset."""
+        result = parse_iso_datetime("2026-01-11T12:30:45+05:30")
+
+        assert result == datetime.fromisoformat("2026-01-11T12:30:45+05:30")
+
+    @pytest.mark.unit
+    def test_parse_iso_datetime_supports_z_suffix(self) -> None:
+        """ISO datetime with Z suffix should be parsed as UTC."""
+        result = parse_iso_datetime("2026-01-11T12:30:45Z")
+
+        assert result == datetime(2026, 1, 11, 12, 30, 45, tzinfo=UTC)
+
+    @pytest.mark.unit
+    def test_parse_iso_datetime_rejects_invalid_value(self) -> None:
+        """Invalid datetime string should raise ValueError."""
+        with pytest.raises(ValueError, match="Invalid ISO datetime string"):
+            parse_iso_datetime("not-a-date")

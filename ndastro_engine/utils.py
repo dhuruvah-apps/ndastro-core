@@ -6,6 +6,7 @@ This module provides:
 
 import os
 import sys
+from datetime import UTC, datetime
 from pathlib import Path
 
 from ndastro_engine.constants import (
@@ -14,6 +15,39 @@ from ndastro_engine.constants import (
     OS_MAC,
     OS_WIN,
 )
+
+
+def parse_iso_datetime(datetime_str: str) -> datetime:
+    """Parse an ISO datetime string.
+
+    If timezone information is missing, UTC is assumed.
+
+    Args:
+        datetime_str (str): ISO datetime string to parse.
+
+    Returns:
+        datetime: Parsed timezone-aware datetime.
+
+    Raises:
+        ValueError: If the string is not a valid ISO datetime.
+
+    """
+    normalized = datetime_str.strip()
+
+    # Python datetime.fromisoformat does not accept a trailing 'Z'.
+    if normalized.endswith("Z"):
+        normalized = f"{normalized[:-1]}+00:00"
+
+    try:
+        parsed = datetime.fromisoformat(normalized)
+    except ValueError as exc:
+        msg = f"Invalid ISO datetime string: {datetime_str}"
+        raise ValueError(msg) from exc
+
+    if parsed.tzinfo is None:
+        return parsed.replace(tzinfo=UTC)
+
+    return parsed
 
 
 def get_app_data_dir(appname: str) -> Path:

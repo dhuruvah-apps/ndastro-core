@@ -3,7 +3,7 @@
 from enum import Enum
 from typing import Literal, TypeAlias, cast
 
-from ndastro_engine.constants import DEGREE_PER_NAKSHATRA
+from ndastro_engine.constants import DEGREE_MAX, DEGREE_PER_NAKSHATRA
 from ndastro_engine.planet_enum import AstronomicalCode, Planets
 
 NakshatraCode: TypeAlias = Literal[
@@ -210,6 +210,24 @@ class Nakshatras(Enum):
 
         # result should be in fractions 0 to 1, so divide by degree per nakshatra
         return (nakshatra.end_degree - planet_longitude) / DEGREE_PER_NAKSHATRA
+
+    @staticmethod
+    def current_pada(planet_longitude: float) -> int:
+        """Calculate the current pada (1-4) within the planet's current Nakshatra.
+
+        Args:
+            planet_longitude (float): The longitude of the planet.
+
+        Returns:
+            int: The current pada number from 1 to 4.
+
+        """
+        normalized_longitude = planet_longitude % DEGREE_MAX
+        advancement = Nakshatras.planet_advancement(normalized_longitude)
+
+        # Use fraction of nakshatra to avoid floating boundary issues.
+        pada = int((advancement / DEGREE_PER_NAKSHATRA) * 4) + 1
+        return min(pada, 4)
 
     @staticmethod
     def from_code(code: NakshatraCode) -> "Nakshatras":
