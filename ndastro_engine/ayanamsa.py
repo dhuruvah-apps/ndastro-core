@@ -46,7 +46,7 @@ AyanamsaSystem: TypeAlias = Literal[
 
 
 def _get_lahiri_ayanamsa(date: datetime.datetime) -> float:
-    """Calculate the Lahiri Ayanamsa for a given date."""
+    """Calculate the True Lahiri Ayanamsa for a given date."""
     # Constants in the Lahiri Ayanamsa formula
     c0 = AYANAMSA_AT_J2000  # Constant term adjusted for J2000 epoch
     c1 = DEG_PER_JCENTURY  # Linear term (degrees per Julian century)

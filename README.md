@@ -16,7 +16,8 @@ A modern Python library for Vedic astronomical calculations, built on top of [Sk
 - 🌅 **Sunrise & Sunset** - Accurate sunrise and sunset times for any location
 - 🌙 **Lunar Nodes** - Rahu (North Node) and Kethu (South Node) calculations
 - ⬆️ **Ascendant Calculation** - Compute rising sign (Lagna) for any time and location
-- � **Type-safe Ayanamsa Systems** - `AyanamsaSystem` TypeAlias covering 16 calculation methods (Lahiri, Raman, Krishnamurti, Fagan-Bradley, and more) with IDE autocomplete
+- ⏱️ **Dasa Calculations** - Multi-level dasa periods (Mahadasa, Antardasa, Pratyantardasa, Sookshmadasa) with Vimshottari system built-in; full extensibility for custom dasa systems
+- 🔧 **Type-safe Ayanamsa Systems** - `AyanamsaSystem` TypeAlias covering 16 calculation methods (Lahiri, Raman, Krishnamurti, Fagan-Bradley, and more) with IDE autocomplete
 - �🔄 **16 Ayanamsa Systems** - Comprehensive support for Vedic and Western sidereal systems:
   - Lahiri, Raman, Krishnamurti (KP New & Old), Fagan-Bradley
   - Traditional: Kali, Janma, Yukteshwar, Suryasiddhanta, Aryabhatta
@@ -126,6 +127,35 @@ print(f"Lahiri Ayanamsa: {lahiri:.4f}°")
 print(f"Raman Ayanamsa: {raman:.4f}°")
 print(f"KP New Ayanamsa: {kp:.4f}°")
 print(f"Fagan-Bradley Ayanamsa: {fagan:.4f}°")
+```
+
+### Dasa Calculations
+
+```python
+from datetime import datetime
+import pytz
+from ndastro_engine.dasa import DasaContext, DasaQuery, get_dasa_timeline, get_running_dasa
+
+# Create birth context (Vimshottari is default)
+context = DasaContext(
+    birth_datetime=datetime(1985, 10, 24, 6, 30, 0, tzinfo=pytz.UTC),
+    lat=13.08,          # Chennai latitude
+    lon=80.27,          # Chennai longitude
+    ayanamsa_system="lahiri"
+)
+
+# Get 40-year timeline with 4 levels
+timeline = get_dasa_timeline(context, DasaQuery(levels=4, years=40))
+
+# Print first mahadasa
+maha = timeline[0]
+print(f"Mahadasa {maha.lord}: {maha.start_utc.date()} → {maha.end_utc.date()}")
+
+# Find running dasa at a specific date
+query_date = datetime(2026, 4, 18, 12, 0, 0, tzinfo=pytz.UTC)
+running = get_running_dasa(query_date, context)
+print(f"Current Mahadasa: {running.maha.lord if running.maha else 'N/A'}")
+print(f"Current Antardasa: {running.antara.lord if running.antara else 'N/A'}")
 ```
 
 ### Planetary Position Calculation

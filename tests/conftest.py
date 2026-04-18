@@ -4,6 +4,22 @@ import pytest
 
 
 @pytest.fixture
+def dasa_registry_cleanup():
+    """Restore the global dasa definition registry after each test that mutates it.
+
+    Yields control to the test, then removes any keys added during the test so the
+    module-level singleton is not polluted across the test session.
+    """
+    import ndastro_engine.dasa as _dasa_module
+
+    snapshot = set(_dasa_module._DASA_DEFINITIONS.keys())
+    yield
+    for key in list(_dasa_module._DASA_DEFINITIONS.keys()):
+        if key not in snapshot:
+            del _dasa_module._DASA_DEFINITIONS[key]
+
+
+@pytest.fixture
 def sample_coordinates() -> dict[str, tuple[float, float]]:
     """Provide sample geographic coordinates for testing.
 

@@ -201,7 +201,7 @@ class Nakshatras(Enum):
             planet_longitude (float): The longitude of the planet.
 
         Returns:
-            float: The remaining degrees for the planet to complete its current star.
+            float: The remaining degrees converted to fractions of the nakshatra for the planet to complete its current star.
 
         """
         # fractions of nakshatra yet to be completed

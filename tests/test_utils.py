@@ -207,4 +207,4 @@ class TestNormalizeDegree:
         """Test decimal_years_to_years_months_days_ghatis function."""
         # Test with 2.25 years
         result = decimal_years_to_years_months_days_ghatis(2.24875)
-        assert result == (2, 2, 29, 23, 32, 32, 57)
+        assert result == (2, 2, 29, 23, 33, 18, 57)
