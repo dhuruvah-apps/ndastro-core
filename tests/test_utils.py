@@ -1,9 +1,10 @@
 """Unit tests for ndastro_engine.utils module."""
 
+import json
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -11,6 +12,7 @@ from ndastro_engine.constants import OS_LINUX, OS_MAC, OS_WIN
 from ndastro_engine.utils import (
     decimal_years_to_years_months_days_ghatis,
     get_app_data_dir,
+    get_elevation_by_latlon,
     normalize_degree,
     parse_iso_datetime,
 )
@@ -241,3 +243,30 @@ class TestParseIsoDatetime:
         """Invalid datetime string should raise ValueError."""
         with pytest.raises(ValueError, match="Invalid ISO datetime string"):
             parse_iso_datetime("not-a-date")
+
+
+class TestGetElevationByLatlon:
+    """Test cases for get_elevation_by_latlon function."""
+
+    @pytest.mark.unit
+    def test_get_elevation_by_latlon_returns_api_value(self) -> None:
+        """Should return elevation value from API payload."""
+        mock_response = MagicMock()
+        mock_response.read.return_value = json.dumps({"elevation": 920.5}).encode("utf-8")
+
+        get_elevation_by_latlon.cache_clear()
+        with patch("ndastro_engine.utils.urlopen") as mock_urlopen:
+            mock_urlopen.return_value.__enter__.return_value = mock_response
+
+            result = get_elevation_by_latlon(12.97, 77.59)
+
+        assert result == 920.5
+
+    @pytest.mark.unit
+    def test_get_elevation_by_latlon_falls_back_to_zero_on_error(self) -> None:
+        """Should return 0.0 when API call fails."""
+        get_elevation_by_latlon.cache_clear()
+        with patch("ndastro_engine.utils.urlopen", side_effect=OSError):
+            result = get_elevation_by_latlon(12.97, 77.59)
+
+        assert result == 0.0

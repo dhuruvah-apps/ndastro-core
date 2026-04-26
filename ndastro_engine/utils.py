@@ -4,10 +4,14 @@ This module provides:
 - get_app_data_dir: Get the application data directory for the given app name.
 """
 
+import json
 import os
 import sys
 from datetime import UTC, datetime
+from functools import lru_cache
 from pathlib import Path
+from urllib.error import URLError
+from urllib.request import urlopen
 
 from ndastro_engine.constants import (
     AVERAGE_DAYS_IN_MONTH,
@@ -15,6 +19,32 @@ from ndastro_engine.constants import (
     OS_MAC,
     OS_WIN,
 )
+
+
+@lru_cache(maxsize=256)
+def get_elevation_by_latlon(lat: float, lon: float, timeout: float = 10.0) -> float:
+    """Get elevation in meters for latitude and longitude.
+
+    Uses whatismyelevation.com API and falls back to 0.0 when lookup fails.
+
+    Args:
+        lat (float): Latitude in decimal degrees.
+        lon (float): Longitude in decimal degrees.
+        timeout (float, optional): Request timeout in seconds. Defaults to 3.0.
+
+    Returns:
+        float: Elevation in meters, or 0.0 when unavailable.
+
+    """
+    url = f"https://whatismyelevation.com/api/elevation?latitude={lat}&longitude={lon}"
+
+    try:
+        with urlopen(url, timeout=timeout) as response:  # noqa: S310
+            payload = json.loads(response.read().decode("utf-8"))
+            elevation = payload.get("elevation", 0.0)
+            return float(elevation)
+    except (URLError, TimeoutError, OSError, ValueError, TypeError, json.JSONDecodeError):
+        return 0.0
 
 
 def parse_iso_datetime(datetime_str: str) -> datetime:

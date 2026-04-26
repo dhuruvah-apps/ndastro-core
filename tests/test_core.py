@@ -1,6 +1,7 @@
 """Tests for astronomical calculations in ndastro engine."""
 
 from datetime import datetime
+from unittest.mock import patch
 
 import pytest
 import pytz
@@ -14,6 +15,13 @@ from ndastro_engine.core import (
 from ndastro_engine.enums import Planets
 from ndastro_engine.models import PlanetPosition
 from ndastro_engine.retrograde import is_planet_in_retrograde
+
+
+@pytest.fixture(autouse=True)
+def mock_elevation_lookup() -> None:
+    """Avoid external elevation API calls in core tests."""
+    with patch("ndastro_engine.core.get_elevation_by_latlon", return_value=914.0):
+        yield
 
 
 class TestGetPlanetPosition:

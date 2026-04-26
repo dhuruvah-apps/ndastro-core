@@ -14,7 +14,7 @@ from skyfield.toposlib import wgs84
 from ndastro_engine.config import eph, ts
 from ndastro_engine.enums import Planets
 from ndastro_engine.models import PlanetPosition
-from ndastro_engine.utils import normalize_degree
+from ndastro_engine.utils import get_elevation_by_latlon, normalize_degree
 
 if TYPE_CHECKING:
     from skyfield.positionlib import Barycentric
@@ -70,8 +70,9 @@ def get_planet_position(planet: Planets, lat: float, lon: float, given_time: dat
             0.0,
         )
 
+    elevation = get_elevation_by_latlon(lat, lon)
     eth: VectorSum = cast("VectorSum", eph["earth"])
-    observer: VectorSum = eth + wgs84.latlon(latitude_degrees=lat, longitude_degrees=lon, elevation_m=914)
+    observer: VectorSum = eth + wgs84.latlon(latitude_degrees=lat, longitude_degrees=lon, elevation_m=elevation)
     astrometric = cast("Barycentric", observer.at(t)).observe(eph[planet.astronomical_code]).apparent()
 
     latitude, longitude, distance, speed_latitude, speed_longitude, speed_distance = astrometric.frame_latlon_and_rates(ecliptic_frame)
@@ -107,21 +108,23 @@ def get_planets_position(planets: list[Planets], lat: float, lon: float, given_t
     return positions
 
 
-def get_sunrise_sunset(lat: float, lon: float, given_time: datetime, elevation: float = 914) -> tuple[datetime, datetime]:
+def get_sunrise_sunset(lat: float, lon: float, given_time: datetime, elevation: float | None = None) -> tuple[datetime, datetime]:
     """Calculate the sunrise and sunset times for a given location and date.
 
     Args:
         lat (float): The latitude of the location in decimal degrees.
         lon (float): The longitude of the location in decimal degrees.
         given_time (datetime): The date and time for which to calculate the sunrise and sunset times.
-        elevation (float, optional): The elevation of the location in meters. Defaults to 914 meters (approximately 3000 feet).
+        elevation (float | None, optional): Elevation in meters.
+            If None, it is resolved from latitude/longitude using an elevation API.
 
     Returns:
         tuple[datetime, datetime]: A tuple containing the sunrise and sunset times as datetime objects.
 
     """
     # Define location
-    location = wgs84.latlon(latitude_degrees=lat, longitude_degrees=lon, elevation_m=elevation)
+    effective_elevation = get_elevation_by_latlon(lat, lon) if elevation is None else elevation
+    location = wgs84.latlon(latitude_degrees=lat, longitude_degrees=lon, elevation_m=effective_elevation)
 
     # Define time range for the search (e.g., one day)
     t_start = ts.utc(given_time.date())  # Start of the day
