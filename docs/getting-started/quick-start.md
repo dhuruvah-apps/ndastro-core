@@ -55,9 +55,12 @@ latitude = 28.6139
 longitude = 77.2090
 date = datetime(2026, 1, 11, tzinfo=timezone.utc)
 
-sunrise, sunset = get_sunrise_sunset(date, latitude, longitude)
+sunrise, sunset = get_sunrise_sunset(latitude, longitude, date)
 print(f"Sunrise: {sunrise}")
 print(f"Sunset: {sunset}")
+
+# Optional: pass explicit elevation in meters
+sunrise, sunset = get_sunrise_sunset(latitude, longitude, date, elevation=216.0)
 ```
 
 ### 4. Calculate Dasa Periods
@@ -213,6 +216,24 @@ print(decimal)  # Output: 45.5
 dms_str = dd2dmsstr(45.5)
 print(dms_str)  # Output: 45° 30' 0.00"
 ```
+
+### Elevation Lookup by Coordinates
+
+```python
+from ndastro_engine.utils import get_elevation_by_latlon
+
+latitude = 12.97
+longitude = 77.59
+
+elevation = get_elevation_by_latlon(latitude, longitude)
+print(f"Elevation: {elevation} m")
+```
+
+The elevation utility calls an online elevation API with latitude and longitude.
+If lookup fails, it safely returns `0.0`.
+
+You can use this directly, or let `get_sunrise_sunset()` auto-resolve elevation when
+`elevation` is not provided.
 
 ## Next Steps
 

@@ -13,7 +13,7 @@ latitude = 28.6139
 longitude = 77.2090
 date = datetime(2026, 1, 11, tzinfo=timezone.utc)
 
-sunrise, sunset = get_sunrise_sunset(date, latitude, longitude)
+sunrise, sunset = get_sunrise_sunset(latitude, longitude, date)
 
 print(f"Sunrise: {sunrise}")
 print(f"Sunset: {sunset}")
@@ -31,7 +31,7 @@ latitude = 28.6139
 longitude = 77.2090
 date = datetime(2026, 1, 11, tzinfo=timezone.utc)
 
-sunrise, sunset = get_sunrise_sunset(date, latitude, longitude)
+sunrise, sunset = get_sunrise_sunset(latitude, longitude, date)
 
 # Format the output
 print(f"Sunrise: {sunrise.strftime('%Y-%m-%d %H:%M:%S %Z')}")
@@ -66,7 +66,7 @@ locations = {
 }
 
 for city, (lat, lon) in locations.items():
-    sunrise, sunset = get_sunrise_sunset(date, lat, lon)
+    sunrise, sunset = get_sunrise_sunset(lat, lon, date)
     print(f"\n{city}:")
     print(f"  Sunrise: {sunrise.strftime('%H:%M:%S UTC')}")
     print(f"  Sunset: {sunset.strftime('%H:%M:%S UTC')}")
@@ -89,7 +89,7 @@ start_date = datetime(2026, 1, 11, tzinfo=timezone.utc)
 
 for day in range(7):
     date = start_date + timedelta(days=day)
-    sunrise, sunset = get_sunrise_sunset(date, latitude, longitude)
+    sunrise, sunset = get_sunrise_sunset(latitude, longitude, date)
     
     daylight = sunset - sunrise
     hours = daylight.total_seconds() / 3600
@@ -124,7 +124,7 @@ dates = [
 local_tz = pytz.timezone('Asia/Kolkata')
 
 for date in dates:
-    sunrise, sunset = get_sunrise_sunset(date, latitude, longitude)
+    sunrise, sunset = get_sunrise_sunset(latitude, longitude, date)
     sunrise_local = sunrise.astimezone(local_tz)
     sunset_local = sunset.astimezone(local_tz)
     
@@ -149,7 +149,7 @@ latitude = 28.6139
 longitude = 77.2090
 date = datetime(2026, 1, 11, tzinfo=timezone.utc)
 
-sunrise, sunset = get_sunrise_sunset(date, latitude, longitude)
+sunrise, sunset = get_sunrise_sunset(latitude, longitude, date)
 
 # Calculate duration
 duration = sunset - sunrise
@@ -179,7 +179,7 @@ latest_time = None
 # Check every day of the year
 for day in range(365):
     date = datetime(year, 1, 1, tzinfo=timezone.utc) + timedelta(days=day)
-    sunrise, _ = get_sunrise_sunset(date, latitude, longitude)
+    sunrise, _ = get_sunrise_sunset(latitude, longitude, date)
     
     if earliest_time is None or sunrise < earliest_time:
         earliest_time = sunrise
@@ -207,13 +207,13 @@ longitude = 77.2090
 
 # Method 1: UTC timezone
 date_utc = datetime(2026, 1, 11, tzinfo=timezone.utc)
-sunrise, sunset = get_sunrise_sunset(date_utc, latitude, longitude)
+sunrise, sunset = get_sunrise_sunset(latitude, longitude, date_utc)
 
 # Method 2: Convert from local timezone
 local_tz = pytz.timezone('Asia/Kolkata')
 date_local = local_tz.localize(datetime(2026, 1, 11, 12, 0, 0))
 date_utc = date_local.astimezone(timezone.utc)
-sunrise, sunset = get_sunrise_sunset(date_utc, latitude, longitude)
+sunrise, sunset = get_sunrise_sunset(latitude, longitude, date_utc)
 
 # Convert results to desired timezone
 sunrise_ist = sunrise.astimezone(local_tz)
@@ -239,7 +239,7 @@ longitude = 25.0
 date = datetime(2026, 6, 21, tzinfo=timezone.utc)  # Summer solstice
 
 try:
-    sunrise, sunset = get_sunrise_sunset(date, latitude, longitude)
+    sunrise, sunset = get_sunrise_sunset(latitude, longitude, date)
     print(f"Sunrise: {sunrise}")
     print(f"Sunset: {sunset}")
 except Exception as e:
@@ -264,7 +264,7 @@ dates = [
 ]
 
 for date in dates:
-    sunrise, sunset = get_sunrise_sunset(date, latitude, longitude)
+    sunrise, sunset = get_sunrise_sunset(latitude, longitude, date)
     duration = (sunset - sunrise).total_seconds() / 3600
     print(f"{date.strftime('%Y-%m-%d')}: {duration:.2f} hours")
 ```
@@ -293,10 +293,31 @@ date = datetime(2026, 1, 11, tzinfo=timezone.utc)
 
 for name, (lat, lon) in locations.items():
     try:
-        sunrise, sunset = get_sunrise_sunset(date, lat, lon)
+        sunrise, sunset = get_sunrise_sunset(lat, lon, date)
         print(f"{name}: Sunrise {sunrise.strftime('%H:%M')}, Sunset {sunset.strftime('%H:%M')}")
     except Exception as e:
         print(f"{name}: {e}")
+```
+
+## Elevation Handling
+
+By default, elevation is resolved automatically from latitude and longitude using an elevation API.
+If elevation lookup fails (for example, network issues), the calculation safely falls back to `0` meters.
+
+You can also provide elevation explicitly when you want full control:
+
+```python
+from datetime import datetime, timezone
+from ndastro_engine.core import get_sunrise_sunset
+
+latitude = 28.6139
+longitude = 77.2090
+date = datetime(2026, 1, 11, tzinfo=timezone.utc)
+
+# Explicit elevation in meters
+sunrise, sunset = get_sunrise_sunset(latitude, longitude, date, elevation=216.0)
+
+print(sunrise, sunset)
 ```
 
 ## See Also
