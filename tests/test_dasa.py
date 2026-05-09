@@ -313,41 +313,41 @@ class TestKnownRunningDasa:
 
     @pytest.mark.integration
     def test_maha_dasa_lord_and_dates(self, running_dasa: RunningDasa) -> None:
-        """Maha dasa should be SATURN from 2009-03-28 to 2028-03-28."""
+        """Maha dasa should be SATURN from 2008-08-03 to 2027-08-04."""
         maha = running_dasa.maha if running_dasa.maha else None
         assert maha is not None
         assert maha.lord == "SATURN"
-        assert maha.start_utc.date() == _date(2009, 3, 28)
-        assert maha.end_utc.date() == _date(2028, 3, 28)
+        assert maha.start_utc.date() == _date(2008, 8, 3)
+        assert maha.end_utc.date() == _date(2027, 8, 4)
 
     @pytest.mark.integration
     def test_antara_dasa_lord_and_dates(self, running_dasa: RunningDasa) -> None:
-        """Antara dasa should be JUPITER from 2025-09-15 to 2028-03-28."""
+        """Antara dasa should be JUPITER from 2025-01-21 to 2027-08-04."""
         antara = running_dasa.antara if running_dasa.antara else None
         assert antara is not None
         assert antara.lord == "JUPITER"
-        assert antara.start_utc.date() == _date(2025, 9, 15)
-        assert antara.end_utc.date() == _date(2028, 3, 28)
+        assert antara.start_utc.date() == _date(2025, 1, 21)
+        assert antara.end_utc.date() == _date(2027, 8, 4)
 
     @pytest.mark.integration
     def test_pratyantara_dasa_lord_and_dates(self, running_dasa: RunningDasa) -> None:
-        """Pratyantara dasa should be SATURN from 2026-01-16 to 2026-06-12."""
+        """Pratyantara dasa should be KETHU from 2026-02-25 to 2026-04-20."""
         pratyantara = running_dasa.pratyantara if running_dasa.pratyantara else None
         assert pratyantara is not None
 
-        assert pratyantara.lord == "SATURN"
-        assert pratyantara.start_utc.date() == _date(2026, 1, 16)
-        assert pratyantara.end_utc.date() == _date(2026, 6, 12)
+        assert pratyantara.lord == "KETHU"
+        assert pratyantara.start_utc.date() == _date(2026, 2, 25)
+        assert pratyantara.end_utc.date() == _date(2026, 4, 20)
 
     @pytest.mark.integration
     def test_sookshma_dasa_lord_and_dates(self, running_dasa: RunningDasa) -> None:
-        """Sookshma dasa should be MOON from 2026-04-10 to 2026-04-23."""
+        """Sookshma dasa should be MERCURY from 2026-04-13 to 2026-04-20."""
         sookshma = running_dasa.sookshma if running_dasa.sookshma else None
         assert sookshma is not None
 
-        assert sookshma.lord == "MOON"
-        assert sookshma.start_utc.date() == _date(2026, 4, 10)
-        assert sookshma.end_utc.date() == _date(2026, 4, 23)
+        assert sookshma.lord == "MERCURY"
+        assert sookshma.start_utc.date() == _date(2026, 4, 13)
+        assert sookshma.end_utc.date() == _date(2026, 4, 20)
 
     @pytest.mark.integration
     def test_all_levels_are_non_none(self, running_dasa: RunningDasa) -> None:

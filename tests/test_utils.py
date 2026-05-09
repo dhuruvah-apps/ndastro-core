@@ -10,7 +10,10 @@ import pytest
 
 from ndastro_engine.constants import OS_LINUX, OS_MAC, OS_WIN
 from ndastro_engine.utils import (
+    dd2dms,
+    dd2dmsstr,
     decimal_years_to_years_months_days_ghatis,
+    dms2dd,
     get_app_data_dir,
     get_elevation_by_latlon,
     normalize_degree,
@@ -270,3 +273,93 @@ class TestGetElevationByLatlon:
             result = get_elevation_by_latlon(12.97, 77.59)
 
         assert result == 0.0
+
+
+class TestDms2Dd:
+    """Test cases for dms2dd (DMS → decimal degrees) conversion."""
+
+    @pytest.mark.unit
+    def test_positive_values(self) -> None:
+        """Positive DMS converts correctly."""
+        assert dms2dd(16, 6, 32) == pytest.approx(16 + 6 / 60 + 32 / 3600)
+
+    @pytest.mark.unit
+    def test_zero_minutes_seconds(self) -> None:
+        """Only degree component."""
+        assert dms2dd(30, 0, 0) == pytest.approx(30.0)
+
+    @pytest.mark.unit
+    def test_negative_sign(self) -> None:
+        """Negative sign flips the result."""
+        result = dms2dd(10, 30, 0, sign=-1)
+        assert result == pytest.approx(-(10 + 30 / 60))
+
+    @pytest.mark.unit
+    def test_fractional_seconds(self) -> None:
+        """Fractional seconds handled correctly."""
+        expected = 1 + 1 / 60 + 1.5 / 3600
+        assert dms2dd(1, 1, 1.5) == pytest.approx(expected)
+
+
+class TestDd2Dms:
+    """Test cases for dd2dms (decimal degrees → DMS) conversion."""
+
+    @pytest.mark.unit
+    def test_positive_value(self) -> None:
+        """Positive decimal converts correctly."""
+        deg, minutes, secs, sign = dd2dms(16 + 6 / 60 + 32 / 3600)
+        assert deg == 16
+        assert minutes == 6
+        assert secs == pytest.approx(32.0, abs=1e-6)
+        assert sign == 1
+
+    @pytest.mark.unit
+    def test_negative_value(self) -> None:
+        """Negative decimal yields sign == -1."""
+        deg, minutes, secs, sign = dd2dms(-10.5)
+        assert sign == -1
+        assert deg == 10
+        assert minutes == 30
+        assert secs == pytest.approx(0.0, abs=1e-6)
+
+    @pytest.mark.unit
+    def test_zero(self) -> None:
+        """Zero decimal gives all zeros with positive sign."""
+        deg, minutes, secs, sign = dd2dms(0.0)
+        assert deg == 0
+        assert minutes == 0
+        assert secs == pytest.approx(0.0)
+        assert sign == 1
+
+    @pytest.mark.unit
+    def test_roundtrip(self) -> None:
+        """dms2dd(dd2dms(x)) should recover the original value."""
+        original = 256.109722  # ~256° 06' 35"
+        deg, minutes, secs, sign = dd2dms(original)
+        recovered = dms2dd(deg, minutes, secs, sign)
+        assert recovered == pytest.approx(original, abs=1e-9)
+
+
+class TestDd2DmsStr:
+    """Test cases for dd2dmsstr formatting."""
+
+    @pytest.mark.unit
+    def test_positive_format(self) -> None:
+        """Positive value formats without leading minus."""
+        result = dd2dmsstr(30.5)
+        assert result.startswith("30°")
+        assert "'" in result
+        assert '"' in result
+        assert not result.startswith("-")
+
+    @pytest.mark.unit
+    def test_negative_format(self) -> None:
+        """Negative value formats with leading minus."""
+        result = dd2dmsstr(-10.25)
+        assert result.startswith("-10°")
+
+    @pytest.mark.unit
+    def test_zero_format(self) -> None:
+        """Zero formats as 0° 0' 0.00\"."""
+        result = dd2dmsstr(0.0)
+        assert "0°" in result

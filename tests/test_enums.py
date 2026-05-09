@@ -231,6 +231,162 @@ class TestPlanetsEnum:
         assert 99 not in Planets._value2member_map_
 
 
+class TestRasisEnum:
+    """Test cases for Rasis enum."""
+
+    @pytest.mark.unit
+    def test_rasis_str(self) -> None:
+        """__str__ returns the enum name."""
+        from ndastro_engine.rasi_enum import Rasis
+        assert str(Rasis.ARIES) == "ARIES"
+        assert str(Rasis.PISCES) == "PISCES"
+
+    @pytest.mark.unit
+    def test_rasis_owner(self) -> None:
+        """Owner property returns correct ruling planet for every Rasi."""
+        from ndastro_engine.rasi_enum import Rasis
+        assert Rasis.ARIES.owner == Planets.MARS
+        assert Rasis.TAURUS.owner == Planets.VENUS
+        assert Rasis.GEMINI.owner == Planets.MERCURY
+        assert Rasis.CANCER.owner == Planets.MOON
+        assert Rasis.LEO.owner == Planets.SUN
+        assert Rasis.VIRGO.owner == Planets.MERCURY
+        assert Rasis.LIBRA.owner == Planets.VENUS
+        assert Rasis.SCORPIO.owner == Planets.MARS
+        assert Rasis.SAGITTARIUS.owner == Planets.JUPITER
+        assert Rasis.CAPRICORN.owner == Planets.SATURN
+        assert Rasis.AQUARIUS.owner == Planets.SATURN
+        assert Rasis.PISCES.owner == Planets.JUPITER
+
+    @pytest.mark.unit
+    def test_rasis_code(self) -> None:
+        """Code property returns correct code for every Rasi."""
+        from ndastro_engine.rasi_enum import Rasis
+        assert Rasis.ARIES.code == "R01"
+        assert Rasis.TAURUS.code == "R02"
+        assert Rasis.GEMINI.code == "R03"
+        assert Rasis.CANCER.code == "R04"
+        assert Rasis.LEO.code == "R05"
+        assert Rasis.VIRGO.code == "R06"
+        assert Rasis.LIBRA.code == "R07"
+        assert Rasis.SCORPIO.code == "R08"
+        assert Rasis.SAGITTARIUS.code == "R09"
+        assert Rasis.CAPRICORN.code == "R10"
+        assert Rasis.AQUARIUS.code == "R11"
+        assert Rasis.PISCES.code == "R12"
+
+    @pytest.mark.unit
+    def test_rasis_from_code_valid(self) -> None:
+        """from_code returns correct enum member for valid codes."""
+        from ndastro_engine.rasi_enum import Rasis
+        assert Rasis.from_code("R01") == Rasis.ARIES
+        assert Rasis.from_code("R06") == Rasis.VIRGO
+        assert Rasis.from_code("R12") == Rasis.PISCES
+
+    @pytest.mark.unit
+    def test_rasis_from_code_invalid_returns_none(self) -> None:
+        """from_code returns None for unknown codes."""
+        from ndastro_engine.rasi_enum import Rasis
+        assert Rasis.from_code("R99") is None  # type: ignore[arg-type]
+
+    @pytest.mark.unit
+    def test_rasis_from_string_valid(self) -> None:
+        """from_string returns correct enum for a valid name (case-insensitive)."""
+        from ndastro_engine.rasi_enum import Rasis
+        assert Rasis.from_string("aries") == Rasis.ARIES
+        assert Rasis.from_string("PISCES") == Rasis.PISCES
+        assert Rasis.from_string("Gemini") == Rasis.GEMINI
+
+    @pytest.mark.unit
+    def test_rasis_from_string_invalid_returns_none(self) -> None:
+        """from_string returns None for unknown name."""
+        from ndastro_engine.rasi_enum import Rasis
+        assert Rasis.from_string("Ophiuchus") is None
+
+    @pytest.mark.unit
+    def test_rasis_to_list(self) -> None:
+        """to_list returns all 12 Rasi names."""
+        from ndastro_engine.rasi_enum import Rasis
+        rasi_list = Rasis.to_list()
+        assert len(rasi_list) == 12
+        assert "ARIES" in rasi_list
+        assert "PISCES" in rasi_list
+
+    @pytest.mark.unit
+    def test_rasis_to_4x4list(self) -> None:
+        """to_4x4list returns a 4×4 grid of Rasi names."""
+        from ndastro_engine.rasi_enum import Rasis
+        grid = Rasis.to_4x4list()
+        assert len(grid) == 4
+        assert all(len(row) == 4 for row in grid)
+        # corners should be PISCES, ARIES, TAURUS, GEMINI
+        assert grid[0][0] == "PISCES"
+        assert grid[0][1] == "ARIES"
+
+    @pytest.mark.unit
+    def test_rasis_code_roundtrip(self) -> None:
+        """from_code(rasi.code) should return the same rasi."""
+        from ndastro_engine.rasi_enum import Rasis
+        for rasi in Rasis:
+            assert Rasis.from_code(rasi.code) == rasi
+
+
+class TestHousesEnum:
+    """Test cases for Houses enum."""
+
+    @pytest.mark.unit
+    def test_houses_str(self) -> None:
+        """__str__ returns the enum name."""
+        from ndastro_engine.house_enum import Houses
+        assert str(Houses.HOUSE1) == "HOUSE1"
+        assert str(Houses.HOUSE12) == "HOUSE12"
+
+    @pytest.mark.unit
+    def test_houses_owner(self) -> None:
+        """Owner property returns correct ruling planet for every house."""
+        from ndastro_engine.house_enum import Houses
+        assert Houses.HOUSE1.owner == Planets.MARS
+        assert Houses.HOUSE2.owner == Planets.VENUS
+        assert Houses.HOUSE3.owner == Planets.MERCURY
+        assert Houses.HOUSE4.owner == Planets.MOON
+        assert Houses.HOUSE5.owner == Planets.SUN
+        assert Houses.HOUSE6.owner == Planets.MERCURY
+        assert Houses.HOUSE7.owner == Planets.VENUS
+        assert Houses.HOUSE8.owner == Planets.MARS
+        assert Houses.HOUSE9.owner == Planets.JUPITER
+        assert Houses.HOUSE10.owner == Planets.SATURN
+        assert Houses.HOUSE11.owner == Planets.SATURN
+        assert Houses.HOUSE12.owner == Planets.JUPITER
+
+    @pytest.mark.unit
+    def test_houses_code(self) -> None:
+        """Code property returns correct code for every house."""
+        from ndastro_engine.house_enum import Houses
+        for i, house in enumerate(Houses, start=1):
+            assert house.code == f"H{i:02d}"
+
+    @pytest.mark.unit
+    def test_houses_from_code_valid(self) -> None:
+        """from_code returns correct enum member for valid codes."""
+        from ndastro_engine.house_enum import Houses
+        assert Houses.from_code("H01") == Houses.HOUSE1
+        assert Houses.from_code("H07") == Houses.HOUSE7
+        assert Houses.from_code("H12") == Houses.HOUSE12
+
+    @pytest.mark.unit
+    def test_houses_from_code_invalid_returns_house1(self) -> None:
+        """from_code falls back to HOUSE1 for unknown codes."""
+        from ndastro_engine.house_enum import Houses
+        assert Houses.from_code("H99") == Houses.HOUSE1  # type: ignore[arg-type]
+
+    @pytest.mark.unit
+    def test_houses_code_roundtrip(self) -> None:
+        """from_code(house.code) should return the same house."""
+        from ndastro_engine.house_enum import Houses
+        for house in Houses:
+            assert Houses.from_code(house.code) == house
+
+
 class TestNakshatrasEnum:
     """Test cases for Nakshatras enum."""
 

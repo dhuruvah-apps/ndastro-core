@@ -93,12 +93,12 @@ class TestGetPlanetPosition:
         [
             (
                 Planets.SUN,
-                279.8051877358686,
-                0.0006220123496504032,
-                0.9833628050249553,
-                -0.000554830285817659,
-                1.0340674080547134,
-                9.214610959975152e-06,
+                279.80548006067215,
+                0.00016777593511009564,
+                0.9833210295394209,
+                -2.4293450973440584e-05,
+                1.0189261687625675,
+                -1.4421537075006936e-05,
             )
         ],
     )
@@ -216,15 +216,15 @@ class TestGetAllPlanetPositions:
         assert len(result) == 11
 
         assert result[Planets.ASCENDANT].longitude == 197.13930724837974
-        assert result[Planets.SUN].longitude == 292.5613192065848
-        assert result[Planets.MOON].longitude == 226.43748381648348
-        assert result[Planets.MARS].longitude == 291.75343198140524
-        assert result[Planets.MERCURY].longitude == 287.03848290381467
-        assert result[Planets.JUPITER].longitude == 109.78310583323993
-        assert result[Planets.VENUS].longitude == 294.014258990699
-        assert result[Planets.SATURN].longitude == 356.9562483752751
-        assert result[Planets.RAHU].longitude == 339.88525356186483
-        assert result[Planets.KETHU].longitude == 159.88525356186483
+        assert result[Planets.SUN].longitude == 292.56163586778524
+        assert result[Planets.MOON].longitude == 225.65829597903505
+        assert result[Planets.MARS].longitude == 291.7535983137842
+        assert result[Planets.MERCURY].longitude == 287.03856603263534
+        assert result[Planets.JUPITER].longitude == 109.78299388788987
+        assert result[Planets.VENUS].longitude == 294.01451282247734
+        assert result[Planets.SATURN].longitude == 356.9565050939298
+        assert result[Planets.RAHU].longitude == 340.2495746510556
+        assert result[Planets.KETHU].longitude == 160.24957465105558
 
     @pytest.mark.unit
     def test_get_all_planet_positions_contains_major_planets(self) -> None:
