@@ -11,7 +11,19 @@ from skyfield.framelib import ecliptic_frame
 from skyfield.nutationlib import mean_obliquity
 from skyfield.toposlib import wgs84
 
+from ndastro_engine import config as _engine_config
 from ndastro_engine.config import eph, ts
+from ndastro_engine.constants import (
+    DAYS_PER_JULIAN_CENTURY,
+    IAU_PRECESSION_LONGITUDE_C1,
+    IAU_PRECESSION_LONGITUDE_C2,
+    J2000_TT,
+    MEAN_NODE_C2,
+    MEAN_NODE_C3,
+    MEAN_NODE_C4,
+    MEAN_NODE_EPOCH_DEG,
+    MEAN_NODE_RATE_DEG_PER_CENTURY,
+)
 from ndastro_engine.enums import Planets
 from ndastro_engine.models import PlanetPosition
 from ndastro_engine.utils import get_elevation_by_latlon, normalize_degree
@@ -70,10 +82,15 @@ def get_planet_position(planet: Planets, lat: float, lon: float, given_time: dat
             0.0,
         )
 
-    elevation = get_elevation_by_latlon(lat, lon)
+    t = ts.utc(given_time)
     eth: VectorSum = cast("VectorSum", eph["earth"])
-    observer: VectorSum = eth + wgs84.latlon(latitude_degrees=lat, longitude_degrees=lon, elevation_m=elevation)
-    astrometric = cast("Barycentric", observer.at(t)).observe(eph[planet.astronomical_code]).apparent()
+
+    if _engine_config.settings.position_reference == "geocentric":
+        astrometric = cast("Barycentric", eth.at(t)).observe(eph[planet.astronomical_code]).apparent()
+    else:
+        elevation = get_elevation_by_latlon(lat, lon)
+        observer: VectorSum = eth + wgs84.latlon(latitude_degrees=lat, longitude_degrees=lon, elevation_m=elevation)
+        astrometric = cast("Barycentric", observer.at(t)).observe(eph[planet.astronomical_code]).apparent()
 
     latitude, longitude, distance, speed_latitude, speed_longitude, speed_distance = astrometric.frame_latlon_and_rates(ecliptic_frame)
 
@@ -173,24 +190,52 @@ def get_ascendent_position(lat: float, lon: float, given_time: datetime) -> floa
 def get_lunar_node_positions(given_time: datetime) -> tuple[float, float]:
     """Calculate the positions of the lunar nodes (Rahu and Kethu) for a given datetime.
 
+    The calculation method is controlled by the ``node_type`` setting in
+    ``ndastro_engine.config``:
+
+    - ``'true'``  (default) — osculating (true) nodes via Skyfield's
+      ``osculating_elements_of()``.  Corresponds to JHora ``TrueNodes=1``.
+    - ``'mean'``  — mean nodes derived from the IAU 2006 precession model
+      (longitude of ascending node of the ecliptic).
+      Corresponds to JHora ``TrueNodes=0``.
+
     Args:
-        given_time (datetime): The datetime in UTC for which to calculate the lunar node positions.
+        given_time (datetime): The datetime in UTC for which to calculate the
+            lunar node positions.
 
     Returns:
-        tuple[float, float]: A tuple containing the longitudes of Rahu and Kethu in decimal degrees.
+        tuple[float, float]: Longitudes of Rahu and Kethu in decimal degrees.
 
     """
     tm = ts.from_datetime(given_time)
-    ecliptic = inertial_frames["ECLIPJ2000"]
+    T = (tm.tt - J2000_TT) / DAYS_PER_JULIAN_CENTURY  # Julian centuries from J2000.0
 
-    earth = eph["earth"]
-    moon = eph["moon"]
-    position = cast("VectorSum", (moon - earth)).at(tm)
-    elements = osculating_elements_of(position, ecliptic)
+    if _engine_config.settings.node_type == "mean":
+        # Mean lunar node: use IAU 2006 precession longitude of the ascending
+        # node, approximated from the standard polynomial (matches Swiss
+        # Ephemeris mean-node output to within ~0.01° for modern dates).
+        # Polynomial from IAU SOFA / Meeus Ch. 22 (degrees):
+        mean_node_deg = (
+            MEAN_NODE_EPOCH_DEG
+            + MEAN_NODE_RATE_DEG_PER_CENTURY * T
+            + MEAN_NODE_C2 * T**2
+            + MEAN_NODE_C3 * T**3
+            + MEAN_NODE_C4 * T**4
+        ) % 360.0
+        rahu_position = normalize_degree(mean_node_deg)
+    else:
+        # True (osculating) nodes in ecliptic of date (matches JHora / DrikPanchang).
+        # osculating_elements_of uses the fixed ECLIPJ2000 frame; add the IAU 2006
+        # general precession in longitude (ψ_A) to convert to ecliptic of date.
+        earth = eph["earth"]
+        moon = eph["moon"]
+        position = cast("VectorSum", (moon - earth)).at(tm)
+        elements = osculating_elements_of(position, inertial_frames["ECLIPJ2000"])
+        eclipj2000_node = cast("float", cast("Angle", elements.longitude_of_ascending_node).degrees)
+        precession_deg = (IAU_PRECESSION_LONGITUDE_C1 * T + IAU_PRECESSION_LONGITUDE_C2 * T**2) / 3600.0
+        rahu_position = normalize_degree(eclipj2000_node + precession_deg)
 
-    rahu_position = normalize_degree(cast("float", cast("Angle", elements.longitude_of_ascending_node).degrees))
     kethu_position = normalize_degree(rahu_position + 180)
-
     return rahu_position, kethu_position
 
 

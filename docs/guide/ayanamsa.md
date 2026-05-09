@@ -38,7 +38,7 @@ print(f"Fagan-Bradley: {fagan:.6f}°")
 
 ## Available Ayanamsa Systems
 
-ndastro-engine supports 16 different ayanamsa calculation methods:
+NDAstro engine supports 16 different ayanamsa calculation methods:
 
 ### Popular Systems
 

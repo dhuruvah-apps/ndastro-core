@@ -1,4 +1,4 @@
-# ndastro-engine
+# NDAstro engine
 
 [![PyPI version](https://badge.fury.io/py/ndastro-engine.svg)](https://badge.fury.io/py/ndastro-engine)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
@@ -7,7 +7,7 @@
 [![Build](https://github.com/dhuruvah-apps/ndastro-core/actions/workflows/publish.yml/badge.svg)](https://github.com/dhuruvah-apps/ndastro-core/actions/workflows/publish.yml)
 [![Docs](https://github.com/dhuruvah-apps/ndastro-core/actions/workflows/docs.yml/badge.svg)](https://github.com/dhuruvah-apps/ndastro-core/actions/workflows/docs.yml)
 
-A modern Python library for Vedic astronomical calculations, built on top of [Skyfield](https://rhodesmill.org/skyfield/). ndastro-engine provides a clean, intuitive API for computing planetary positions, sunrise/sunset times, lunar nodes (Rahu/Kethu), ascendant, and other astronomical events for any location on Earth.
+A modern Python library for Vedic astronomical calculations, built on top of [Skyfield](https://rhodesmill.org/skyfield/). NDAstro engine provides a clean, intuitive API for computing planetary positions, sunrise/sunset times, lunar nodes (Rahu/Kethu), ascendant, and other astronomical events for any location on Earth.
 
 ## Features
 

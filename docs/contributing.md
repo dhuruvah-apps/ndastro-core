@@ -1,6 +1,6 @@
-# Contributing to ndastro-engine
+# Contributing to NDAstro engine
 
-Thank you for considering contributing to ndastro-engine! This document outlines the process and guidelines for contributing.
+Thank you for considering contributing to NDAstro engine! This document outlines the process and guidelines for contributing.
 
 ## Development Setup
 
@@ -144,7 +144,7 @@ When reporting issues, please include:
 
 - Python version
 - Operating system
-- ndastro-engine version
+- NDAstro engine version
 - Minimal code example reproducing the issue
 - Expected vs actual behavior
 - Full error traceback if applicable

@@ -14,6 +14,7 @@ based on Julian centuries from the J2000.0 epoch.
 import datetime
 from typing import Literal, TypeAlias
 
+from ndastro_engine import config as _engine_config
 from ndastro_engine.constants import (
     AYANAMSA_AT_J2000,
     CENTURY_19,
@@ -321,7 +322,7 @@ def get_ayanamsa(
         error_message = f"Unknown ayanamsa system: {system}"
         raise ValueError(error_message)
 
-    return ayanamsa_systems[system](date)
+    return ayanamsa_systems[system](date) + _engine_config.settings.ayanamsa_delta
 
 
 def _calculate_b6(date: tuple[int, int, int]) -> float:

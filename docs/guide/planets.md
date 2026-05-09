@@ -1,6 +1,6 @@
 # Planet Positions
 
-Calculate planetary positions for any date, time, and location using ndastro-engine.
+Calculate planetary positions for any date, time, and location using NDAstro engine.
 
 ## Basic Usage
 
@@ -309,8 +309,55 @@ planets = [Planets.SUN, Planets.MOON, Planets.JUPITER]
 positions = {p.name: get_planet_position(p, latitude, longitude, date) for p in planets}
 ```
 
+## Accuracy Comparison
+
+The following comparison was run against two widely-used Vedic astrology reference tools for **2026-01-01 00:00 IST (geocentric, Lahiri ayanamsa)**.
+
+### vs JHora (true node)
+
+All sidereal longitudes are within **0.011°** (~0.7 arcminutes) of JHora. The residual is from the Lahiri ayanamsa approximation formula, not the planetary calculation.
+
+| Planet   | NDAstro engine | JHora    | Diff     |
+|----------|----------------|----------|----------|
+| Sun      | 256.1155°      | 256.119° | −0.004°  |
+| Moon     | 39.0656°       | 39.066°  | −0.000°  |
+| Mars     | 258.2929°      | 258.302° | −0.009°  |
+| Mercury  | 244.0826°      | 244.093° | −0.010°  |
+| Jupiter  | 87.1679°       | 87.163°  | +0.005°  |
+| Venus    | 254.6985°      | 254.709° | −0.011°  |
+| Saturn   | 331.9343°      | 331.935° | −0.001°  |
+| Rahu     | 316.7617°      | 316.770° | −0.008°  |
+| Ketu     | 136.7617°      | 136.770° | −0.008°  |
+
+### vs AstroSage (mean node)
+
+AstroSage uses the **mean node** for Rahu/Ketu by default. With `node_type="mean"`, all planets — including Rahu and Ketu — match to within **0.008°** (~0.5 arcminutes).
+
+| Planet   | NDAstro engine | AstroSage (DMS)  | AstroSage (dec) | Diff    |
+|----------|----------------|------------------|-----------------|---------|
+| Sun      | 256.1155°      | 16° Sag 06′ 32″  | 256.1089°       | +0.007° |
+| Moon     | 39.0656°       | 09° Tau 04′ 14″  | 39.0706°        | −0.005° |
+| Mars     | 258.2929°      | 18° Sag 17′ 10″  | 258.2861°       | +0.007° |
+| Mercury  | 244.0826°      | 04° Sag 04′ 35″  | 244.0764°       | +0.006° |
+| Jupiter  | 87.1679°       | 27° Gem 09′ 37″  | 87.1603°        | +0.008° |
+| Venus    | 254.6985°      | 14° Sag 41′ 31″  | 254.6919°       | +0.007° |
+| Saturn   | 331.9343°      | 01° Pis 55′ 37″  | 331.9269°       | +0.007° |
+| Rahu     | 317.9617°      | 17° Aqu 57′ 15″  | 317.9542°       | +0.008° |
+| Ketu     | 137.9617°      | 17° Leo 57′ 15″  | 137.9542°       | +0.008° |
+
+!!! note "True vs mean node"
+    True and mean nodes can differ by up to **~1.5°**. JHora defaults to true node; AstroSage defaults to mean node. Configure `node_type` accordingly — see [Configuration](configuration.md#lunar-node-type).
+
+```python
+from ndastro_engine.config import configure, EngineSettingsOverride
+
+configure(EngineSettingsOverride(node_type="true"))   # matches JHora
+configure(EngineSettingsOverride(node_type="mean"))   # matches AstroSage
+```
+
 ## See Also
 
+- [Configuration](configuration.md)
 - [Retrograde Periods](retrograde.md)
 - [Ayanamsa Calculations](ayanamsa.md)
 - [API Reference: Core](../api/core.md)

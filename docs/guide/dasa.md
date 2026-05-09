@@ -1,6 +1,6 @@
 # Dasa Calculations
 
-Dasa systems are fundamental time periods used in Vedic astrology to predict life events and timings. The ndastro-engine provides a complete, production-ready implementation of Dasa calculations with support for multiple systems and custom extensions.
+Dasa systems are fundamental time periods used in Vedic astrology to predict life events and timings. The NDAstro engine provides a complete, production-ready implementation of Dasa calculations with support for multiple systems and custom extensions.
 
 ## Overview
 

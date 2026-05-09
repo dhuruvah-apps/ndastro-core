@@ -1,4 +1,4 @@
-# ndastro-engine
+# NDAstro engine
 
 A modern Vedic astrology calculation engine for Python, providing accurate astronomical calculations for birth charts, planetary positions, and ayanamsa systems.
 
@@ -27,6 +27,44 @@ A modern Vedic astrology calculation engine for Python, providing accurate astro
 - Type-annotated for better IDE support
 - Comprehensive test coverage (>90%)
 - Clean, intuitive API design
+
+## Accuracy
+
+NDAstro engine is validated against two industry-standard Vedic astrology reference tools for **2026-01-01 00:00 IST, geocentric, Lahiri ayanamsa**.
+
+=== "vs JHora (true node)"
+
+    | Planet   | NDAstro engine | JHora    | Diff    |
+    |----------|----------------|----------|---------|
+    | Sun      | 256.1155°      | 256.119° | −0.004° |
+    | Moon     | 39.0656°       | 39.066°  | −0.000° |
+    | Mars     | 258.2929°      | 258.302° | −0.009° |
+    | Mercury  | 244.0826°      | 244.093° | −0.010° |
+    | Jupiter  | 87.1679°       | 87.163°  | +0.005° |
+    | Venus    | 254.6985°      | 254.709° | −0.011° |
+    | Saturn   | 331.9343°      | 331.935° | −0.001° |
+    | Rahu     | 316.7617°      | 316.770° | −0.008° |
+    | Ketu     | 136.7617°      | 136.770° | −0.008° |
+
+    All planets within **0.011°** (< 1 arcminute).
+
+=== "vs AstroSage (mean node)"
+
+    | Planet   | NDAstro engine | AstroSage (DMS)  | AstroSage (dec) | Diff    |
+    |----------|----------------|------------------|-----------------|---------|
+    | Sun      | 256.1155°      | 16° Sag 06′ 32″  | 256.1089°       | +0.007° |
+    | Moon     | 39.0656°       | 09° Tau 04′ 14″  | 39.0706°        | −0.005° |
+    | Mars     | 258.2929°      | 18° Sag 17′ 10″  | 258.2861°       | +0.007° |
+    | Mercury  | 244.0826°      | 04° Sag 04′ 35″  | 244.0764°       | +0.006° |
+    | Jupiter  | 87.1679°       | 27° Gem 09′ 37″  | 87.1603°        | +0.008° |
+    | Venus    | 254.6985°      | 14° Sag 41′ 31″  | 254.6919°       | +0.007° |
+    | Saturn   | 331.9343°      | 01° Pis 55′ 37″  | 331.9269°       | +0.007° |
+    | Rahu     | 317.9617°      | 17° Aqu 57′ 15″  | 317.9542°       | +0.008° |
+    | Ketu     | 137.9617°      | 17° Leo 57′ 15″  | 137.9542°       | +0.008° |
+
+    All planets within **0.008°** (< 0.5 arcminutes). Configure `node_type="mean"` to match AstroSage's mean node.
+
+See [Planet Positions → Accuracy Comparison](guide/planets.md#accuracy-comparison) for full details and how to reproduce these results.
 
 ## Quick Example
 

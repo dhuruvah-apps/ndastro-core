@@ -10,8 +10,9 @@ from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from typing import TYPE_CHECKING, Literal, TypeAlias
 
+from ndastro_engine import config as _engine_config
 from ndastro_engine.ayanamsa import AyanamsaSystem, get_ayanamsa
-from ndastro_engine.constants import DAYS_IN_YEAR, DEGREE_PER_NAKSHATRA
+from ndastro_engine.constants import DEGREE_PER_NAKSHATRA
 from ndastro_engine.core import get_planet_position
 from ndastro_engine.enums import Nakshatras, Planets
 from ndastro_engine.utils import normalize_degree
@@ -231,7 +232,7 @@ def get_dasa_timeline(context: DasaContext, query: DasaQuery | None = None) -> l
         msg = "years must be greater than 0"
         raise ValueError(msg)
 
-    horizon_end = birth_utc + timedelta(days=total_years * DAYS_IN_YEAR)
+    horizon_end = birth_utc + timedelta(days=total_years * _engine_config.settings.dasa_year_length)
 
     periods: list[DasaPeriod] = []
     sequence = _rotated_sequence(definition.lords, birth_info.start_lord)
@@ -239,8 +240,8 @@ def get_dasa_timeline(context: DasaContext, query: DasaQuery | None = None) -> l
     # First Mahadasa started before birth; show full period from its start.
     first_lord = sequence[0]
     first_full_years = definition.years_by_lord[first_lord]
-    elapsed_days = birth_info.nakshatra_progress_fraction * first_full_years * DAYS_IN_YEAR
-    remaining_days = birth_info.nakshatra_remaining_fraction * first_full_years * DAYS_IN_YEAR
+    elapsed_days = birth_info.nakshatra_progress_fraction * first_full_years * _engine_config.settings.dasa_year_length
+    remaining_days = birth_info.nakshatra_remaining_fraction * first_full_years * _engine_config.settings.dasa_year_length
 
     first_start = birth_utc - timedelta(days=elapsed_days)
     first_end = min(birth_utc + timedelta(days=remaining_days), horizon_end)
@@ -254,7 +255,7 @@ def get_dasa_timeline(context: DasaContext, query: DasaQuery | None = None) -> l
     seq_index = 1
     while current_start < horizon_end:
         lord = sequence[seq_index % len(sequence)]
-        full_duration = timedelta(days=definition.years_by_lord[lord] * DAYS_IN_YEAR)
+        full_duration = timedelta(days=definition.years_by_lord[lord] * _engine_config.settings.dasa_year_length)
         end = min(current_start + full_duration, horizon_end)
         periods.append(_build_period(build_context, lord, current_start, end, level=1))
         current_start = end

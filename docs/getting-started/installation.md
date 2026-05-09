@@ -7,7 +7,7 @@
 
 ## Install from PyPI
 
-The easiest way to install ndastro-engine is from PyPI:
+The easiest way to install NDAstro engine is from PyPI:
 
 ```bash
 pip install ndastro-engine

@@ -1,6 +1,6 @@
 # Quick Start Guide
 
-This guide will help you get started with ndastro-engine quickly.
+This guide will help you get started with NDAstro engine quickly.
 
 ## Basic Usage
 
@@ -127,7 +127,7 @@ else:
 
 ### 6. Available Ayanamsa Systems
 
-ndastro-engine supports 16 different ayanamsa calculation methods:
+NDAstro engine supports 16 different ayanamsa calculation methods:
 
 ```python
 from datetime import datetime

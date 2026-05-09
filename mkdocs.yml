@@ -96,6 +96,7 @@ nav:
       - Installation: getting-started/installation.md
       - Quick Start: getting-started/quick-start.md
   - User Guide:
+      - Configuration: guide/configuration.md
       - Ayanamsa Calculations: guide/ayanamsa.md
       - Planet Positions: guide/planets.md
       - Sunrise & Sunset: guide/sunrise-sunset.md
