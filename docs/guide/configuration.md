@@ -78,6 +78,66 @@ print(settings.node_type)           # "true"
 print(settings.ayanamsa_delta)      # 0.0
 ```
 
+---
+
+## Per-Request Overrides
+
+`configure()` changes the **global** settings singleton and affects every subsequent call on all threads. For web servers handling concurrent requests, use `override_settings()` instead — it applies a temporary override scoped to the current asyncio task (or OS thread) only, with zero effect on any other concurrent request.
+
+### `override_settings()`
+
+```python
+from ndastro_engine.config import override_settings, EngineSettingsOverride
+
+with override_settings(EngineSettingsOverride(node_type="mean")) as s:
+    # Inside this block, get_effective_settings().node_type == "mean"
+    # All other settings are inherited from the global settings.
+    results = get_lunar_node_positions(dt)
+
+# Outside the block, global settings are fully restored.
+```
+
+Fields not set in `EngineSettingsOverride` inherit from the currently active settings. Overrides can be nested:
+
+```python
+with override_settings(EngineSettingsOverride(position_reference="topocentric")):
+    with override_settings(EngineSettingsOverride(node_type="mean")):
+        # Both overrides are active here
+        ...
+    # node_type restored; position_reference still "topocentric"
+```
+
+### `get_effective_settings()`
+
+Engine internals use `get_effective_settings()` as the single authoritative accessor. It returns the per-request override if one is active, otherwise the global `settings`:
+
+```python
+from ndastro_engine.config import get_effective_settings
+
+s = get_effective_settings()
+print(s.node_type)            # per-request override value, or global default
+print(s.position_reference)  # same
+```
+
+You can call this in your own code if you need to read whichever settings are currently in effect without worrying about whether an override is active.
+
+### Concurrency safety
+
+`override_settings()` stores the override in a [`contextvars.ContextVar`](https://docs.python.org/3/library/contextvars.html), which is automatically scoped to the current asyncio task. Two concurrent FastAPI requests each get their own isolated context — neither can observe the other's override.
+
+!!! warning "Don't use `configure()` per-request"
+    `configure()` mutates the global `settings` module attribute. Calling it inside a request handler in a concurrent server will race with every other in-flight request. Use `override_settings()` for request-scoped changes.
+
+### Performance
+
+| Path | Cost |
+|---|---|
+| `get_effective_settings()` (no override active) | ~90 ns — one `ContextVar.get()` |
+| `override_settings()` with values | ~4.6 µs — one `dataclasses.replace()` + ContextVar set/reset |
+| `override_settings()` with no changed fields | ~1.5 µs — fast path, skips object allocation |
+
+These costs are negligible compared to the 5–50 ms Skyfield ephemeris lookups they wrap.
+
 ## EngineSettingsOverride Dataclass
 
 All fields are `None` by default. Set only the fields you want to change:
