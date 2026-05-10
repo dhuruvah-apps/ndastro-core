@@ -11,8 +11,7 @@ from skyfield.framelib import ecliptic_frame
 from skyfield.nutationlib import mean_obliquity
 from skyfield.toposlib import wgs84
 
-from ndastro_engine import config as _engine_config
-from ndastro_engine.config import eph, ts
+from ndastro_engine.config import eph, get_effective_settings, ts
 from ndastro_engine.constants import (
     DAYS_PER_JULIAN_CENTURY,
     IAU_PRECESSION_LONGITUDE_C1,
@@ -85,7 +84,7 @@ def get_planet_position(planet: Planets, lat: float, lon: float, given_time: dat
     t = ts.utc(given_time)
     eth: VectorSum = cast("VectorSum", eph["earth"])
 
-    if _engine_config.settings.position_reference == "geocentric":
+    if get_effective_settings().position_reference == "geocentric":
         astrometric = cast("Barycentric", eth.at(t)).observe(eph[planet.astronomical_code]).apparent()
     else:
         elevation = get_elevation_by_latlon(lat, lon)
@@ -210,17 +209,13 @@ def get_lunar_node_positions(given_time: datetime) -> tuple[float, float]:
     tm = ts.from_datetime(given_time)
     T = (tm.tt - J2000_TT) / DAYS_PER_JULIAN_CENTURY  # Julian centuries from J2000.0
 
-    if _engine_config.settings.node_type == "mean":
+    if get_effective_settings().node_type == "mean":
         # Mean lunar node: use IAU 2006 precession longitude of the ascending
         # node, approximated from the standard polynomial (matches Swiss
         # Ephemeris mean-node output to within ~0.01° for modern dates).
         # Polynomial from IAU SOFA / Meeus Ch. 22 (degrees):
         mean_node_deg = (
-            MEAN_NODE_EPOCH_DEG
-            + MEAN_NODE_RATE_DEG_PER_CENTURY * T
-            + MEAN_NODE_C2 * T**2
-            + MEAN_NODE_C3 * T**3
-            + MEAN_NODE_C4 * T**4
+            MEAN_NODE_EPOCH_DEG + MEAN_NODE_RATE_DEG_PER_CENTURY * T + MEAN_NODE_C2 * T**2 + MEAN_NODE_C3 * T**3 + MEAN_NODE_C4 * T**4
         ) % 360.0
         rahu_position = normalize_degree(mean_node_deg)
     else:

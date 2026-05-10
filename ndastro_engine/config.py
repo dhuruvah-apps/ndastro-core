@@ -7,6 +7,8 @@ application configuration settings in a centralized manner.
 import contextlib
 import os
 import struct
+from contextlib import contextmanager
+from contextvars import ContextVar
 from dataclasses import dataclass, fields, replace
 from pathlib import Path
 from typing import TYPE_CHECKING, Literal, TypeAlias, TypeVar, cast
@@ -18,6 +20,8 @@ import ndastro_engine.config as _self  # self-reference to mutate module globals
 from ndastro_engine.utils import get_app_data_dir
 
 if TYPE_CHECKING:
+    from collections.abc import Generator
+
     from skyfield.jpllib import SpiceKernel
 
 PositionReference: TypeAlias = Literal["geocentric", "topocentric"]
@@ -137,6 +141,11 @@ class EngineSettingsOverride:
     sunrise_definition: SunriseDefinition | None = None
 
 
+# Cached once at import time — avoids repeated dataclass descriptor lookups inside
+# override_settings() and configure() on every hot-path call.
+_OVERRIDE_FIELDS: tuple = ()  # populated below after class is defined
+
+
 class ConfigurationManager:
     """Manages application configuration settings.
 
@@ -204,6 +213,9 @@ def _validated_str(key: str, default: _LiteralStrT, valid: frozenset[str]) -> _L
 
 settings = EngineSettings.from_env()
 
+# Populate the field cache now that EngineSettingsOverride is defined.
+_OVERRIDE_FIELDS = fields(EngineSettingsOverride)
+
 _ndastro_config = ConfigurationManager()
 ts = _ndastro_config.ts
 eph = _ndastro_config.eph
@@ -247,7 +259,64 @@ def configure(
 
     base = EngineSettings.from_env()
     if override is not None:
-        updates = {f.name: v for f in fields(override) if (v := getattr(override, f.name)) is not None}
+        updates = {f.name: v for f in _OVERRIDE_FIELDS if (v := getattr(override, f.name)) is not None}
         _self.settings = replace(base, **updates)
     else:
         _self.settings = base
+
+
+# ---------------------------------------------------------------------------
+# Per-request settings override via Python contextvars
+# ---------------------------------------------------------------------------
+
+#: Holds a per-asyncio-task (per-request) settings override.  ``None`` means
+#: "use the module-level :data:`settings`".
+_request_settings: ContextVar["EngineSettings | None"] = ContextVar("_request_settings", default=None)
+
+
+def get_effective_settings() -> "EngineSettings":
+    """Return the settings in effect for the current task / thread.
+
+    If a per-request override has been registered via :func:`override_settings`
+    it is returned; otherwise the module-level :data:`settings` is returned.
+    This function is the single authoritative accessor used by engine internals
+    so that per-request overrides are always honoured without touching the
+    global state.
+    """
+    return _request_settings.get() or _self.settings
+
+
+@contextmanager
+def override_settings(override: "EngineSettingsOverride") -> "Generator[EngineSettings, None, None]":
+    """Context manager that applies *override* for the duration of the ``with`` block.
+
+    Thread- and async-safe: the override is stored in a :class:`~contextvars.ContextVar`
+    which is scoped to the current asyncio task, so concurrent requests are
+    completely isolated.
+
+    Example (inside a FastAPI endpoint)::
+
+        with override_settings(EngineSettingsOverride(node_type="mean")) as s:
+            results = get_lunar_node_positions(dt)
+
+    Args:
+        override: An :class:`EngineSettingsOverride` specifying which fields to
+            change.  Only non-``None`` fields are applied; the rest are inherited
+            from the current effective settings.
+
+    Yields:
+        The resulting :class:`EngineSettings` that is active for the block.
+
+    """
+    base = get_effective_settings()
+    updates = {f.name: v for f in _OVERRIDE_FIELDS if (v := getattr(override, f.name)) is not None}
+    if not updates:
+        # Nothing to override — avoid object allocation and just yield current settings.
+        yield base
+        return
+    new_settings = replace(base, **updates)
+    token = _request_settings.set(new_settings)
+    try:
+        yield new_settings
+    finally:
+        _request_settings.reset(token)
