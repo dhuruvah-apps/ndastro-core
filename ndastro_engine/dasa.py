@@ -13,7 +13,7 @@ from typing import TYPE_CHECKING, Literal, TypeAlias
 from ndastro_engine import config as _engine_config
 from ndastro_engine.ayanamsa import AyanamsaSystem, get_ayanamsa
 from ndastro_engine.constants import DEGREE_PER_NAKSHATRA
-from ndastro_engine.core import get_planet_position
+from ndastro_engine.core import get_planet_position, ts
 from ndastro_engine.enums import Nakshatras, Planets
 from ndastro_engine.utils import normalize_degree
 
@@ -172,14 +172,59 @@ def register_dasa_type(name: str, definition: DasaDefinition) -> None:
     _DASA_DEFINITIONS[name] = definition
 
 
+def _apply_traditional_lahiri_shift(dt: datetime) -> datetime:
+    """Advance *dt* by Delta-T to replicate the double-DeltaT application in traditional platforms.
+
+    JHora, DrikPanchang, and AstroSage pre-convert UT to TT before calling
+    ``swe.calc_ut()``, which then adds Delta-T a second time.  This advances the
+    effective computation time by one Delta-T interval (≈ 69 s in 2025), shifting
+    the Moon position forward by the same amount.
+
+    Delta-T is taken from Skyfield's built-in IERS table (``t.tt - t.ut1``).
+    """
+    t = ts.utc(dt)
+    return dt + timedelta(seconds=(t.tt - t.ut1) * 86400.0)
+
+
+def _compute_traditional_lahiri_sidereal_moon(
+    birth_utc: datetime,
+    lat: float,
+    lon: float,
+) -> float:
+    """Compute sidereal Moon for ``lahiri_traditional`` mode using only Skyfield.
+
+    Replicates both systematic deviations present in traditional platforms:
+
+    1. The Moon is computed at ``birth_utc + Delta-T`` (double-DT bug).
+    2. The ayanamsa uses IAU-1940 Lahiri constants (``SIDM_LAHIRI_1940``) evaluated
+       at the TT Julian Date of ``birth_utc`` via
+       :func:`ndastro_engine.ayanamsa.get_ayanamsa` with ``"lahiri_traditional"``.
+
+    ``get_ayanamsa(birth_utc, "lahiri_traditional")`` internally calls
+    ``ts.utc(birth_utc).tt`` which is the TT Julian Date — equivalent to
+    ``jd_ut + Delta-T`` used by Swiss Ephemeris internally, so both approaches
+    produce numerically identical ayanamsa values.
+    """
+    effective_time = _apply_traditional_lahiri_shift(birth_utc)
+    moon_trop = get_planet_position(Planets.MOON, lat, lon, effective_time).longitude
+    ayan = get_ayanamsa(birth_utc, "lahiri_traditional")
+    return normalize_degree(moon_trop - ayan)
+
+
 def get_dasa_birth_info(context: DasaContext) -> DasaBirthInfo:
     """Compute Dasa-relevant birth info from sidereal Moon longitude."""
     _validate_inputs(levels=1, dasa_type=context.dasa_type)
 
     birth_utc = _as_utc_datetime(context.birth_datetime)
-    moon_pos = get_planet_position(Planets.MOON, context.lat, context.lon, birth_utc)
-    ayanamsa = get_ayanamsa(birth_utc, context.ayanamsa_system)
-    sidereal_moon_longitude = normalize_degree(moon_pos.longitude - ayanamsa)
+    if context.ayanamsa_system == "lahiri_traditional":
+        # Use the JHora-compatible sidereal Moon (Skyfield + SE SIDM_LAHIRI_1940).
+        sidereal_moon_longitude = _compute_traditional_lahiri_sidereal_moon(
+            birth_utc, context.lat, context.lon
+        )
+    else:
+        moon_pos = get_planet_position(Planets.MOON, context.lat, context.lon, birth_utc)
+        ayanamsa = get_ayanamsa(birth_utc, context.ayanamsa_system)
+        sidereal_moon_longitude = normalize_degree(moon_pos.longitude - ayanamsa)
 
     nakshatra_number = int(sidereal_moon_longitude // DEGREE_PER_NAKSHATRA) + 1
     janma_nakshatra = Nakshatras(nakshatra_number)

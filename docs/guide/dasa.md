@@ -295,6 +295,81 @@ for ayanamsa in ["lahiri", "raman", "krishnamurti"]:
 
 5. **Handle None levels**: When requesting 4 levels, some query dates may only have 1-3 populated levels (near boundaries), so check for None values.
 
+## Precision & Compatibility
+
+### Why NDAstro is more accurate than traditional platforms
+
+NDAstro uses **NASA JPL DE440T** via Skyfield for all planetary positions, the most accurate
+publicly available modern ephemeris.  Traditional platforms (JHora, DrikPanchang, AstroSage)
+use an older computation stack that contains two systematic deviations:
+
+#### Deviation 1 — IAU-1940 Lahiri constants
+
+These platforms use the *Traditional Lahiri* label in their UI, which maps to Swiss Ephemeris
+``SIDM_LAHIRI_1940`` (mode 43). This uses epoch constants from the 1940 IAU publication:
+
+| Constant | SIDM_LAHIRI_1940 (traditional platforms) | SIDM_LAHIRI (NDAstro `"lahiri"`) |
+|---|---|---|
+| Epoch | J1900 (JD 2415021.0) | JD 2415020.9132 |
+| Ayanamsa at epoch | 22.44578° | 22.46084° |
+| Rate | 50.2798"/yr | 50.2388"/yr |
+
+This produces an ayanamsa approximately **53 arcsec lower** than the modern value,
+shifting the computed sidereal Moon forward by the same amount.
+
+#### Deviation 2 — Double Delta-T application (software bug)
+
+JHora and platforms derived from it pre-convert the birth UT to TT manually, then pass
+the result to ``swe.calc_ut()`` which adds Delta-T a **second time**.  In 2025, Delta-T
+≈ 69 seconds, so the Moon position is computed as if birth occurred ~69 seconds later
+than it actually did.  The Moon moves at ~13°/day, so this advances the Moon by
+approximately **43 arcsec**.
+
+### Combined effect on dasa start dates
+
+Both deviations advance the sidereal Moon by a total of ~96 arcsec, which propagates
+through the nakshatra-fraction calculation into the Mahadasa elapsed-days calculation:
+
+| Dasa Lord | Period | Offset from NDAstro (approx.) |
+|---|---|---|
+| Sun | 6 years | ~3.9 days |
+| Mars / Ketu | 7 years | ~4.6 days |
+| Moon | 10 years | ~6.5 days |
+| Jupiter | 16 years | ~10.5 days |
+| Rahu | 18 years | ~11.8 days |
+| Saturn | 19 years | ~12.4 days |
+| Venus | 20 years | ~13.1 days |
+
+**NDAstro `"lahiri"` output is correct.** The traditional platforms’ dates are systematically
+shifted because of the older epoch constants and the double-DeltaT bug.
+
+### `lahiri_traditional` mode — compatibility output
+
+When you need dasa dates that match JHora/DrikPanchang/AstroSage for client comparison or
+cross-validation, use `ayanamsa_system="lahiri_traditional"` in `DasaContext`:
+
+```python
+from ndastro_engine.dasa import DasaContext, get_dasa_timeline
+
+context = DasaContext(
+    birth_datetime=...,
+    lat=...,
+    lon=...,
+    ayanamsa_system="lahiri_traditional",  # JHora-compatible output
+)
+timeline = get_dasa_timeline(context)
+```
+
+This replicates both deviations (IAU-1940 constants + double-DeltaT shift) and produces
+dasa start dates within approximately **4 hours** of JHora Traditional Lahiri for a
+6-year Sun Mahadasa (and proportionally for other lords).
+
+> The `lahiri_traditional` mode uses only Skyfield for all computations. Delta-T is read
+> from Skyfield's built-in IERS table (`t.tt - t.ut1`); the SIDM_LAHIRI_1940 ayanamsa
+> uses IAU-1940 precession constants plus the IAU 2000B nutation in longitude (Δψ) from
+> `skyfield.nutationlib.iau2000b`, matching SE to within 0.001 arcsec. No additional
+> dependencies are required.
+
 ## See Also
 
 - [API Reference](../api/dasa.md) - Complete function signatures and type definitions

@@ -48,3 +48,7 @@ IAU_PRECESSION_LONGITUDE_C1 = 5038.481507   # arcseconds per Julian century
 IAU_PRECESSION_LONGITUDE_C2 = -1.0790069    # arcseconds per century²
 ONE_GHATI = 24 / 60  # One Ghati is 24 minutes, which is 0.4 hours
 DAYS_IN_CENTURY = DAYS_IN_YEAR * 100
+
+# Angular unit conversion
+ARCMIN_PER_DEGREE: int = 60
+ARCSEC_PER_DEGREE: int = 3600

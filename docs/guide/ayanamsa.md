@@ -38,12 +38,14 @@ print(f"Fagan-Bradley: {fagan:.6f}°")
 
 ## Available Ayanamsa Systems
 
-NDAstro engine supports 16 different ayanamsa calculation methods:
+NDAstro engine supports 17 different ayanamsa calculation methods:
 
 ### Popular Systems
 
 #### Lahiri Ayanamsa
 The most widely used ayanamsa in Indian astrology, officially adopted by the Indian government.
+Uses the modern Swiss Ephemeris ``SIDM_LAHIRI`` constants with NASA JPL DE440T — the most
+accurate available implementation.
 
 ```python
 from datetime import datetime
@@ -53,6 +55,45 @@ date = datetime(2026, 1, 11, 12, 0, 0)
 ayanamsa = get_ayanamsa(date, "lahiri")
 print(f"Lahiri: {ayanamsa:.6f}°")
 ```
+
+#### Traditional Lahiri (`lahiri_traditional`)
+
+A compatibility mode that replicates the ayanamsa used by JHora, DrikPanchang, and AstroSage.
+These platforms share two systematic deviations from the modern `"lahiri"` mode:
+
+1. **IAU-1940 constants (SE ``SIDM_LAHIRI_1940``):** They use the original Lahiri epoch
+   constants published in the 1940s (epoch = J1900, ayan₀ = 22.4458°, rate = 50.2798"/yr)
+   rather than the refined modern values.
+2. **Double Delta-T application:** Their Swiss Ephemeris wrapper pre-converts birth UT to TT
+   manually, then passes TT to ``swe.calc_ut()`` which adds Delta-T a second time, advancing
+   the effective Moon computation time by ~69 seconds (in 2025).
+
+When used with `DasaContext`, dasa start dates match JHora/DrikPanchang/AstroSage within
+approximately **4 hours** for a 6-year Mahadasa. Proportionally larger offsets apply to
+longer dasas (up to ~13 hours for a 20-year Venus Mahadasa).
+
+> **This mode exists for cross-platform compatibility only.**
+> Use `"lahiri"` for astronomically accurate results based on NASA JPL DE440T.
+
+```python
+from datetime import datetime
+import pytz
+from ndastro_engine.dasa import DasaContext, get_dasa_timeline
+
+# Reproduces JHora 'Traditional Lahiri' dasa dates
+context = DasaContext(
+    birth_datetime=datetime(2026, 1, 1, 0, 0, 0, tzinfo=pytz.timezone("Asia/Kolkata").localize(
+        datetime(2026, 1, 1)).tzinfo),
+    lat=12.9833,
+    lon=77.5833,
+    ayanamsa_system="lahiri_traditional",
+)
+timeline = get_dasa_timeline(context)
+```
+
+> **Note:** The `lahiri_traditional` ayanamsa value returned by `get_ayanamsa()` uses the
+> IAU-1940 constants only (no time shift). The double-Delta-T Moon shift is applied
+> automatically inside `get_dasa_birth_info()` and `get_dasa_timeline()`.
 
 #### Krishnamurti (KP) Systems
 Two variants used in the Krishnamurti Paddhati system.
@@ -174,7 +215,8 @@ ushashasi = get_ayanamsa(date, "ushashasi")
 
 | System Name | Description |
 |-------------|-------------|
-| `lahiri` | Lahiri (Chitrapaksha) ayanamsa |
+| `lahiri` | Lahiri (Chitrapaksha) — modern SE SIDM_LAHIRI constants, NASA JPL DE440T |
+| `lahiri_traditional` | Traditional Lahiri (IAU-1940 / SE SIDM_LAHIRI_1940) — matches JHora/DrikPanchang |
 | `krishnamurti_new` | KP New (0°0'0" at 291 CE) |
 | `krishnamurti_old` | KP Old (15" less than KP New) |
 | `raman` | B.V. Raman's ayanamsa |
