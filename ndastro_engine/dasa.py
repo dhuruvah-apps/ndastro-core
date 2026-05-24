@@ -191,23 +191,23 @@ def _compute_traditional_lahiri_sidereal_moon(
     lat: float,
     lon: float,
 ) -> float:
-    """Compute sidereal Moon for ``lahiri_traditional`` mode using only Skyfield.
+    """Compute sidereal Moon for ``true_lahiri`` mode using only Skyfield.
 
     Replicates both systematic deviations present in traditional platforms:
 
     1. The Moon is computed at ``birth_utc + Delta-T`` (double-DT bug).
     2. The ayanamsa uses IAU-1940 Lahiri constants (``SIDM_LAHIRI_1940``) evaluated
        at the TT Julian Date of ``birth_utc`` via
-       :func:`ndastro_engine.ayanamsa.get_ayanamsa` with ``"lahiri_traditional"``.
+       :func:`ndastro_engine.ayanamsa.get_ayanamsa` with ``"true_lahiri"``.
 
-    ``get_ayanamsa(birth_utc, "lahiri_traditional")`` internally calls
+    ``get_ayanamsa(birth_utc, "true_lahiri")`` internally calls
     ``ts.utc(birth_utc).tt`` which is the TT Julian Date — equivalent to
     ``jd_ut + Delta-T`` used by Swiss Ephemeris internally, so both approaches
     produce numerically identical ayanamsa values.
     """
     effective_time = _apply_traditional_lahiri_shift(birth_utc)
     moon_trop = get_planet_position(Planets.MOON, lat, lon, effective_time).longitude
-    ayan = get_ayanamsa(birth_utc, "lahiri_traditional")
+    ayan = get_ayanamsa(birth_utc, "true_lahiri")
     return normalize_degree(moon_trop - ayan)
 
 
@@ -216,11 +216,9 @@ def get_dasa_birth_info(context: DasaContext) -> DasaBirthInfo:
     _validate_inputs(levels=1, dasa_type=context.dasa_type)
 
     birth_utc = _as_utc_datetime(context.birth_datetime)
-    if context.ayanamsa_system == "lahiri_traditional":
+    if context.ayanamsa_system == "true_lahiri":
         # Use the JHora-compatible sidereal Moon (Skyfield + SE SIDM_LAHIRI_1940).
-        sidereal_moon_longitude = _compute_traditional_lahiri_sidereal_moon(
-            birth_utc, context.lat, context.lon
-        )
+        sidereal_moon_longitude = _compute_traditional_lahiri_sidereal_moon(birth_utc, context.lat, context.lon)
     else:
         moon_pos = get_planet_position(Planets.MOON, context.lat, context.lon, birth_utc)
         ayanamsa = get_ayanamsa(birth_utc, context.ayanamsa_system)

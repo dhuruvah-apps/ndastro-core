@@ -56,7 +56,7 @@ ayanamsa = get_ayanamsa(date, "lahiri")
 print(f"Lahiri: {ayanamsa:.6f}°")
 ```
 
-#### Traditional Lahiri (`lahiri_traditional`)
+#### True Lahiri / Chitrapaksha (`true_lahiri`)
 
 A compatibility mode that replicates the ayanamsa used by JHora, DrikPanchang, and AstroSage.
 These platforms share two systematic deviations from the modern `"lahiri"` mode:
@@ -86,12 +86,12 @@ context = DasaContext(
         datetime(2026, 1, 1)).tzinfo),
     lat=12.9833,
     lon=77.5833,
-    ayanamsa_system="lahiri_traditional",
+    ayanamsa_system="true_lahiri",
 )
 timeline = get_dasa_timeline(context)
 ```
 
-> **Note:** The `lahiri_traditional` ayanamsa value returned by `get_ayanamsa()` uses the
+> **Note:** The `true_lahiri` ayanamsa value returned by `get_ayanamsa()` uses the
 > IAU-1940 constants only (no time shift). The double-Delta-T Moon shift is applied
 > automatically inside `get_dasa_birth_info()` and `get_dasa_timeline()`.
 
@@ -216,7 +216,7 @@ ushashasi = get_ayanamsa(date, "ushashasi")
 | System Name | Description |
 |-------------|-------------|
 | `lahiri` | Lahiri (Chitrapaksha) — modern SE SIDM_LAHIRI constants, NASA JPL DE440T |
-| `lahiri_traditional` | Traditional Lahiri (IAU-1940 / SE SIDM_LAHIRI_1940) — matches JHora/DrikPanchang |
+| `true_lahiri` | True Lahiri / Chitrapaksha (IAU-1940 / SE SIDM_LAHIRI_1940) — matches JHora/DrikPanchang |
 | `krishnamurti_new` | KP New (0°0'0" at 291 CE) |
 | `krishnamurti_old` | KP Old (15" less than KP New) |
 | `raman` | B.V. Raman's ayanamsa |

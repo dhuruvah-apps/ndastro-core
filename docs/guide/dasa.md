@@ -343,10 +343,10 @@ through the nakshatra-fraction calculation into the Mahadasa elapsed-days calcul
 **NDAstro `"lahiri"` output is correct.** The traditional platforms’ dates are systematically
 shifted because of the older epoch constants and the double-DeltaT bug.
 
-### `lahiri_traditional` mode — compatibility output
+### `true_lahiri` mode — compatibility output
 
 When you need dasa dates that match JHora/DrikPanchang/AstroSage for client comparison or
-cross-validation, use `ayanamsa_system="lahiri_traditional"` in `DasaContext`:
+cross-validation, use `ayanamsa_system="true_lahiri"` in `DasaContext`:
 
 ```python
 from ndastro_engine.dasa import DasaContext, get_dasa_timeline
@@ -355,7 +355,7 @@ context = DasaContext(
     birth_datetime=...,
     lat=...,
     lon=...,
-    ayanamsa_system="lahiri_traditional",  # JHora-compatible output
+    ayanamsa_system="true_lahiri",  # JHora-compatible output
 )
 timeline = get_dasa_timeline(context)
 ```
@@ -364,7 +364,7 @@ This replicates both deviations (IAU-1940 constants + double-DeltaT shift) and p
 dasa start dates within approximately **4 hours** of JHora Traditional Lahiri for a
 6-year Sun Mahadasa (and proportionally for other lords).
 
-> The `lahiri_traditional` mode uses only Skyfield for all computations. Delta-T is read
+> The `true_lahiri` mode uses only Skyfield for all computations. Delta-T is read
 > from Skyfield's built-in IERS table (`t.tt - t.ut1`); the SIDM_LAHIRI_1940 ayanamsa
 > uses IAU-1940 precession constants plus the IAU 2000B nutation in longitude (Δψ) from
 > `skyfield.nutationlib.iau2000b`, matching SE to within 0.001 arcsec. No additional

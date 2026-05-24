@@ -31,6 +31,7 @@ from ndastro_engine.core import ts
 
 AyanamsaSystem: TypeAlias = Literal[
     "lahiri",
+    "true_lahiri",
     "lahiri_traditional",
     "raman",
     "kali",
@@ -77,8 +78,8 @@ def _get_lahiri_ayanamsa(date: datetime.datetime) -> float:
     return c0 + c1 * b6 + c2 * (b6**2)
 
 
-def _get_lahiri_traditional_ayanamsa(date: datetime.datetime) -> float:
-    """Return the TRUE Traditional Lahiri ayanamsa, compatible with JHora, DrikPanchang, and AstroSage.
+def _get_true_lahiri_ayanamsa(date: datetime.datetime) -> float:
+    """Return the True Lahiri (Chitrapaksha) ayanamsa compatible with JHora, DrikPanchang, and AstroSage.
 
     Computes the ayanamsa for Swiss Ephemeris ``SIDM_LAHIRI_1940`` entirely within
     Skyfield — no external dependencies required.
@@ -351,7 +352,8 @@ def get_ayanamsa(
     """
     ayanamsa_systems = {
         "lahiri": _get_lahiri_ayanamsa,
-        "lahiri_traditional": _get_lahiri_traditional_ayanamsa,
+        "true_lahiri": _get_true_lahiri_ayanamsa,
+        "lahiri_traditional": _get_true_lahiri_ayanamsa,
         "raman": _get_raman_ayanamsa,
         "kali": _get_kali_ayanamsa,
         "krishnamurti_new": _get_krishnamurti_new_ayanamsa,
