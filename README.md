@@ -14,6 +14,7 @@ A modern Python library for Vedic astronomical calculations, built on top of [Sk
 - 🪐 **Planetary Positions** - Calculate positions for Sun, Moon, Mars, Mercury, Jupiter, Venus, and Saturn. Calculations are based on Geocentric - Apparent positions with wobbling True Nodes. 
 - 🚀 **Planetary Velocities** - Get speed components (longitude, latitude, distance rates) for all planets
 - 🌅 **Sunrise & Sunset** - Accurate sunrise and sunset times for any location
+- 🌙 **Planet Rise & Set** - Rise and set times for any physical planet including the Moon
 - 🌙 **Lunar Nodes** - Rahu (North Node) and Kethu (South Node) calculations
 - ⬆️ **Ascendant Calculation** - Compute rising sign (Lagna) for any time and location
 - ⏱️ **Dasa Calculations** - Multi-level dasa periods (Mahadasa, Antardasa, Pratyantardasa, Sookshmadasa) with Vimshottari system built-in; full extensibility for custom dasa systems
@@ -61,7 +62,7 @@ The documentation includes:
 ```python
 from datetime import datetime
 import pytz
-from ndastro_engine.core import get_planet_position, get_planets_position, get_sunrise_sunset
+from ndastro_engine.core import get_planet_position, get_planets_position, get_sunrise_sunset, get_planet_rise_set
 from ndastro_engine.enums import Planets  # Simplified import
 
 # Define location (New York City)
@@ -84,6 +85,11 @@ for planet, pos in positions.items():
 sunrise, sunset = get_sunrise_sunset(latitude, longitude, time)
 print(f"Sunrise: {sunrise}")
 print(f"Sunset: {sunset}")
+
+# Get moonrise and moonset
+moonrise, moonset = get_planet_rise_set(Planets.MOON, latitude, longitude, time)
+print(f"Moonrise: {moonrise}")
+print(f"Moonset: {moonset}")
 ```
 
 ## Usage Examples

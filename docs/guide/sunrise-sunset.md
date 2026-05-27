@@ -100,6 +100,95 @@ for day in range(7):
     print(f"  Daylight: {hours:.2f} hours\n")
 ```
 
+---
+
+## Planet Rise and Set
+
+Calculate rise and set times for any physical planet — including the Moon — using `get_planet_rise_set`.
+
+### Basic Usage
+
+```python
+from datetime import datetime, timezone
+import pytz
+from ndastro_engine.core import get_planet_rise_set
+from ndastro_engine.enums import Planets
+
+latitude = 12.971667   # Bangalore
+longitude = 77.593611
+date = datetime(2026, 5, 24, tzinfo=timezone.utc)
+
+moonrise, moonset = get_planet_rise_set(Planets.MOON, latitude, longitude, date)
+
+ist = pytz.timezone('Asia/Kolkata')
+print(f"Moonrise: {moonrise.astimezone(ist).strftime('%H:%M')} IST")
+print(f"Moonset:  {moonset.astimezone(ist).strftime('%H:%M')} IST")
+```
+
+### All Physical Planets
+
+```python
+from datetime import datetime, timezone
+from ndastro_engine.core import get_planet_rise_set
+from ndastro_engine.enums import Planets
+
+latitude = 28.6139   # New Delhi
+longitude = 77.2090
+date = datetime(2026, 1, 11, tzinfo=timezone.utc)
+
+physical_planets = [
+    Planets.SUN,
+    Planets.MOON,
+    Planets.MERCURY,
+    Planets.VENUS,
+    Planets.MARS,
+    Planets.JUPITER,
+    Planets.SATURN,
+]
+
+for planet in physical_planets:
+    rise, set_ = get_planet_rise_set(planet, latitude, longitude, date)
+    if rise and set_:
+        print(f"{planet.name:10s}: rises {rise.strftime('%H:%M')} UTC, sets {set_.strftime('%H:%M')} UTC")
+    else:
+        print(f"{planet.name:10s}: no rise/set on this date")
+```
+
+### Unsupported Planets
+
+`Rahu`, `Kethu`, `Ascendant`, and `Empty` are not physical bodies and always return `(None, None)`:
+
+```python
+from ndastro_engine.core import get_planet_rise_set
+from ndastro_engine.enums import Planets
+
+from datetime import datetime, timezone
+date = datetime(2026, 1, 11, tzinfo=timezone.utc)
+
+rise, set_ = get_planet_rise_set(Planets.RAHU, 28.6139, 77.2090, date)
+print(rise, set_)  # None None
+```
+
+### Optional Elevation
+
+Like `get_sunrise_sunset`, you can pass an explicit elevation in metres:
+
+```python
+from ndastro_engine.core import get_planet_rise_set
+from ndastro_engine.enums import Planets
+from datetime import datetime, timezone
+
+rise, set_ = get_planet_rise_set(
+    Planets.MOON,
+    28.6139, 77.2090,
+    datetime(2026, 1, 11, tzinfo=timezone.utc),
+    elevation=216.0,
+)
+```
+
+!!! note
+    Either value in the returned tuple may be `None` when a planet does not rise or set on the requested date (e.g., circumpolar bodies at high latitudes).
+
 ## Seasonal Variations
 
 See how sunrise/sunset times change throughout the year:

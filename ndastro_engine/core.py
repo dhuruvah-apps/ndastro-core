@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from math import atan2, degrees, radians, tan
 from typing import TYPE_CHECKING, cast
 
-from skyfield.almanac import cos, find_discrete, sin, sunrise_sunset
+from skyfield.almanac import cos, find_discrete, risings_and_settings, sin, sunrise_sunset
 from skyfield.data.spice import inertial_frames
 from skyfield.elementslib import osculating_elements_of
 from skyfield.framelib import ecliptic_frame
@@ -155,6 +155,55 @@ def get_sunrise_sunset(lat: float, lon: float, given_time: datetime, elevation: 
     return cast("tuple[datetime, datetime]", (sunrise.utc_datetime(), sunset.utc_datetime()))
 
 
+_NO_RISE_SET_PLANETS = {Planets.RAHU, Planets.KETHU, Planets.ASCENDANT, Planets.EMPTY}
+
+
+def get_planet_rise_set(
+    planet: Planets,
+    lat: float,
+    lon: float,
+    given_time: datetime,
+    elevation: float | None = None,
+) -> tuple[datetime | None, datetime | None]:
+    """Calculate the rise and set times of any physical planet for a given location and date.
+
+    Args:
+        planet (Planets): The planet to calculate rise/set for.
+            Returns (None, None) for Rahu, Kethu, Ascendant, and Empty.
+        lat (float): The latitude of the location in decimal degrees.
+        lon (float): The longitude of the location in decimal degrees.
+        given_time (datetime): The date and time for which to calculate the rise and set.
+        elevation (float | None, optional): Elevation in meters.
+            If None, it is resolved from latitude/longitude using an elevation API.
+
+    Returns:
+        tuple[datetime | None, datetime | None]: Rise and set times as UTC datetime objects.
+            Either value may be None if no rise or set occurs on the given date.
+
+    """
+    if planet in _NO_RISE_SET_PLANETS:
+        return None, None
+
+    effective_elevation = get_elevation_by_latlon(lat, lon) if elevation is None else elevation
+    location = wgs84.latlon(latitude_degrees=lat, longitude_degrees=lon, elevation_m=effective_elevation)
+
+    t_start = ts.utc(given_time.date())
+    t_end = ts.utc(given_time.date() + timedelta(days=1))
+
+    f = risings_and_settings(eph, eph[planet.astronomical_code], location)
+    times, events = find_discrete(t_start, t_end, f)
+
+    rise: datetime | None = None
+    set_: datetime | None = None
+    for t, event in zip(times, events, strict=False):
+        if event == 1:  # rising
+            rise = t.utc_datetime()
+        else:  # setting
+            set_ = t.utc_datetime()
+
+    return rise, set_
+
+
 def get_ascendent_position(lat: float, lon: float, given_time: datetime) -> float:
     """Calculate the tropical ascendant.
 
@@ -234,4 +283,11 @@ def get_lunar_node_positions(given_time: datetime) -> tuple[float, float]:
     return rahu_position, kethu_position
 
 
-__all__ = ["get_ascendent_position", "get_lunar_node_positions", "get_planet_position", "get_planets_position", "get_sunrise_sunset"]
+__all__ = [
+    "get_ascendent_position",
+    "get_lunar_node_positions",
+    "get_planet_position",
+    "get_planet_rise_set",
+    "get_planets_position",
+    "get_sunrise_sunset",
+]

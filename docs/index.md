@@ -16,6 +16,7 @@ A modern Vedic astrology calculation engine for Python, providing accurate astro
 
 🌅 **Astronomical Events**
 - Sunrise and sunset calculations for any location
+- Rise and set times for any physical planet (Moon, Mars, Jupiter, etc.)
 - WGS84 coordinate system support
 - Timezone-aware datetime handling
 

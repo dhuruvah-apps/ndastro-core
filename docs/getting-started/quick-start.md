@@ -63,7 +63,33 @@ print(f"Sunset: {sunset}")
 sunrise, sunset = get_sunrise_sunset(latitude, longitude, date, elevation=216.0)
 ```
 
-### 4. Calculate Dasa Periods
+### 4. Get Planet Rise and Set Times
+
+Find rise and set times for any physical planet (including the Moon) using `get_planet_rise_set`:
+
+```python
+from datetime import datetime, timezone
+import pytz
+from ndastro_engine.core import get_planet_rise_set
+from ndastro_engine.enums import Planets
+
+# Bangalore coordinates
+latitude = 12.971667
+longitude = 77.593611
+date = datetime(2026, 5, 24, tzinfo=timezone.utc)
+
+moonrise, moonset = get_planet_rise_set(Planets.MOON, latitude, longitude, date)
+
+ist = pytz.timezone('Asia/Kolkata')
+print(f"Moonrise: {moonrise.astimezone(ist).strftime('%H:%M')} IST")
+print(f"Moonset:  {moonset.astimezone(ist).strftime('%H:%M')} IST")
+```
+
+!!! note
+    `Rahu`, `Kethu`, `Ascendant`, and `Empty` return `(None, None)` as they are not physical bodies.
+    Either value may also be `None` when no rise or set occurs on the given date.
+
+### 5. Calculate Dasa Periods
 
 Compute multi-level dasa periods for a birth chart:
 
