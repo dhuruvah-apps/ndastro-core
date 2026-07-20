@@ -36,14 +36,14 @@ class Rasis(IntEnum):
         return self.name
 
     @property
-    def owner(self) -> Planets | None:
+    def owner(self) -> Planets:
         """Get the owner planet of a given Rasi.
 
         Args:
-            rasi (int): The Rasi number.
+            rasi (int): The Rasi number (1-12).
 
         Returns:
-            Planets | None: The owner planet of the Rasi or None if invalid Rasi.
+            Planets: The owner planet of the Rasi.
 
         """
         rasi_to_planet = {
